@@ -11,9 +11,6 @@ enum RouteName {
   settings,
   routines,
   ;
-
-  @override
-  String toString() => name;
 }
 
 final _log = DevLogger('navigation');
@@ -109,7 +106,7 @@ class AppRoute {
         parentNavigatorKey: key,
         path: path,
         builder: builder,
-        name: name.toString(),
+        name: name.name,
         routes: children.map((route) => route.route(key)).toList(),
         redirect: (context, state) {
           _log.info('redirecting to ${state.name} (${state.location})');
