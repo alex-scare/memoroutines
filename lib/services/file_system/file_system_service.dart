@@ -9,15 +9,15 @@ import '../logger/dev_logger.dart';
 class FileSystemService {
   static final _log = DevLogger('FileSystemService');
 
-  static Directory? appSupportDirectory;
-  static Directory? appDocumentsDirectory;
+  static Directory? _appSupportDirectory;
+  static Directory? _appDocumentsDirectory;
 
   static Future<Directory> getSupportDirectory() async {
-    return appSupportDirectory ??= await getApplicationSupportDirectory();
+    return _appSupportDirectory ??= await getApplicationSupportDirectory();
   }
 
   static Future<Directory> getDocumentsDirectory() async {
-    return appDocumentsDirectory ??= await getApplicationDocumentsDirectory();
+    return _appDocumentsDirectory ??= await getApplicationDocumentsDirectory();
   }
 
   static Future<void> shareFile(File file) async {
@@ -34,9 +34,7 @@ class FileSystemService {
             StackTrace.current);
       }
     } on PlatformException catch (e, stack) {
-      _log.error('Platform Error: File download error', e, stack);
-    } catch (e, stack) {
-      _log.wtf('Unknown error: File download error', e, stack);
+      _log.error('platform error: file download error', e, stack);
     }
   }
 }

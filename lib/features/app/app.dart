@@ -5,6 +5,8 @@ import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
 import 'package:memoroutines/shared/theme.dart';
 
+import 'global_error_handler.dart';
+
 class App extends HookWidget {
   const App({super.key});
   static final log = DevLogger('root');
@@ -17,14 +19,17 @@ class App extends HookWidget {
       return null;
     }, []);
 
-    return MaterialApp.router(
-      title: 'Memoroutines',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
-      routerDelegate: AppNavigation().router.routerDelegate,
-      routeInformationParser: AppNavigation().router.routeInformationParser,
+    return GlobalErrorHandler(
+      router: AppNavigation().router,
+      child: MaterialApp.router(
+        title: 'Memoroutines',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.system,
+        routerDelegate: AppNavigation().router.routerDelegate,
+        routeInformationParser: AppNavigation().router.routeInformationParser,
+      ),
     );
   }
 }
