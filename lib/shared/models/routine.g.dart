@@ -17,72 +17,64 @@ const RoutineSchema = CollectionSchema(
   name: r'Routine',
   id: 9144663503541703680,
   properties: {
-    r'createdAt': PropertySchema(
-      id: 0,
-      name: r'createdAt',
-      type: IsarType.dateTime,
-    ),
-    r'dayOfMonth': PropertySchema(
-      id: 1,
-      name: r'dayOfMonth',
-      type: IsarType.long,
-    ),
-    r'dayOfYear': PropertySchema(
-      id: 2,
-      name: r'dayOfYear',
-      type: IsarType.long,
-    ),
-    r'daysOfWeek': PropertySchema(
-      id: 3,
-      name: r'daysOfWeek',
-      type: IsarType.longList,
-    ),
     r'description': PropertySchema(
-      id: 4,
+      id: 0,
       name: r'description',
       type: IsarType.string,
     ),
     r'frequency': PropertySchema(
-      id: 5,
+      id: 1,
       name: r'frequency',
       type: IsarType.string,
       enumMap: _RoutinefrequencyEnumValueMap,
     ),
     r'isFlexible': PropertySchema(
-      id: 6,
+      id: 2,
       name: r'isFlexible',
       type: IsarType.bool,
     ),
-    r'lastDoneAt': PropertySchema(
-      id: 7,
-      name: r'lastDoneAt',
-      type: IsarType.dateTime,
+    r'metaData': PropertySchema(
+      id: 3,
+      name: r'metaData',
+      type: IsarType.object,
+      target: r'RoutineMetaData',
     ),
     r'name': PropertySchema(
-      id: 8,
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
-    r'repetitionsGoal': PropertySchema(
-      id: 9,
-      name: r'repetitionsGoal',
+    r'notifications': PropertySchema(
+      id: 5,
+      name: r'notifications',
+      type: IsarType.bool,
+    ),
+    r'repetitionsNumberToComplete': PropertySchema(
+      id: 6,
+      name: r'repetitionsNumberToComplete',
       type: IsarType.long,
     ),
     r'singleRepetitionDuration': PropertySchema(
-      id: 10,
+      id: 7,
       name: r'singleRepetitionDuration',
       type: IsarType.long,
     ),
+    r'stats': PropertySchema(
+      id: 8,
+      name: r'stats',
+      type: IsarType.object,
+      target: r'RoutineStats',
+    ),
     r'status': PropertySchema(
-      id: 11,
+      id: 9,
       name: r'status',
       type: IsarType.string,
       enumMap: _RoutinestatusEnumValueMap,
     ),
-    r'updatedAt': PropertySchema(
-      id: 12,
-      name: r'updatedAt',
-      type: IsarType.dateTime,
+    r'timesPerPeriod': PropertySchema(
+      id: 10,
+      name: r'timesPerPeriod',
+      type: IsarType.long,
     )
   },
   estimateSize: _routineEstimateSize,
@@ -99,7 +91,10 @@ const RoutineSchema = CollectionSchema(
       single: false,
     )
   },
-  embeddedSchemas: {},
+  embeddedSchemas: {
+    r'RoutineMetaData': RoutineMetaDataSchema,
+    r'RoutineStats': RoutineStatsSchema
+  },
   getId: _routineGetId,
   getLinks: _routineGetLinks,
   attach: _routineAttach,
@@ -112,10 +107,15 @@ int _routineEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.daysOfWeek.length * 8;
   bytesCount += 3 + object.description.length * 3;
   bytesCount += 3 + object.frequency.name.length * 3;
+  bytesCount += 3 +
+      RoutineMetaDataSchema.estimateSize(
+          object.metaData, allOffsets[RoutineMetaData]!, allOffsets);
   bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 +
+      RoutineStatsSchema.estimateSize(
+          object.stats, allOffsets[RoutineStats]!, allOffsets);
   bytesCount += 3 + object.status.name.length * 3;
   return bytesCount;
 }
@@ -126,19 +126,27 @@ void _routineSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeLong(offsets[1], object.dayOfMonth);
-  writer.writeLong(offsets[2], object.dayOfYear);
-  writer.writeLongList(offsets[3], object.daysOfWeek);
-  writer.writeString(offsets[4], object.description);
-  writer.writeString(offsets[5], object.frequency.name);
-  writer.writeBool(offsets[6], object.isFlexible);
-  writer.writeDateTime(offsets[7], object.lastDoneAt);
-  writer.writeString(offsets[8], object.name);
-  writer.writeLong(offsets[9], object.repetitionsGoal);
-  writer.writeLong(offsets[10], object.singleRepetitionDuration);
-  writer.writeString(offsets[11], object.status.name);
-  writer.writeDateTime(offsets[12], object.updatedAt);
+  writer.writeString(offsets[0], object.description);
+  writer.writeString(offsets[1], object.frequency.name);
+  writer.writeBool(offsets[2], object.isFlexible);
+  writer.writeObject<RoutineMetaData>(
+    offsets[3],
+    allOffsets,
+    RoutineMetaDataSchema.serialize,
+    object.metaData,
+  );
+  writer.writeString(offsets[4], object.name);
+  writer.writeBool(offsets[5], object.notifications);
+  writer.writeLong(offsets[6], object.repetitionsNumberToComplete);
+  writer.writeLong(offsets[7], object.singleRepetitionDuration);
+  writer.writeObject<RoutineStats>(
+    offsets[8],
+    allOffsets,
+    RoutineStatsSchema.serialize,
+    object.stats,
+  );
+  writer.writeString(offsets[9], object.status.name);
+  writer.writeLong(offsets[10], object.timesPerPeriod);
 }
 
 Routine _routineDeserialize(
@@ -148,24 +156,32 @@ Routine _routineDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Routine(
-    dayOfMonth: reader.readLongOrNull(offsets[1]),
-    dayOfYear: reader.readLongOrNull(offsets[2]),
-    daysOfWeek: reader.readLongList(offsets[3]) ?? const [],
-    description: reader.readString(offsets[4]),
+    description: reader.readString(offsets[0]),
     frequency:
-        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[5])] ??
+        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[1])] ??
             RoutineFrequency.daily,
-    isFlexible: reader.readBoolOrNull(offsets[6]) ?? false,
-    name: reader.readString(offsets[8]),
-    repetitionsGoal: reader.readLongOrNull(offsets[9]) ?? 30,
-    singleRepetitionDuration: reader.readLongOrNull(offsets[10]) ?? 30,
-    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[11])] ??
+    isFlexible: reader.readBoolOrNull(offsets[2]) ?? false,
+    name: reader.readString(offsets[4]),
+    notifications: reader.readBoolOrNull(offsets[5]) ?? false,
+    repetitionsNumberToComplete: reader.readLongOrNull(offsets[6]) ?? 30,
+    singleRepetitionDuration: reader.readLongOrNull(offsets[7]) ?? 30,
+    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
         RoutineStatus.active,
+    timesPerPeriod: reader.readLongOrNull(offsets[10]) ?? 1,
   );
-  object.createdAt = reader.readDateTimeOrNull(offsets[0]);
   object.id = id;
-  object.lastDoneAt = reader.readDateTimeOrNull(offsets[7]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[12]);
+  object.metaData = reader.readObjectOrNull<RoutineMetaData>(
+        offsets[3],
+        RoutineMetaDataSchema.deserialize,
+        allOffsets,
+      ) ??
+      RoutineMetaData();
+  object.stats = reader.readObjectOrNull<RoutineStats>(
+        offsets[8],
+        RoutineStatsSchema.deserialize,
+        allOffsets,
+      ) ??
+      RoutineStats();
   return object;
 }
 
@@ -177,33 +193,39 @@ P _routineDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (_RoutinefrequencyValueEnumMap[reader.readStringOrNull(offset)] ??
+          RoutineFrequency.daily) as P;
     case 2:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 3:
-      return (reader.readLongList(offset) ?? const []) as P;
+      return (reader.readObjectOrNull<RoutineMetaData>(
+            offset,
+            RoutineMetaDataSchema.deserialize,
+            allOffsets,
+          ) ??
+          RoutineMetaData()) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
-      return (_RoutinefrequencyValueEnumMap[reader.readStringOrNull(offset)] ??
-          RoutineFrequency.daily) as P;
-    case 6:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 6:
+      return (reader.readLongOrNull(offset) ?? 30) as P;
     case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 30) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readObjectOrNull<RoutineStats>(
+            offset,
+            RoutineStatsSchema.deserialize,
+            allOffsets,
+          ) ??
+          RoutineStats()) as P;
     case 9:
-      return (reader.readLongOrNull(offset) ?? 30) as P;
-    case 10:
-      return (reader.readLongOrNull(offset) ?? 30) as P;
-    case 11:
       return (_RoutinestatusValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineStatus.active) as P;
-    case 12:
-      return (reader.readDateTimeOrNull(offset)) as P;
+    case 10:
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -327,355 +349,6 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
 
 extension RoutineQueryFilter
     on QueryBuilder<Routine, Routine, QFilterCondition> {
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'createdAt',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'createdAt',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'createdAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'createdAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'createdAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'createdAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfMonthIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'dayOfMonth',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfMonthIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'dayOfMonth',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfMonthEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dayOfMonth',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfMonthGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'dayOfMonth',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfMonthLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'dayOfMonth',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfMonthBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'dayOfMonth',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfYearIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'dayOfYear',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfYearIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'dayOfYear',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfYearEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dayOfYear',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfYearGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'dayOfYear',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfYearLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'dayOfYear',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayOfYearBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'dayOfYear',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      daysOfWeekElementEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'daysOfWeek',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      daysOfWeekElementGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'daysOfWeek',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      daysOfWeekElementLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'daysOfWeek',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      daysOfWeekElementBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'daysOfWeek',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> daysOfWeekLengthEqualTo(
-      int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        length,
-        true,
-        length,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> daysOfWeekIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> daysOfWeekIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      daysOfWeekLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        0,
-        true,
-        length,
-        include,
-      );
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      daysOfWeekLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        length,
-        include,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> daysOfWeekLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterFilterCondition> descriptionEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -999,75 +672,6 @@ extension RoutineQueryFilter
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'lastDoneAt',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'lastDoneAt',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'lastDoneAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'lastDoneAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'lastDoneAt',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'lastDoneAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1198,44 +802,56 @@ extension RoutineQueryFilter
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsGoalEqualTo(
-      int value) {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> notificationsEqualTo(
+      bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'repetitionsGoal',
+        property: r'notifications',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      repetitionsGoalGreaterThan(
+      repetitionsNumberToCompleteEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'repetitionsNumberToComplete',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      repetitionsNumberToCompleteGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'repetitionsGoal',
+        property: r'repetitionsNumberToComplete',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsGoalLessThan(
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      repetitionsNumberToCompleteLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'repetitionsGoal',
+        property: r'repetitionsNumberToComplete',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsGoalBetween(
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      repetitionsNumberToCompleteBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1243,7 +859,7 @@ extension RoutineQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'repetitionsGoal',
+        property: r'repetitionsNumberToComplete',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1438,67 +1054,52 @@ extension RoutineQueryFilter
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> updatedAtIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'updatedAt',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> updatedAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'updatedAt',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> updatedAtEqualTo(
-      DateTime? value) {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> timesPerPeriodEqualTo(
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'updatedAt',
+        property: r'timesPerPeriod',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> updatedAtGreaterThan(
-    DateTime? value, {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      timesPerPeriodGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'updatedAt',
+        property: r'timesPerPeriod',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> updatedAtLessThan(
-    DateTime? value, {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> timesPerPeriodLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'updatedAt',
+        property: r'timesPerPeriod',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> updatedAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> timesPerPeriodBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'updatedAt',
+        property: r'timesPerPeriod',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1509,7 +1110,21 @@ extension RoutineQueryFilter
 }
 
 extension RoutineQueryObject
-    on QueryBuilder<Routine, Routine, QFilterCondition> {}
+    on QueryBuilder<Routine, Routine, QFilterCondition> {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> metaData(
+      FilterQuery<RoutineMetaData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'metaData');
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> stats(
+      FilterQuery<RoutineStats> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'stats');
+    });
+  }
+}
 
 extension RoutineQueryLinks
     on QueryBuilder<Routine, Routine, QFilterCondition> {
@@ -1575,42 +1190,6 @@ extension RoutineQueryLinks
 }
 
 extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByCreatedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByDayOfMonth() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfMonth', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByDayOfMonthDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfMonth', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByDayOfYear() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfYear', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByDayOfYearDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfYear', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.asc);
@@ -1647,18 +1226,6 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByLastDoneAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastDoneAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByLastDoneAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastDoneAt', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1671,15 +1238,29 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByRepetitionsGoal() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByNotifications() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'repetitionsGoal', Sort.asc);
+      return query.addSortBy(r'notifications', Sort.asc);
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByRepetitionsGoalDesc() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByNotificationsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'repetitionsGoal', Sort.desc);
+      return query.addSortBy(r'notifications', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      sortByRepetitionsNumberToComplete() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsNumberToComplete', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      sortByRepetitionsNumberToCompleteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsNumberToComplete', Sort.desc);
     });
   }
 
@@ -1709,57 +1290,21 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByUpdatedAt() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByTimesPerPeriod() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.asc);
+      return query.addSortBy(r'timesPerPeriod', Sort.asc);
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByUpdatedAtDesc() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByTimesPerPeriodDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.desc);
+      return query.addSortBy(r'timesPerPeriod', Sort.desc);
     });
   }
 }
 
 extension RoutineQuerySortThenBy
     on QueryBuilder<Routine, Routine, QSortThenBy> {
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByCreatedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByDayOfMonth() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfMonth', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByDayOfMonthDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfMonth', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByDayOfYear() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfYear', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByDayOfYearDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dayOfYear', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.asc);
@@ -1808,18 +1353,6 @@ extension RoutineQuerySortThenBy
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByLastDoneAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastDoneAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByLastDoneAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastDoneAt', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1832,15 +1365,29 @@ extension RoutineQuerySortThenBy
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByRepetitionsGoal() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByNotifications() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'repetitionsGoal', Sort.asc);
+      return query.addSortBy(r'notifications', Sort.asc);
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByRepetitionsGoalDesc() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByNotificationsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'repetitionsGoal', Sort.desc);
+      return query.addSortBy(r'notifications', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      thenByRepetitionsNumberToComplete() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsNumberToComplete', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      thenByRepetitionsNumberToCompleteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsNumberToComplete', Sort.desc);
     });
   }
 
@@ -1870,45 +1417,21 @@ extension RoutineQuerySortThenBy
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByUpdatedAt() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByTimesPerPeriod() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.asc);
+      return query.addSortBy(r'timesPerPeriod', Sort.asc);
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByUpdatedAtDesc() {
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByTimesPerPeriodDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.desc);
+      return query.addSortBy(r'timesPerPeriod', Sort.desc);
     });
   }
 }
 
 extension RoutineQueryWhereDistinct
     on QueryBuilder<Routine, Routine, QDistinct> {
-  QueryBuilder<Routine, Routine, QDistinct> distinctByCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'createdAt');
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QDistinct> distinctByDayOfMonth() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'dayOfMonth');
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QDistinct> distinctByDayOfYear() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'dayOfYear');
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QDistinct> distinctByDaysOfWeek() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'daysOfWeek');
-    });
-  }
-
   QueryBuilder<Routine, Routine, QDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1929,12 +1452,6 @@ extension RoutineQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Routine, Routine, QDistinct> distinctByLastDoneAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'lastDoneAt');
-    });
-  }
-
   QueryBuilder<Routine, Routine, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1942,9 +1459,16 @@ extension RoutineQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Routine, Routine, QDistinct> distinctByRepetitionsGoal() {
+  QueryBuilder<Routine, Routine, QDistinct> distinctByNotifications() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'repetitionsGoal');
+      return query.addDistinctBy(r'notifications');
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QDistinct>
+      distinctByRepetitionsNumberToComplete() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'repetitionsNumberToComplete');
     });
   }
 
@@ -1962,9 +1486,9 @@ extension RoutineQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Routine, Routine, QDistinct> distinctByUpdatedAt() {
+  QueryBuilder<Routine, Routine, QDistinct> distinctByTimesPerPeriod() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'updatedAt');
+      return query.addDistinctBy(r'timesPerPeriod');
     });
   }
 }
@@ -1974,30 +1498,6 @@ extension RoutineQueryProperty
   QueryBuilder<Routine, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<Routine, DateTime?, QQueryOperations> createdAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'createdAt');
-    });
-  }
-
-  QueryBuilder<Routine, int?, QQueryOperations> dayOfMonthProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'dayOfMonth');
-    });
-  }
-
-  QueryBuilder<Routine, int?, QQueryOperations> dayOfYearProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'dayOfYear');
-    });
-  }
-
-  QueryBuilder<Routine, List<int>, QQueryOperations> daysOfWeekProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'daysOfWeek');
     });
   }
 
@@ -2020,9 +1520,9 @@ extension RoutineQueryProperty
     });
   }
 
-  QueryBuilder<Routine, DateTime?, QQueryOperations> lastDoneAtProperty() {
+  QueryBuilder<Routine, RoutineMetaData, QQueryOperations> metaDataProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'lastDoneAt');
+      return query.addPropertyName(r'metaData');
     });
   }
 
@@ -2032,9 +1532,16 @@ extension RoutineQueryProperty
     });
   }
 
-  QueryBuilder<Routine, int, QQueryOperations> repetitionsGoalProperty() {
+  QueryBuilder<Routine, bool, QQueryOperations> notificationsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'repetitionsGoal');
+      return query.addPropertyName(r'notifications');
+    });
+  }
+
+  QueryBuilder<Routine, int, QQueryOperations>
+      repetitionsNumberToCompleteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'repetitionsNumberToComplete');
     });
   }
 
@@ -2045,15 +1552,938 @@ extension RoutineQueryProperty
     });
   }
 
+  QueryBuilder<Routine, RoutineStats, QQueryOperations> statsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'stats');
+    });
+  }
+
   QueryBuilder<Routine, RoutineStatus, QQueryOperations> statusProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'status');
     });
   }
 
-  QueryBuilder<Routine, DateTime?, QQueryOperations> updatedAtProperty() {
+  QueryBuilder<Routine, int, QQueryOperations> timesPerPeriodProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'updatedAt');
+      return query.addPropertyName(r'timesPerPeriod');
     });
   }
 }
+
+// **************************************************************************
+// IsarEmbeddedGenerator
+// **************************************************************************
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const RoutineMetaDataSchema = Schema(
+  name: r'RoutineMetaData',
+  id: 8708798876081192830,
+  properties: {
+    r'createdAt': PropertySchema(
+      id: 0,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'dayOfMonth': PropertySchema(
+      id: 1,
+      name: r'dayOfMonth',
+      type: IsarType.long,
+    ),
+    r'dayOfYear': PropertySchema(
+      id: 2,
+      name: r'dayOfYear',
+      type: IsarType.long,
+    ),
+    r'daysOfWeek': PropertySchema(
+      id: 3,
+      name: r'daysOfWeek',
+      type: IsarType.longList,
+    ),
+    r'lastDoneAt': PropertySchema(
+      id: 4,
+      name: r'lastDoneAt',
+      type: IsarType.dateTime,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 5,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
+    )
+  },
+  estimateSize: _routineMetaDataEstimateSize,
+  serialize: _routineMetaDataSerialize,
+  deserialize: _routineMetaDataDeserialize,
+  deserializeProp: _routineMetaDataDeserializeProp,
+);
+
+int _routineMetaDataEstimateSize(
+  RoutineMetaData object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.daysOfWeek.length * 8;
+  return bytesCount;
+}
+
+void _routineMetaDataSerialize(
+  RoutineMetaData object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeDateTime(offsets[0], object.createdAt);
+  writer.writeLong(offsets[1], object.dayOfMonth);
+  writer.writeLong(offsets[2], object.dayOfYear);
+  writer.writeLongList(offsets[3], object.daysOfWeek);
+  writer.writeDateTime(offsets[4], object.lastDoneAt);
+  writer.writeDateTime(offsets[5], object.updatedAt);
+}
+
+RoutineMetaData _routineMetaDataDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = RoutineMetaData();
+  object.createdAt = reader.readDateTime(offsets[0]);
+  object.dayOfMonth = reader.readLongOrNull(offsets[1]);
+  object.dayOfYear = reader.readLongOrNull(offsets[2]);
+  object.daysOfWeek = reader.readLongList(offsets[3]) ?? [];
+  object.lastDoneAt = reader.readDateTimeOrNull(offsets[4]);
+  object.updatedAt = reader.readDateTime(offsets[5]);
+  return object;
+}
+
+P _routineMetaDataDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readDateTime(offset)) as P;
+    case 1:
+      return (reader.readLongOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
+      return (reader.readLongList(offset) ?? []) as P;
+    case 4:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 5:
+      return (reader.readDateTime(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension RoutineMetaDataQueryFilter
+    on QueryBuilder<RoutineMetaData, RoutineMetaData, QFilterCondition> {
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      createdAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      createdAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      createdAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      createdAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfMonthIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dayOfMonth',
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfMonthIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dayOfMonth',
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfMonthEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dayOfMonth',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfMonthGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dayOfMonth',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfMonthLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dayOfMonth',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfMonthBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dayOfMonth',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfYearIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dayOfYear',
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfYearIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dayOfYear',
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfYearEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dayOfYear',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfYearGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dayOfYear',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfYearLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dayOfYear',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      dayOfYearBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dayOfYear',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'daysOfWeek',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'daysOfWeek',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'daysOfWeek',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'daysOfWeek',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfWeekLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      lastDoneAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastDoneAt',
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      lastDoneAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastDoneAt',
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      lastDoneAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastDoneAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      lastDoneAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastDoneAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      lastDoneAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastDoneAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      lastDoneAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastDoneAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension RoutineMetaDataQueryObject
+    on QueryBuilder<RoutineMetaData, RoutineMetaData, QFilterCondition> {}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const RoutineStatsSchema = Schema(
+  name: r'RoutineStats',
+  id: 3135902264215478807,
+  properties: {
+    r'currentStreak': PropertySchema(
+      id: 0,
+      name: r'currentStreak',
+      type: IsarType.long,
+    ),
+    r'longestStreak': PropertySchema(
+      id: 1,
+      name: r'longestStreak',
+      type: IsarType.long,
+    ),
+    r'timesCompleted': PropertySchema(
+      id: 2,
+      name: r'timesCompleted',
+      type: IsarType.long,
+    ),
+    r'timesMissed': PropertySchema(
+      id: 3,
+      name: r'timesMissed',
+      type: IsarType.long,
+    )
+  },
+  estimateSize: _routineStatsEstimateSize,
+  serialize: _routineStatsSerialize,
+  deserialize: _routineStatsDeserialize,
+  deserializeProp: _routineStatsDeserializeProp,
+);
+
+int _routineStatsEstimateSize(
+  RoutineStats object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  return bytesCount;
+}
+
+void _routineStatsSerialize(
+  RoutineStats object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLong(offsets[0], object.currentStreak);
+  writer.writeLong(offsets[1], object.longestStreak);
+  writer.writeLong(offsets[2], object.timesCompleted);
+  writer.writeLong(offsets[3], object.timesMissed);
+}
+
+RoutineStats _routineStatsDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = RoutineStats(
+    currentStreak: reader.readLongOrNull(offsets[0]) ?? 0,
+    longestStreak: reader.readLongOrNull(offsets[1]) ?? 0,
+    timesCompleted: reader.readLongOrNull(offsets[2]) ?? 0,
+    timesMissed: reader.readLongOrNull(offsets[3]) ?? 0,
+  );
+  return object;
+}
+
+P _routineStatsDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 1:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 2:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 3:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension RoutineStatsQueryFilter
+    on QueryBuilder<RoutineStats, RoutineStats, QFilterCondition> {
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      currentStreakEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currentStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      currentStreakGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'currentStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      currentStreakLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'currentStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      currentStreakBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'currentStreak',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      longestStreakEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'longestStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      longestStreakGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'longestStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      longestStreakLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'longestStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      longestStreakBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'longestStreak',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesCompletedEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timesCompleted',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesCompletedGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'timesCompleted',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesCompletedLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'timesCompleted',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesCompletedBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'timesCompleted',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesMissedEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timesMissed',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesMissedGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'timesMissed',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesMissedLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'timesMissed',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineStats, RoutineStats, QAfterFilterCondition>
+      timesMissedBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'timesMissed',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension RoutineStatsQueryObject
+    on QueryBuilder<RoutineStats, RoutineStats, QFilterCondition> {}

@@ -10,40 +10,30 @@ class Routine {
   String description;
   @Enumerated(EnumType.name)
   RoutineStatus status;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  DateTime? lastDoneAt;
   @Enumerated(EnumType.name)
   RoutineFrequency frequency;
-  List<int> daysOfWeek;
-  int? dayOfMonth;
-  int? dayOfYear;
   bool isFlexible;
+  int timesPerPeriod; // Number of times the routine should be performed in a time period (determined by frequency)
+  bool notifications;
+  int repetitionsNumberToComplete; // Number of repetitions to mark the routine as completed
+  int singleRepetitionDuration; // Number of repetitions to mark the routine as completed
+  RoutineMetaData metaData;
+  RoutineStats stats;
 
   final completions = IsarLinks<Completion>();
-
-  /// number of repetitions to mark routine completed
-  int repetitionsGoal;
-
-  /// measured in minutes
-  int singleRepetitionDuration;
 
   Routine({
     required this.name,
     required this.description,
     this.status = RoutineStatus.active,
     this.frequency = RoutineFrequency.daily,
-    this.repetitionsGoal = 30,
+    this.repetitionsNumberToComplete = 30,
     this.singleRepetitionDuration = 30,
-    this.daysOfWeek = const [],
-    this.dayOfMonth,
-    this.dayOfYear,
+    this.timesPerPeriod = 1,
     this.isFlexible = false,
-  }) {
-    createdAt = DateTime.now();
-    updatedAt = DateTime.now();
-    lastDoneAt = null;
-  }
+    this.notifications = false,
+  })  : metaData = RoutineMetaData(),
+        stats = RoutineStats();
 }
 
 enum RoutineStatus {
@@ -61,4 +51,40 @@ enum RoutineFrequency {
   monthly,
   yearly,
   ;
+}
+
+@Embedded()
+class RoutineMetaData {
+  DateTime createdAt;
+  DateTime updatedAt;
+  DateTime? lastDoneAt;
+
+  /// List of days the routine occurs on, for weekly routines
+  List<int> daysOfWeek;
+
+  /// The day of the month the routine occurs on, for monthly routines
+  int? dayOfMonth;
+
+  /// The day of the year the routine occurs on, for yearly routines
+  int? dayOfYear;
+
+  RoutineMetaData()
+      : createdAt = DateTime.now(),
+        updatedAt = DateTime.now(),
+        daysOfWeek = [];
+}
+
+@Embedded()
+class RoutineStats {
+  int timesCompleted;
+  int timesMissed;
+  int longestStreak;
+  int currentStreak;
+
+  RoutineStats({
+    this.timesCompleted = 0,
+    this.timesMissed = 0,
+    this.longestStreak = 0,
+    this.currentStreak = 0,
+  });
 }

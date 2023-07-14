@@ -4,9 +4,10 @@ import 'package:isar/isar.dart';
 import '../../services/isar/isar_service.dart';
 
 class BaseRepository<CollectionType> {
+  ProviderRef ref;
   late Future<Isar> isar;
 
-  BaseRepository(ProviderRef ref) {
+  BaseRepository(this.ref) {
     isar = ref.read(isarPod.future);
   }
 
@@ -21,15 +22,22 @@ class BaseRepository<CollectionType> {
     return db.collection<CollectionType>().where().findAll();
   }
 
+  getById(Id id) async {
+    final db = await isar;
+    return db.collection<CollectionType>().get(id);
+  }
+
   Future<int> save(CollectionType collection) async {
     final db = await isar;
-    return db.writeTxnSync<int>(() {
-      return db.collection<CollectionType>().putSync(collection);
+    return db.writeTxn<int>(() {
+      return db.collection<CollectionType>().put(collection);
     });
   }
 
   Future<void> delete(Id id) async {
     final db = await isar;
-    db.writeTxnSync(() => db.collection<CollectionType>().deleteSync(id));
+    db.writeTxn(() {
+      return db.collection<CollectionType>().delete(id);
+    });
   }
 }

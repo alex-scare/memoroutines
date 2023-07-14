@@ -17,10 +17,21 @@ const CompletionSchema = CollectionSchema(
   name: r'Completion',
   id: -5586095416965545486,
   properties: {
-    r'completedAt': PropertySchema(
+    r'actionedAt': PropertySchema(
       id: 0,
-      name: r'completedAt',
+      name: r'actionedAt',
       type: IsarType.dateTime,
+    ),
+    r'dateToBeCompleted': PropertySchema(
+      id: 1,
+      name: r'dateToBeCompleted',
+      type: IsarType.dateTime,
+    ),
+    r'status': PropertySchema(
+      id: 2,
+      name: r'status',
+      type: IsarType.string,
+      enumMap: _CompletionstatusEnumValueMap,
     )
   },
   estimateSize: _completionEstimateSize,
@@ -51,6 +62,7 @@ int _completionEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.status.name.length * 3;
   return bytesCount;
 }
 
@@ -60,7 +72,9 @@ void _completionSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.completedAt);
+  writer.writeDateTime(offsets[0], object.actionedAt);
+  writer.writeDateTime(offsets[1], object.dateToBeCompleted);
+  writer.writeString(offsets[2], object.status.name);
 }
 
 Completion _completionDeserialize(
@@ -70,7 +84,11 @@ Completion _completionDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Completion(
-    completedAt: reader.readDateTime(offsets[0]),
+    actionedAt: reader.readDateTimeOrNull(offsets[0]),
+    dateToBeCompleted: reader.readDateTime(offsets[1]),
+    status:
+        _CompletionstatusValueEnumMap[reader.readStringOrNull(offsets[2])] ??
+            CompletionStatus.upcoming,
   );
   object.id = id;
   return object;
@@ -84,11 +102,29 @@ P _completionDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 1:
       return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (_CompletionstatusValueEnumMap[reader.readStringOrNull(offset)] ??
+          CompletionStatus.upcoming) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _CompletionstatusEnumValueMap = {
+  r'completed': r'completed',
+  r'missed': r'missed',
+  r'upcoming': r'upcoming',
+  r'skipped': r'skipped',
+};
+const _CompletionstatusValueEnumMap = {
+  r'completed': CompletionStatus.completed,
+  r'missed': CompletionStatus.missed,
+  r'upcoming': CompletionStatus.upcoming,
+  r'skipped': CompletionStatus.skipped,
+};
 
 Id _completionGetId(Completion object) {
   return object.id;
@@ -183,45 +219,118 @@ extension CompletionQueryWhere
 extension CompletionQueryFilter
     on QueryBuilder<Completion, Completion, QFilterCondition> {
   QueryBuilder<Completion, Completion, QAfterFilterCondition>
-      completedAtEqualTo(DateTime value) {
+      actionedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'actionedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+      actionedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'actionedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> actionedAtEqualTo(
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'completedAt',
+        property: r'actionedAt',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Completion, Completion, QAfterFilterCondition>
-      completedAtGreaterThan(
+      actionedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'actionedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+      actionedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'actionedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> actionedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'actionedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+      dateToBeCompletedEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dateToBeCompleted',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+      dateToBeCompletedGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'completedAt',
+        property: r'dateToBeCompleted',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Completion, Completion, QAfterFilterCondition>
-      completedAtLessThan(
+      dateToBeCompletedLessThan(
     DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'completedAt',
+        property: r'dateToBeCompleted',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Completion, Completion, QAfterFilterCondition>
-      completedAtBetween(
+      dateToBeCompletedBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -229,7 +338,7 @@ extension CompletionQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'completedAt',
+        property: r'dateToBeCompleted',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -290,6 +399,137 @@ extension CompletionQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusEqualTo(
+    CompletionStatus value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusGreaterThan(
+    CompletionStatus value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusLessThan(
+    CompletionStatus value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusBetween(
+    CompletionStatus lower,
+    CompletionStatus upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'status',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'status',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'status',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+      statusIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'status',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension CompletionQueryObject
@@ -313,30 +553,68 @@ extension CompletionQueryLinks
 
 extension CompletionQuerySortBy
     on QueryBuilder<Completion, Completion, QSortBy> {
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByCompletedAt() {
+  QueryBuilder<Completion, Completion, QAfterSortBy> sortByActionedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'completedAt', Sort.asc);
+      return query.addSortBy(r'actionedAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByCompletedAtDesc() {
+  QueryBuilder<Completion, Completion, QAfterSortBy> sortByActionedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'completedAt', Sort.desc);
+      return query.addSortBy(r'actionedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy> sortByDateToBeCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateToBeCompleted', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy>
+      sortByDateToBeCompletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateToBeCompleted', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy> sortByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy> sortByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.desc);
     });
   }
 }
 
 extension CompletionQuerySortThenBy
     on QueryBuilder<Completion, Completion, QSortThenBy> {
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByCompletedAt() {
+  QueryBuilder<Completion, Completion, QAfterSortBy> thenByActionedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'completedAt', Sort.asc);
+      return query.addSortBy(r'actionedAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByCompletedAtDesc() {
+  QueryBuilder<Completion, Completion, QAfterSortBy> thenByActionedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'completedAt', Sort.desc);
+      return query.addSortBy(r'actionedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy> thenByDateToBeCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateToBeCompleted', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy>
+      thenByDateToBeCompletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateToBeCompleted', Sort.desc);
     });
   }
 
@@ -351,13 +629,39 @@ extension CompletionQuerySortThenBy
       return query.addSortBy(r'id', Sort.desc);
     });
   }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy> thenByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QAfterSortBy> thenByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.desc);
+    });
+  }
 }
 
 extension CompletionQueryWhereDistinct
     on QueryBuilder<Completion, Completion, QDistinct> {
-  QueryBuilder<Completion, Completion, QDistinct> distinctByCompletedAt() {
+  QueryBuilder<Completion, Completion, QDistinct> distinctByActionedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'completedAt');
+      return query.addDistinctBy(r'actionedAt');
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QDistinct>
+      distinctByDateToBeCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dateToBeCompleted');
+    });
+  }
+
+  QueryBuilder<Completion, Completion, QDistinct> distinctByStatus(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'status', caseSensitive: caseSensitive);
     });
   }
 }
@@ -370,9 +674,23 @@ extension CompletionQueryProperty
     });
   }
 
-  QueryBuilder<Completion, DateTime, QQueryOperations> completedAtProperty() {
+  QueryBuilder<Completion, DateTime?, QQueryOperations> actionedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'completedAt');
+      return query.addPropertyName(r'actionedAt');
+    });
+  }
+
+  QueryBuilder<Completion, DateTime, QQueryOperations>
+      dateToBeCompletedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dateToBeCompleted');
+    });
+  }
+
+  QueryBuilder<Completion, CompletionStatus, QQueryOperations>
+      statusProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'status');
     });
   }
 }
