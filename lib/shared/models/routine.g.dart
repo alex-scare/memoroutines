@@ -17,60 +17,70 @@ const RoutineSchema = CollectionSchema(
   name: r'Routine',
   id: 9144663503541703680,
   properties: {
-    r'countToDone': PropertySchema(
-      id: 0,
-      name: r'countToDone',
-      type: IsarType.long,
-    ),
     r'createdAt': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
     r'dayOfMonth': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'dayOfMonth',
       type: IsarType.long,
     ),
     r'dayOfYear': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'dayOfYear',
       type: IsarType.long,
     ),
     r'daysOfWeek': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'daysOfWeek',
       type: IsarType.longList,
     ),
     r'description': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'description',
       type: IsarType.string,
     ),
-    r'duration': PropertySchema(
-      id: 6,
-      name: r'duration',
-      type: IsarType.long,
-    ),
     r'frequency': PropertySchema(
-      id: 7,
+      id: 5,
       name: r'frequency',
       type: IsarType.string,
       enumMap: _RoutinefrequencyEnumValueMap,
+    ),
+    r'isFlexible': PropertySchema(
+      id: 6,
+      name: r'isFlexible',
+      type: IsarType.bool,
+    ),
+    r'lastDoneAt': PropertySchema(
+      id: 7,
+      name: r'lastDoneAt',
+      type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
       id: 8,
       name: r'name',
       type: IsarType.string,
     ),
-    r'status': PropertySchema(
+    r'repetitionsGoal': PropertySchema(
       id: 9,
+      name: r'repetitionsGoal',
+      type: IsarType.long,
+    ),
+    r'singleRepetitionDuration': PropertySchema(
+      id: 10,
+      name: r'singleRepetitionDuration',
+      type: IsarType.long,
+    ),
+    r'status': PropertySchema(
+      id: 11,
       name: r'status',
       type: IsarType.string,
       enumMap: _RoutinestatusEnumValueMap,
     ),
     r'updatedAt': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -81,7 +91,14 @@ const RoutineSchema = CollectionSchema(
   deserializeProp: _routineDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'completions': LinkSchema(
+      id: -2116845057547117351,
+      name: r'completions',
+      target: r'Completion',
+      single: false,
+    )
+  },
   embeddedSchemas: {},
   getId: _routineGetId,
   getLinks: _routineGetLinks,
@@ -109,17 +126,19 @@ void _routineSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.countToDone);
-  writer.writeDateTime(offsets[1], object.createdAt);
-  writer.writeLong(offsets[2], object.dayOfMonth);
-  writer.writeLong(offsets[3], object.dayOfYear);
-  writer.writeLongList(offsets[4], object.daysOfWeek);
-  writer.writeString(offsets[5], object.description);
-  writer.writeLong(offsets[6], object.duration);
-  writer.writeString(offsets[7], object.frequency.name);
+  writer.writeDateTime(offsets[0], object.createdAt);
+  writer.writeLong(offsets[1], object.dayOfMonth);
+  writer.writeLong(offsets[2], object.dayOfYear);
+  writer.writeLongList(offsets[3], object.daysOfWeek);
+  writer.writeString(offsets[4], object.description);
+  writer.writeString(offsets[5], object.frequency.name);
+  writer.writeBool(offsets[6], object.isFlexible);
+  writer.writeDateTime(offsets[7], object.lastDoneAt);
   writer.writeString(offsets[8], object.name);
-  writer.writeString(offsets[9], object.status.name);
-  writer.writeDateTime(offsets[10], object.updatedAt);
+  writer.writeLong(offsets[9], object.repetitionsGoal);
+  writer.writeLong(offsets[10], object.singleRepetitionDuration);
+  writer.writeString(offsets[11], object.status.name);
+  writer.writeDateTime(offsets[12], object.updatedAt);
 }
 
 Routine _routineDeserialize(
@@ -129,22 +148,24 @@ Routine _routineDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Routine(
-    countToDone: reader.readLongOrNull(offsets[0]) ?? 30,
-    dayOfMonth: reader.readLongOrNull(offsets[2]),
-    dayOfYear: reader.readLongOrNull(offsets[3]),
-    daysOfWeek: reader.readLongList(offsets[4]) ?? const [],
-    description: reader.readString(offsets[5]),
-    duration: reader.readLongOrNull(offsets[6]) ?? 30,
+    dayOfMonth: reader.readLongOrNull(offsets[1]),
+    dayOfYear: reader.readLongOrNull(offsets[2]),
+    daysOfWeek: reader.readLongList(offsets[3]) ?? const [],
+    description: reader.readString(offsets[4]),
     frequency:
-        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[7])] ??
+        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[5])] ??
             RoutineFrequency.daily,
+    isFlexible: reader.readBoolOrNull(offsets[6]) ?? false,
     name: reader.readString(offsets[8]),
-    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
+    repetitionsGoal: reader.readLongOrNull(offsets[9]) ?? 30,
+    singleRepetitionDuration: reader.readLongOrNull(offsets[10]) ?? 30,
+    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[11])] ??
         RoutineStatus.active,
   );
-  object.createdAt = reader.readDateTimeOrNull(offsets[1]);
+  object.createdAt = reader.readDateTimeOrNull(offsets[0]);
   object.id = id;
-  object.updatedAt = reader.readDateTimeOrNull(offsets[10]);
+  object.lastDoneAt = reader.readDateTimeOrNull(offsets[7]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[12]);
   return object;
 }
 
@@ -156,28 +177,32 @@ P _routineDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset) ?? 30) as P;
-    case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 1:
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
-    case 4:
       return (reader.readLongList(offset) ?? const []) as P;
-    case 5:
+    case 4:
       return (reader.readString(offset)) as P;
-    case 6:
-      return (reader.readLongOrNull(offset) ?? 30) as P;
-    case 7:
+    case 5:
       return (_RoutinefrequencyValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineFrequency.daily) as P;
+    case 6:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 7:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
+      return (reader.readLongOrNull(offset) ?? 30) as P;
+    case 10:
+      return (reader.readLongOrNull(offset) ?? 30) as P;
+    case 11:
       return (_RoutinestatusValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineStatus.active) as P;
-    case 10:
+    case 12:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -216,11 +241,13 @@ Id _routineGetId(Routine object) {
 }
 
 List<IsarLinkBase<dynamic>> _routineGetLinks(Routine object) {
-  return [];
+  return [object.completions];
 }
 
 void _routineAttach(IsarCollection<dynamic> col, Id id, Routine object) {
   object.id = id;
+  object.completions
+      .attach(col, col.isar.collection<Completion>(), r'completions', id);
 }
 
 extension RoutineQueryWhereSort on QueryBuilder<Routine, Routine, QWhere> {
@@ -300,59 +327,6 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
 
 extension RoutineQueryFilter
     on QueryBuilder<Routine, Routine, QFilterCondition> {
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> countToDoneEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'countToDone',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> countToDoneGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'countToDone',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> countToDoneLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'countToDone',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> countToDoneBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'countToDone',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterFilterCondition> createdAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -833,59 +807,6 @@ extension RoutineQueryFilter
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> durationEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'duration',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> durationGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'duration',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> durationLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'duration',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> durationBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'duration',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterFilterCondition> frequencyEqualTo(
     RoutineFrequency value, {
     bool caseSensitive = true,
@@ -1068,6 +989,85 @@ extension RoutineQueryFilter
     });
   }
 
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> isFlexibleEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isFlexible',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastDoneAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastDoneAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtEqualTo(
+      DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastDoneAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastDoneAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastDoneAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> lastDoneAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastDoneAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1194,6 +1194,116 @@ extension RoutineQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsGoalEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'repetitionsGoal',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      repetitionsGoalGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'repetitionsGoal',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsGoalLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'repetitionsGoal',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsGoalBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'repetitionsGoal',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      singleRepetitionDurationEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'singleRepetitionDuration',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      singleRepetitionDurationGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'singleRepetitionDuration',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      singleRepetitionDurationLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'singleRepetitionDuration',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      singleRepetitionDurationBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'singleRepetitionDuration',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1402,21 +1512,69 @@ extension RoutineQueryObject
     on QueryBuilder<Routine, Routine, QFilterCondition> {}
 
 extension RoutineQueryLinks
-    on QueryBuilder<Routine, Routine, QFilterCondition> {}
+    on QueryBuilder<Routine, Routine, QFilterCondition> {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> completions(
+      FilterQuery<Completion> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'completions');
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      completionsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completions', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> completionsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completions', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      completionsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completions', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      completionsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completions', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      completionsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completions', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      completionsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'completions', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByCountToDone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'countToDone', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByCountToDoneDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'countToDone', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
@@ -1465,18 +1623,6 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByDuration() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'duration', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByDurationDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'duration', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByFrequency() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frequency', Sort.asc);
@@ -1489,6 +1635,30 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
     });
   }
 
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIsFlexible() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFlexible', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIsFlexibleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFlexible', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByLastDoneAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastDoneAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByLastDoneAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastDoneAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1498,6 +1668,32 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByRepetitionsGoal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsGoal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByRepetitionsGoalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsGoal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      sortBySingleRepetitionDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'singleRepetitionDuration', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      sortBySingleRepetitionDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'singleRepetitionDuration', Sort.desc);
     });
   }
 
@@ -1528,18 +1724,6 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
 
 extension RoutineQuerySortThenBy
     on QueryBuilder<Routine, Routine, QSortThenBy> {
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByCountToDone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'countToDone', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByCountToDoneDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'countToDone', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
@@ -1588,18 +1772,6 @@ extension RoutineQuerySortThenBy
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByDuration() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'duration', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByDurationDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'duration', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByFrequency() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frequency', Sort.asc);
@@ -1624,6 +1796,30 @@ extension RoutineQuerySortThenBy
     });
   }
 
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByIsFlexible() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFlexible', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByIsFlexibleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFlexible', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByLastDoneAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastDoneAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByLastDoneAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastDoneAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1633,6 +1829,32 @@ extension RoutineQuerySortThenBy
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByRepetitionsGoal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsGoal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByRepetitionsGoalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionsGoal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      thenBySingleRepetitionDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'singleRepetitionDuration', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      thenBySingleRepetitionDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'singleRepetitionDuration', Sort.desc);
     });
   }
 
@@ -1663,12 +1885,6 @@ extension RoutineQuerySortThenBy
 
 extension RoutineQueryWhereDistinct
     on QueryBuilder<Routine, Routine, QDistinct> {
-  QueryBuilder<Routine, Routine, QDistinct> distinctByCountToDone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'countToDone');
-    });
-  }
-
   QueryBuilder<Routine, Routine, QDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdAt');
@@ -1700,12 +1916,6 @@ extension RoutineQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Routine, Routine, QDistinct> distinctByDuration() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'duration');
-    });
-  }
-
   QueryBuilder<Routine, Routine, QDistinct> distinctByFrequency(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1713,10 +1923,35 @@ extension RoutineQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Routine, Routine, QDistinct> distinctByIsFlexible() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isFlexible');
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QDistinct> distinctByLastDoneAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastDoneAt');
+    });
+  }
+
   QueryBuilder<Routine, Routine, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QDistinct> distinctByRepetitionsGoal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'repetitionsGoal');
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QDistinct>
+      distinctBySingleRepetitionDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'singleRepetitionDuration');
     });
   }
 
@@ -1739,12 +1974,6 @@ extension RoutineQueryProperty
   QueryBuilder<Routine, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<Routine, int, QQueryOperations> countToDoneProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'countToDone');
     });
   }
 
@@ -1778,12 +2007,6 @@ extension RoutineQueryProperty
     });
   }
 
-  QueryBuilder<Routine, int, QQueryOperations> durationProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'duration');
-    });
-  }
-
   QueryBuilder<Routine, RoutineFrequency, QQueryOperations>
       frequencyProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1791,9 +2014,34 @@ extension RoutineQueryProperty
     });
   }
 
+  QueryBuilder<Routine, bool, QQueryOperations> isFlexibleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isFlexible');
+    });
+  }
+
+  QueryBuilder<Routine, DateTime?, QQueryOperations> lastDoneAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastDoneAt');
+    });
+  }
+
   QueryBuilder<Routine, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<Routine, int, QQueryOperations> repetitionsGoalProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'repetitionsGoal');
+    });
+  }
+
+  QueryBuilder<Routine, int, QQueryOperations>
+      singleRepetitionDurationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'singleRepetitionDuration');
     });
   }
 
