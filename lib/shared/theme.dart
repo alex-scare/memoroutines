@@ -1,5 +1,6 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
@@ -33,6 +34,18 @@ class AppTheme {
   static final textTheme = GoogleFonts.exo2TextTheme();
 
   static FlexScheme schemeColor = FlexScheme.aquaBlue;
+
+  static final overlayStyleDark = SystemUiOverlayStyle.dark.copyWith(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  );
+
+  static final overlayStyleLight = SystemUiOverlayStyle.light.copyWith(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  );
 
   static final light = FlexThemeData.light(
     scheme: FlexScheme.ebonyClay,
