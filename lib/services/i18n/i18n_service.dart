@@ -39,7 +39,7 @@ class I18nService {
     };
   }
 
-  static const (String, String) defaultLocaleString = ('en', 'US');
+  static const (String, String) defaultLocaleString = ('ru', 'RU');
 
   static const List<(String, String)> supportedLocaleStrings = [
     ('en', "US"),

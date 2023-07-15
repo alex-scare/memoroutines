@@ -42,6 +42,11 @@ enum RoutineStatus {
   completed,
   archived,
   ;
+
+  bool get needRemoveUpcomingCompletions =>
+      this == RoutineStatus.completed ||
+      this == RoutineStatus.archived ||
+      this == RoutineStatus.paused;
 }
 
 enum RoutineFrequency {
@@ -66,7 +71,7 @@ class RoutineMetaData {
   int? dayOfMonth;
 
   /// The day of the year the routine occurs on, for yearly routines
-  int? dayOfYear;
+  DateTime? yearlyRoutineDate;
 
   RoutineMetaData()
       : createdAt = DateTime.now(),
