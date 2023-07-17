@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:memoroutines/features/app/app.dart';
 import 'package:memoroutines/services/i18n/global_i18n_handler.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/theme.dart';
-
-import 'features/app/app.dart';
 
 final log = DevLogger('root');
 

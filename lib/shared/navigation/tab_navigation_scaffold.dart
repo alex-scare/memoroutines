@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
-import 'navigation.dart';
+import 'package:go_router/go_router.dart';
+import 'package:memoroutines/shared/navigation/navigation.dart';
 
 class TabNavigationScaffold extends HookWidget {
   const TabNavigationScaffold({
@@ -22,14 +23,15 @@ class TabNavigationScaffold extends HookWidget {
     );
 
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CupertinoTabBar(
         // selectedItemColor: context.colors.primary,
         currentIndex: currentIndex.value,
-        onTap: (index) {
+        onTap: (int index) {
+          final route = routes[index];
+
           currentIndex.value = index;
-          // context.navigateGo(routes[index].config);
+          context.goNamed(route.name.name);
         },
-        // itemPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         items: routes.map((route) => route.tab).toList(),
       ),
       body: child,
@@ -41,7 +43,7 @@ extension TabRoute on AppRoute {
   BottomNavigationBarItem get tab {
     return BottomNavigationBarItem(
       icon: Icon(icon),
-      label: label,
+      label: label ?? '',
     );
   }
 }

@@ -1,9 +1,11 @@
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memoroutines/features/home/home_screen.dart';
+import 'package:memoroutines/features/routines/routines_screen.dart';
+import 'package:memoroutines/features/settings/settings_screen.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
-
-import '../../features/home/home_screen.dart';
-import 'tab_navigation_scaffold.dart';
+import 'package:memoroutines/shared/navigation/tab_navigation_scaffold.dart';
 
 enum RouteName {
   initial,
@@ -59,25 +61,52 @@ class AppNavigation {
     AppRoute(
       name: RouteName.home,
       path: '/home',
-      label: 'Home',
+      // label: 'Home',
       icon: Icons.home,
       builder: (_, __) => const HomeScreen(),
     ),
     AppRoute(
       name: RouteName.routines,
       path: '/routines',
-      label: 'Routines',
+      // label: 'Routines',
       icon: Icons.list,
-      builder: (_, __) => const HomeScreen(),
+      builder: (_, __) => const RoutinesScreen(),
     ),
     AppRoute(
       name: RouteName.settings,
       path: '/settings',
-      label: 'Settings',
+      // label: 'Settings',
       icon: Icons.settings,
-      builder: (_, __) => const HomeScreen(),
+      builder: (_, __) => const SettingsScreen(),
     ),
   ];
+
+  void showFlexibleModal(
+    BuildContext context, {
+    required Widget Function(BuildContext, ScrollController) builder,
+    List<double>? anchors,
+    double? maxHeight,
+    double? minHeight,
+    double? initHeight,
+    Color backgroundColor = Colors.transparent,
+  }) {
+    showFlexibleBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      initHeight: initHeight,
+      anchors: anchors,
+      maxHeight: maxHeight,
+      minHeight: minHeight,
+      bottomSheetColor: backgroundColor,
+      builder: (context, scrollController, ___) {
+        return builder(context, scrollController);
+      },
+    );
+  }
+
+  void closeModal(BuildContext context) {
+    context.navigateBack();
+  }
 }
 
 // Add requireAnonimous and requireAuth
@@ -118,4 +147,12 @@ class AppRoute {
           return null;
         },
       );
+}
+
+extension ContextNavigationExt on BuildContext {
+  void navigateBack() {
+    if (!Navigator.of(this).canPop()) return;
+
+    Navigator.of(this).pop();
+  }
 }

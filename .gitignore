@@ -1,6 +1,5 @@
 # Custom .gitignore
-
-
+.fvm/flutter_sdk
 
 # Generated .ignore below
 

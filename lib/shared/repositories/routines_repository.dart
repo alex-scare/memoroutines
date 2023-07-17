@@ -1,9 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/shared/models/routine.dart';
-
-import 'base_repository.dart';
-import 'completions_repository.dart';
+import 'package:memoroutines/shared/repositories/base_repository.dart';
+import 'package:memoroutines/shared/repositories/completions_repository.dart';
 
 class RoutinesRepository extends BaseRepository<Routine> {
   RoutinesRepository(ProviderRef ref) : super(ref, 'routines_repo');
@@ -11,8 +10,8 @@ class RoutinesRepository extends BaseRepository<Routine> {
   Future<void> createRoutineAndGenerateCompletions(Routine routine) async {
     final db = await isar;
     await db.writeTxn(() async {
-      await db.routines.put(routine);
       await ref.read(completionsPod).generateCompletions(routine);
+      await db.routines.put(routine);
     });
   }
 

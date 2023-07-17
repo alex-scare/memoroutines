@@ -25,16 +25,6 @@ class _GlobalErrorHandlerState extends State<GlobalErrorHandler> {
   void initState() {
     super.initState();
 
-    ErrorWidget.builder = (error) {
-      final routeState = AppNavigation().globalRouteKey.currentState;
-      final page = routeState?.widget.pages.last.name ?? '';
-      final message = 'crash error! lib "${error.library}". Screen: "$page"';
-      _log.wtf(message, error.exception, error.stack ?? StackTrace.empty);
-
-      widget.router.goNamed(RouteName.initial.name);
-      return Container();
-    };
-
     FlutterError.onError = (error) {
       final routeState = AppNavigation().globalRouteKey.currentState;
       final page = routeState?.widget.pages.last.name ?? '';

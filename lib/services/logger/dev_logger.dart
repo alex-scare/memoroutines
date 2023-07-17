@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
-
-import '../file_system/file_system_service.dart';
+import 'package:memoroutines/services/file_system/file_system_service.dart';
 
 class AppLogFilter extends LogFilter {
   @override

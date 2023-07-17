@@ -1,29 +1,24 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/shared/models/completion.dart';
-
-import '../models/routine.dart';
-import 'base_repository.dart';
+import 'package:memoroutines/shared/models/routine.dart';
+import 'package:memoroutines/shared/repositories/base_repository.dart';
 
 class CompletionsRepository extends BaseRepository<Completion> {
   CompletionsRepository(ProviderRef ref) : super(ref, 'completions_repo');
 
   Future<void> generateCompletions(Routine routine) async {
-    final db = await isar;
-    await db.writeTxn(() async {
-      var date = DateTime.now();
-      for (var i = 0; i < 30; i++) {
-        if (_shouldCreateCompletion(routine, date)) {
-          var completion = Completion(
-            dateToBeCompleted: date,
-            status: CompletionStatus.upcoming,
-          );
-          routine.completions.add(completion);
-        }
-        date = date.add(const Duration(days: 1));
+    var date = DateTime.now();
+    for (var i = 0; i < 30; i++) {
+      if (_shouldCreateCompletion(routine, date)) {
+        var completion = Completion(
+          dateToBeCompleted: date,
+          status: CompletionStatus.upcoming,
+        );
+        routine.completions.add(completion);
       }
-      await db.routines.put(routine);
-    });
+      date = date.add(const Duration(days: 1));
+    }
   }
 
   bool _shouldCreateCompletion(Routine routine, DateTime date) {

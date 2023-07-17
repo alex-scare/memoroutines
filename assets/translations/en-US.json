@@ -1,1 +1,1 @@
-{ "testKey": "test", "screens": { "home": { "title": "Home Screen" } } }
+{"testKey":"test","screens":{"home":{"title":"Home Screen"},"routines":{"title":"My routines"}}}

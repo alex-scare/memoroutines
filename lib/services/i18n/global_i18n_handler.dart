@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
-
-import 'i18n_service.dart';
+import 'package:memoroutines/services/i18n/i18n_service.dart';
 
 class GlobalI18nHandler extends StatelessWidget {
   const GlobalI18nHandler({Key? key, required this.child}) : super(key: key);

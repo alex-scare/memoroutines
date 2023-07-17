@@ -1,3 +1,4 @@
 key,en-US,ru-RU
 testKey,test,тест
-screens.home.title,"Home Screen","Домашний, \n экран"
+screens.home.title,"Home Screen","Домашний экран"
+screens.routines.title,"My routines","Мои привычки"

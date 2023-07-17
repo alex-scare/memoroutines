@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
-
-import '../logger/dev_logger.dart';
+import 'package:memoroutines/services/logger/dev_logger.dart';
 
 class I18nService {
   static final _log = DevLogger('i18n');
@@ -13,7 +12,7 @@ class I18nService {
     _initCustomLogger();
   }
 
-  _initCustomLogger() {
+  void _initCustomLogger() {
     EasyLocalization.logger.printer = (
       Object object, {
       name,
@@ -39,11 +38,14 @@ class I18nService {
     };
   }
 
-  static const (String, String) defaultLocaleString = ('ru', 'RU');
+  static const (String, String) _en = ('en', 'US');
+  static const (String, String) _ru = ('ru', 'RU');
+
+  static const (String, String) defaultLocaleString = _en;
 
   static const List<(String, String)> supportedLocaleStrings = [
-    ('en', "US"),
-    ('ru', 'RU'),
+    _en,
+    _ru,
   ];
 
   String basePath = 'assets/translations';

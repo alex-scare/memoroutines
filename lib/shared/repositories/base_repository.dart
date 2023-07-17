@@ -1,8 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-
-import '../../services/isar/isar_service.dart';
-import '../../services/logger/dev_logger.dart';
+import 'package:memoroutines/services/isar/isar_service.dart';
+import 'package:memoroutines/services/logger/dev_logger.dart';
 
 class BaseRepository<CollectionType> {
   ProviderRef ref;
@@ -33,9 +32,10 @@ class BaseRepository<CollectionType> {
         .cast();
   }
 
-  getById(Id id) async {
+  Future<CollectionType?> getById(Id id) async {
     final db = await isar;
-    return db.collection<CollectionType>().get(id);
+    final collection = db.collection<CollectionType>();
+    return collection.get(id);
   }
 
   Future<int> save(CollectionType collection) async {

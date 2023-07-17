@@ -16,7 +16,7 @@ final parser = ArgParser()
     mandatory: true,
   );
 
-main(List<String> args) {
+void main(List<String> args) {
   final arguments = parser.parse(args);
 
   createJsons(arguments['source'], arguments['outputDir']);
@@ -57,6 +57,7 @@ void createJsons(String source, String outputDir) {
     final file = File(fileName);
     file.writeAsStringSync(jsonEncode(unflattenJson(localeValues)));
 
+    // ignore: avoid_print
     print('$localeFile conversion complete.');
   }
 }
@@ -108,7 +109,7 @@ extension StringExtension on String {
         onNonMatch: (String nonMatch) => '',
       );
 
-  toCamelCase() {
+  String toCamelCase() {
     List<String> parts = split('_');
     String result = '';
 

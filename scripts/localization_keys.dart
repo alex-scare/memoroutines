@@ -21,7 +21,7 @@ final parser = ArgParser()
     defaultsTo: 'LocaleKey',
   );
 
-main(List<String> args) {
+void main(List<String> args) {
   final arguments = parser.parse(args);
 
   generateKeys(arguments['source'], arguments['output'], arguments['name']);
@@ -46,7 +46,7 @@ void generateKeys(String jsonPath, String outputPath, String className) {
   writeFile(generatedClass, outputPath);
 }
 
-writeFile(String content, String outputPath) {
+void writeFile(String content, String outputPath) {
   final file = File(outputPath);
 
   String output = content;
@@ -87,7 +87,7 @@ extension StringExtension on String {
         onNonMatch: (String nonMatch) => '',
       );
 
-  toCamelCase() {
+  String toCamelCase() {
     List<String> parts = split('_');
     String result = '';
 

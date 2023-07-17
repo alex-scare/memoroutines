@@ -56,6 +56,16 @@ enum RoutineFrequency {
   monthly,
   yearly,
   ;
+
+  String get label {
+    return switch (this) {
+      RoutineFrequency.daily => 'daily',
+      RoutineFrequency.weekly => 'weekly',
+      RoutineFrequency.monthly => 'monthly',
+      RoutineFrequency.yearly => 'yearly',
+      RoutineFrequency.dayAfterDay => 'dayAfterDay',
+    };
+  }
 }
 
 @Embedded()

@@ -19,6 +19,7 @@
     },
     {
       "name": "app (iphone 13 mini)",
+      "cwd": ".",
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",

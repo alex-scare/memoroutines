@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../logger/dev_logger.dart';
 
 class FileSystemService {
   static final _log = DevLogger('FileSystemService');
@@ -30,8 +29,11 @@ class FileSystemService {
 
       shareResult = await Share.shareXFiles(files);
       if (shareResult.status == ShareResultStatus.unavailable) {
-        _log.error('download error: file not found $fileName', null,
-            StackTrace.current);
+        _log.error(
+          'download error: file not found $fileName',
+          null,
+          StackTrace.current,
+        );
       }
     } on PlatformException catch (e, stack) {
       _log.error('platform error: file download error', e, stack);
