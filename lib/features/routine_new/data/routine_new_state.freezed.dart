@@ -25,8 +25,10 @@ mixin _$RoutineNewState {
   int get signleRepetititionDuration => throw _privateConstructorUsedError;
   List<int> get daysOfWeek => throw _privateConstructorUsedError;
   List<int> get daysOfMonths => throw _privateConstructorUsedError;
-  int get repetitionsPerPeriod => throw _privateConstructorUsedError; // helpers
-  int get page => throw _privateConstructorUsedError; // loaders
+  int get repetitionsPerPeriod => throw _privateConstructorUsedError;
+  IconData? get icon => throw _privateConstructorUsedError; // helpers
+  int get page => throw _privateConstructorUsedError;
+  int get iconIndex => throw _privateConstructorUsedError; // loaders
   bool get submitLoading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -50,7 +52,9 @@ abstract class $RoutineNewStateCopyWith<$Res> {
       List<int> daysOfWeek,
       List<int> daysOfMonths,
       int repetitionsPerPeriod,
+      IconData? icon,
       int page,
+      int iconIndex,
       bool submitLoading});
 }
 
@@ -76,7 +80,9 @@ class _$RoutineNewStateCopyWithImpl<$Res, $Val extends RoutineNewState>
     Object? daysOfWeek = null,
     Object? daysOfMonths = null,
     Object? repetitionsPerPeriod = null,
+    Object? icon = freezed,
     Object? page = null,
+    Object? iconIndex = null,
     Object? submitLoading = null,
   }) {
     return _then(_value.copyWith(
@@ -116,9 +122,17 @@ class _$RoutineNewStateCopyWithImpl<$Res, $Val extends RoutineNewState>
           ? _value.repetitionsPerPeriod
           : repetitionsPerPeriod // ignore: cast_nullable_to_non_nullable
               as int,
+      icon: freezed == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as IconData?,
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
+              as int,
+      iconIndex: null == iconIndex
+          ? _value.iconIndex
+          : iconIndex // ignore: cast_nullable_to_non_nullable
               as int,
       submitLoading: null == submitLoading
           ? _value.submitLoading
@@ -146,7 +160,9 @@ abstract class _$$_RoutineNewStateCopyWith<$Res>
       List<int> daysOfWeek,
       List<int> daysOfMonths,
       int repetitionsPerPeriod,
+      IconData? icon,
       int page,
+      int iconIndex,
       bool submitLoading});
 }
 
@@ -170,7 +186,9 @@ class __$$_RoutineNewStateCopyWithImpl<$Res>
     Object? daysOfWeek = null,
     Object? daysOfMonths = null,
     Object? repetitionsPerPeriod = null,
+    Object? icon = freezed,
     Object? page = null,
+    Object? iconIndex = null,
     Object? submitLoading = null,
   }) {
     return _then(_$_RoutineNewState(
@@ -210,9 +228,17 @@ class __$$_RoutineNewStateCopyWithImpl<$Res>
           ? _value.repetitionsPerPeriod
           : repetitionsPerPeriod // ignore: cast_nullable_to_non_nullable
               as int,
+      icon: freezed == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as IconData?,
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
+              as int,
+      iconIndex: null == iconIndex
+          ? _value.iconIndex
+          : iconIndex // ignore: cast_nullable_to_non_nullable
               as int,
       submitLoading: null == submitLoading
           ? _value.submitLoading
@@ -235,7 +261,9 @@ class _$_RoutineNewState implements _RoutineNewState {
       final List<int> daysOfWeek = const [],
       final List<int> daysOfMonths = const [],
       this.repetitionsPerPeriod = 1,
+      this.icon = null,
       this.page = 0,
+      this.iconIndex = 7,
       this.submitLoading = false})
       : _daysOfWeek = daysOfWeek,
         _daysOfMonths = daysOfMonths;
@@ -280,10 +308,16 @@ class _$_RoutineNewState implements _RoutineNewState {
   @override
   @JsonKey()
   final int repetitionsPerPeriod;
+  @override
+  @JsonKey()
+  final IconData? icon;
 // helpers
   @override
   @JsonKey()
   final int page;
+  @override
+  @JsonKey()
+  final int iconIndex;
 // loaders
   @override
   @JsonKey()
@@ -291,7 +325,7 @@ class _$_RoutineNewState implements _RoutineNewState {
 
   @override
   String toString() {
-    return 'RoutineNewState(name: $name, description: $description, frequency: $frequency, isFlexible: $isFlexible, repetitionsToComplete: $repetitionsToComplete, signleRepetititionDuration: $signleRepetititionDuration, daysOfWeek: $daysOfWeek, daysOfMonths: $daysOfMonths, repetitionsPerPeriod: $repetitionsPerPeriod, page: $page, submitLoading: $submitLoading)';
+    return 'RoutineNewState(name: $name, description: $description, frequency: $frequency, isFlexible: $isFlexible, repetitionsToComplete: $repetitionsToComplete, signleRepetititionDuration: $signleRepetititionDuration, daysOfWeek: $daysOfWeek, daysOfMonths: $daysOfMonths, repetitionsPerPeriod: $repetitionsPerPeriod, icon: $icon, page: $page, iconIndex: $iconIndex, submitLoading: $submitLoading)';
   }
 
   @override
@@ -318,7 +352,10 @@ class _$_RoutineNewState implements _RoutineNewState {
                 .equals(other._daysOfMonths, _daysOfMonths) &&
             (identical(other.repetitionsPerPeriod, repetitionsPerPeriod) ||
                 other.repetitionsPerPeriod == repetitionsPerPeriod) &&
+            (identical(other.icon, icon) || other.icon == icon) &&
             (identical(other.page, page) || other.page == page) &&
+            (identical(other.iconIndex, iconIndex) ||
+                other.iconIndex == iconIndex) &&
             (identical(other.submitLoading, submitLoading) ||
                 other.submitLoading == submitLoading));
   }
@@ -335,7 +372,9 @@ class _$_RoutineNewState implements _RoutineNewState {
       const DeepCollectionEquality().hash(_daysOfWeek),
       const DeepCollectionEquality().hash(_daysOfMonths),
       repetitionsPerPeriod,
+      icon,
       page,
+      iconIndex,
       submitLoading);
 
   @JsonKey(ignore: true)
@@ -356,7 +395,9 @@ abstract class _RoutineNewState implements RoutineNewState {
       final List<int> daysOfWeek,
       final List<int> daysOfMonths,
       final int repetitionsPerPeriod,
+      final IconData? icon,
       final int page,
+      final int iconIndex,
       final bool submitLoading}) = _$_RoutineNewState;
 
   @override // form state
@@ -377,8 +418,12 @@ abstract class _RoutineNewState implements RoutineNewState {
   List<int> get daysOfMonths;
   @override
   int get repetitionsPerPeriod;
+  @override
+  IconData? get icon;
   @override // helpers
   int get page;
+  @override
+  int get iconIndex;
   @override // loaders
   bool get submitLoading;
   @override

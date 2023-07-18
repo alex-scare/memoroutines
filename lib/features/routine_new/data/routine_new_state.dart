@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:memoroutines/shared/models/routine.dart';
@@ -17,8 +18,10 @@ class RoutineNewState with _$RoutineNewState {
     @Default([]) List<int> daysOfWeek,
     @Default([]) List<int> daysOfMonths,
     @Default(1) int repetitionsPerPeriod,
+    @Default(null) IconData? icon,
     // helpers
     @Default(0) int page,
+    @Default(7) int iconIndex,
     // loaders
     @Default(false) bool submitLoading,
   }) = _RoutineNewState;

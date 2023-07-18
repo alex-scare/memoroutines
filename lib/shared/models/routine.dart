@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/shared/models/completion.dart';
 
@@ -8,6 +9,7 @@ class Routine {
   Id id = Isar.autoIncrement;
   String name;
   String description;
+  int? _iconCodePoint;
   @Enumerated(EnumType.name)
   RoutineStatus status;
   @Enumerated(EnumType.name)
@@ -30,6 +32,16 @@ class Routine {
     this.notifications = false,
   })  : metaData = RoutineMetaData(),
         stats = RoutineStats();
+
+  @ignore
+  IconData? get iconData {
+    if (_iconCodePoint == null) return null;
+    return IconData(_iconCodePoint!, fontFamily: 'MaterialIcons');
+  }
+
+  set iconData(IconData? value) {
+    _iconCodePoint = value?.codePoint;
+  }
 }
 
 enum RoutineStatus {

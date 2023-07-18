@@ -11,9 +11,6 @@ final routineNewPod = StateNotifierProvider.family
 );
 
 class RoutineNewStateNotifier extends StateNotifier<RoutineNewState> {
-  static const _pageLimit = 3;
-  final pageController = PageController(initialPage: 0);
-
   final Ref _ref;
   late Routine? routine;
 
@@ -56,17 +53,7 @@ class RoutineNewStateNotifier extends StateNotifier<RoutineNewState> {
     state = state.copyWith(repetitionsToComplete: value);
   }
 
-  void nextFormPage() {
-    if (state.page == _pageLimit) return;
-    pageController.nextPage(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.bounceInOut,
-    );
-    state = state.copyWith(page: state.page + 1);
-  }
-
-  void prevFormPage() {
-    if (state.page == 0) return;
-    state = state.copyWith(page: state.page - 1);
+  void setIcon(IconData icon, int index) {
+    state = state.copyWith(icon: icon, iconIndex: index);
   }
 }

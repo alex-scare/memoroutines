@@ -89,7 +89,7 @@ class AppNavigation {
   ];
 
   void showModal(BuildContext context, Widget Function(BuildContext) builder) {
-    showBottomSheet(context: context, builder: builder);
+    showModalBottomSheet(context: context, builder: builder);
   }
 
   void showFlexibleModal(

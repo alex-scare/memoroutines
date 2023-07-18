@@ -1,1 +1,1 @@
-{"testKey":"test","screens":{"home":{"title":"Home Screen"},"routines":{"title":"My routines"}}}
+{"testKey":"test","screens":{"home":{"title":"Home Screen"},"routines":{"title":"My routines"},"newRoutine":{"prevStep":"prev","nextStep":"next","save":"save","cancel":"cancel"}}}

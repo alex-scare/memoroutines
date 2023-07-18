@@ -1,4 +1,7 @@
 key,en-US,ru-RU
-testKey,test,тест
 screens.home.title,"Home Screen","Домашний экран"
 screens.routines.title,"My routines","Мои привычки"
+screens.newRoutine.prevStep,"prev","назад"
+screens.newRoutine.nextStep,"next","далее"
+screens.newRoutine.save,"save","сохранить"
+screens.newRoutine.cancel,"cancel","отмена"

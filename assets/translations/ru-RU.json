@@ -1,1 +1,13 @@
-{"testKey":"тест","screens":{"home":{"title":"Домашний экран"},"routines":{"title":"Мои привычки"}}}
+{
+  "testKey": "тест",
+  "screens": {
+    "home": { "title": "Домашний экран" },
+    "routines": { "title": "Мои привычки" },
+    "newRoutine": {
+      "prevStep": "назад",
+      "nextStep": "далее",
+      "save": "сохранить",
+      "cancel": "отмена"
+    }
+  }
+}

@@ -19,14 +19,12 @@ class RoutinesScreen extends ConsumerWidget {
         title: LocaleKey.screensRoutinesTitle,
         actions: [
           IconButton(
-            onPressed: () => context.goNamed(RouteName.newRoutine.name),
+            onPressed: () => context.pushNamed(RouteName.newRoutine.name),
             icon: const Icon(Icons.add),
           )
         ],
       ),
-      body: RoutinesList(
-        listenRounines: routines.listenAll(),
-      ),
+      body: RoutinesList(listenRounines: routines.listenAll()),
     );
   }
 }
