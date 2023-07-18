@@ -2,6 +2,7 @@ import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memoroutines/features/home/home_screen.dart';
+import 'package:memoroutines/features/routine_new/routine_new_screen.dart';
 import 'package:memoroutines/features/routines/routines_screen.dart';
 import 'package:memoroutines/features/settings/settings_screen.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
@@ -12,6 +13,7 @@ enum RouteName {
   home,
   settings,
   routines,
+  newRoutine,
   ;
 }
 
@@ -55,6 +57,11 @@ class AppNavigation {
       path: '/',
       redirectCheck: (_, __) => '/home',
     ),
+    AppRoute(
+      name: RouteName.newRoutine,
+      path: '/routines/new',
+      builder: (_, state) => RoutineNewScreen(goState: state),
+    ),
   ];
 
   final List<AppRoute> tabRoutes = [
@@ -80,6 +87,10 @@ class AppNavigation {
       builder: (_, __) => const SettingsScreen(),
     ),
   ];
+
+  void showModal(BuildContext context, Widget Function(BuildContext) builder) {
+    showBottomSheet(context: context, builder: builder);
+  }
 
   void showFlexibleModal(
     BuildContext context, {

@@ -25,15 +25,15 @@ class CompletionsRepository extends BaseRepository<Completion> {
     switch (routine.frequency) {
       case RoutineFrequency.daily:
         return true;
-      case RoutineFrequency.dayAfterDay:
-        return date.difference(routine.metaData.lastDoneAt ?? date).inDays >= 1;
+      // case RoutineFrequency.dayAfterDay:
+      //   return date.difference(routine.metaData.lastDoneAt ?? date).inDays >= 1;
       case RoutineFrequency.weekly:
         return routine.metaData.daysOfWeek.contains(date.weekday);
       case RoutineFrequency.monthly:
-        return routine.metaData.dayOfMonth == date.day;
-      case RoutineFrequency.yearly:
-        return routine.metaData.yearlyRoutineDate?.day == date.day &&
-            routine.metaData.yearlyRoutineDate?.month == date.month;
+        return routine.metaData.daysOfMonth.contains(date.day);
+      // case RoutineFrequency.yearly:
+      //   return routine.metaData.yearlyRoutineDate?.day == date.day &&
+      //       routine.metaData.yearlyRoutineDate?.month == date.month;
       default:
         return false;
     }

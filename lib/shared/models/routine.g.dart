@@ -28,53 +28,43 @@ const RoutineSchema = CollectionSchema(
       type: IsarType.string,
       enumMap: _RoutinefrequencyEnumValueMap,
     ),
-    r'isFlexible': PropertySchema(
-      id: 2,
-      name: r'isFlexible',
-      type: IsarType.bool,
-    ),
     r'metaData': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'metaData',
       type: IsarType.object,
       target: r'RoutineMetaData',
     ),
     r'name': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'notifications': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'notifications',
       type: IsarType.bool,
     ),
     r'repetitionsNumberToComplete': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'repetitionsNumberToComplete',
       type: IsarType.long,
     ),
     r'singleRepetitionDuration': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'singleRepetitionDuration',
       type: IsarType.long,
     ),
     r'stats': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'stats',
       type: IsarType.object,
       target: r'RoutineStats',
     ),
     r'status': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'status',
       type: IsarType.string,
       enumMap: _RoutinestatusEnumValueMap,
-    ),
-    r'timesPerPeriod': PropertySchema(
-      id: 10,
-      name: r'timesPerPeriod',
-      type: IsarType.long,
     )
   },
   estimateSize: _routineEstimateSize,
@@ -128,25 +118,23 @@ void _routineSerialize(
 ) {
   writer.writeString(offsets[0], object.description);
   writer.writeString(offsets[1], object.frequency.name);
-  writer.writeBool(offsets[2], object.isFlexible);
   writer.writeObject<RoutineMetaData>(
-    offsets[3],
+    offsets[2],
     allOffsets,
     RoutineMetaDataSchema.serialize,
     object.metaData,
   );
-  writer.writeString(offsets[4], object.name);
-  writer.writeBool(offsets[5], object.notifications);
-  writer.writeLong(offsets[6], object.repetitionsNumberToComplete);
-  writer.writeLong(offsets[7], object.singleRepetitionDuration);
+  writer.writeString(offsets[3], object.name);
+  writer.writeBool(offsets[4], object.notifications);
+  writer.writeLong(offsets[5], object.repetitionsNumberToComplete);
+  writer.writeLong(offsets[6], object.singleRepetitionDuration);
   writer.writeObject<RoutineStats>(
-    offsets[8],
+    offsets[7],
     allOffsets,
     RoutineStatsSchema.serialize,
     object.stats,
   );
-  writer.writeString(offsets[9], object.status.name);
-  writer.writeLong(offsets[10], object.timesPerPeriod);
+  writer.writeString(offsets[8], object.status.name);
 }
 
 Routine _routineDeserialize(
@@ -160,24 +148,22 @@ Routine _routineDeserialize(
     frequency:
         _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[1])] ??
             RoutineFrequency.daily,
-    isFlexible: reader.readBoolOrNull(offsets[2]) ?? false,
-    name: reader.readString(offsets[4]),
-    notifications: reader.readBoolOrNull(offsets[5]) ?? false,
-    repetitionsNumberToComplete: reader.readLongOrNull(offsets[6]) ?? 30,
-    singleRepetitionDuration: reader.readLongOrNull(offsets[7]) ?? 30,
-    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
+    name: reader.readString(offsets[3]),
+    notifications: reader.readBoolOrNull(offsets[4]) ?? false,
+    repetitionsNumberToComplete: reader.readLongOrNull(offsets[5]) ?? 30,
+    singleRepetitionDuration: reader.readLongOrNull(offsets[6]) ?? 30,
+    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[8])] ??
         RoutineStatus.active,
-    timesPerPeriod: reader.readLongOrNull(offsets[10]) ?? 1,
   );
   object.id = id;
   object.metaData = reader.readObjectOrNull<RoutineMetaData>(
-        offsets[3],
+        offsets[2],
         RoutineMetaDataSchema.deserialize,
         allOffsets,
       ) ??
       RoutineMetaData();
   object.stats = reader.readObjectOrNull<RoutineStats>(
-        offsets[8],
+        offsets[7],
         RoutineStatsSchema.deserialize,
         allOffsets,
       ) ??
@@ -198,34 +184,30 @@ P _routineDeserializeProp<P>(
       return (_RoutinefrequencyValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineFrequency.daily) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 3:
       return (reader.readObjectOrNull<RoutineMetaData>(
             offset,
             RoutineMetaDataSchema.deserialize,
             allOffsets,
           ) ??
           RoutineMetaData()) as P;
-    case 4:
+    case 3:
       return (reader.readString(offset)) as P;
-    case 5:
+    case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 5:
+      return (reader.readLongOrNull(offset) ?? 30) as P;
     case 6:
       return (reader.readLongOrNull(offset) ?? 30) as P;
     case 7:
-      return (reader.readLongOrNull(offset) ?? 30) as P;
-    case 8:
       return (reader.readObjectOrNull<RoutineStats>(
             offset,
             RoutineStatsSchema.deserialize,
             allOffsets,
           ) ??
           RoutineStats()) as P;
-    case 9:
+    case 8:
       return (_RoutinestatusValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineStatus.active) as P;
-    case 10:
-      return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -233,17 +215,13 @@ P _routineDeserializeProp<P>(
 
 const _RoutinefrequencyEnumValueMap = {
   r'daily': r'daily',
-  r'dayAfterDay': r'dayAfterDay',
   r'weekly': r'weekly',
   r'monthly': r'monthly',
-  r'yearly': r'yearly',
 };
 const _RoutinefrequencyValueEnumMap = {
   r'daily': RoutineFrequency.daily,
-  r'dayAfterDay': RoutineFrequency.dayAfterDay,
   r'weekly': RoutineFrequency.weekly,
   r'monthly': RoutineFrequency.monthly,
-  r'yearly': RoutineFrequency.yearly,
 };
 const _RoutinestatusEnumValueMap = {
   r'active': r'active',
@@ -662,16 +640,6 @@ extension RoutineQueryFilter
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> isFlexibleEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isFlexible',
-        value: value,
-      ));
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1053,60 +1021,6 @@ extension RoutineQueryFilter
       ));
     });
   }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> timesPerPeriodEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'timesPerPeriod',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      timesPerPeriodGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'timesPerPeriod',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> timesPerPeriodLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'timesPerPeriod',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> timesPerPeriodBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'timesPerPeriod',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
 }
 
 extension RoutineQueryObject
@@ -1214,18 +1128,6 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIsFlexible() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isFlexible', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIsFlexibleDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isFlexible', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1289,18 +1191,6 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
       return query.addSortBy(r'status', Sort.desc);
     });
   }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByTimesPerPeriod() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timesPerPeriod', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByTimesPerPeriodDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timesPerPeriod', Sort.desc);
-    });
-  }
 }
 
 extension RoutineQuerySortThenBy
@@ -1338,18 +1228,6 @@ extension RoutineQuerySortThenBy
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByIsFlexible() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isFlexible', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByIsFlexibleDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isFlexible', Sort.desc);
     });
   }
 
@@ -1416,18 +1294,6 @@ extension RoutineQuerySortThenBy
       return query.addSortBy(r'status', Sort.desc);
     });
   }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByTimesPerPeriod() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timesPerPeriod', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByTimesPerPeriodDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timesPerPeriod', Sort.desc);
-    });
-  }
 }
 
 extension RoutineQueryWhereDistinct
@@ -1443,12 +1309,6 @@ extension RoutineQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'frequency', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QDistinct> distinctByIsFlexible() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isFlexible');
     });
   }
 
@@ -1485,12 +1345,6 @@ extension RoutineQueryWhereDistinct
       return query.addDistinctBy(r'status', caseSensitive: caseSensitive);
     });
   }
-
-  QueryBuilder<Routine, Routine, QDistinct> distinctByTimesPerPeriod() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'timesPerPeriod');
-    });
-  }
 }
 
 extension RoutineQueryProperty
@@ -1511,12 +1365,6 @@ extension RoutineQueryProperty
       frequencyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'frequency');
-    });
-  }
-
-  QueryBuilder<Routine, bool, QQueryOperations> isFlexibleProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isFlexible');
     });
   }
 
@@ -1563,12 +1411,6 @@ extension RoutineQueryProperty
       return query.addPropertyName(r'status');
     });
   }
-
-  QueryBuilder<Routine, int, QQueryOperations> timesPerPeriodProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'timesPerPeriod');
-    });
-  }
 }
 
 // **************************************************************************
@@ -1587,29 +1429,34 @@ const RoutineMetaDataSchema = Schema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'dayOfMonth': PropertySchema(
+    r'daysOfMonth': PropertySchema(
       id: 1,
-      name: r'dayOfMonth',
-      type: IsarType.long,
+      name: r'daysOfMonth',
+      type: IsarType.longList,
     ),
     r'daysOfWeek': PropertySchema(
       id: 2,
       name: r'daysOfWeek',
       type: IsarType.longList,
     ),
-    r'lastDoneAt': PropertySchema(
+    r'isFlexible': PropertySchema(
       id: 3,
+      name: r'isFlexible',
+      type: IsarType.bool,
+    ),
+    r'lastDoneAt': PropertySchema(
+      id: 4,
       name: r'lastDoneAt',
       type: IsarType.dateTime,
     ),
-    r'updatedAt': PropertySchema(
-      id: 4,
-      name: r'updatedAt',
-      type: IsarType.dateTime,
-    ),
-    r'yearlyRoutineDate': PropertySchema(
+    r'repetitionsPerFrequencyPeriod': PropertySchema(
       id: 5,
-      name: r'yearlyRoutineDate',
+      name: r'repetitionsPerFrequencyPeriod',
+      type: IsarType.long,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 6,
+      name: r'updatedAt',
       type: IsarType.dateTime,
     )
   },
@@ -1625,6 +1472,7 @@ int _routineMetaDataEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.daysOfMonth.length * 8;
   bytesCount += 3 + object.daysOfWeek.length * 8;
   return bytesCount;
 }
@@ -1636,11 +1484,12 @@ void _routineMetaDataSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeLong(offsets[1], object.dayOfMonth);
+  writer.writeLongList(offsets[1], object.daysOfMonth);
   writer.writeLongList(offsets[2], object.daysOfWeek);
-  writer.writeDateTime(offsets[3], object.lastDoneAt);
-  writer.writeDateTime(offsets[4], object.updatedAt);
-  writer.writeDateTime(offsets[5], object.yearlyRoutineDate);
+  writer.writeBool(offsets[3], object.isFlexible);
+  writer.writeDateTime(offsets[4], object.lastDoneAt);
+  writer.writeLong(offsets[5], object.repetitionsPerFrequencyPeriod);
+  writer.writeDateTime(offsets[6], object.updatedAt);
 }
 
 RoutineMetaData _routineMetaDataDeserialize(
@@ -1651,11 +1500,12 @@ RoutineMetaData _routineMetaDataDeserialize(
 ) {
   final object = RoutineMetaData();
   object.createdAt = reader.readDateTime(offsets[0]);
-  object.dayOfMonth = reader.readLongOrNull(offsets[1]);
+  object.daysOfMonth = reader.readLongList(offsets[1]) ?? [];
   object.daysOfWeek = reader.readLongList(offsets[2]) ?? [];
-  object.lastDoneAt = reader.readDateTimeOrNull(offsets[3]);
-  object.updatedAt = reader.readDateTime(offsets[4]);
-  object.yearlyRoutineDate = reader.readDateTimeOrNull(offsets[5]);
+  object.isFlexible = reader.readBool(offsets[3]);
+  object.lastDoneAt = reader.readDateTimeOrNull(offsets[4]);
+  object.repetitionsPerFrequencyPeriod = reader.readLong(offsets[5]);
+  object.updatedAt = reader.readDateTime(offsets[6]);
   return object;
 }
 
@@ -1669,15 +1519,17 @@ P _routineMetaDataDeserializeProp<P>(
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongList(offset) ?? []) as P;
     case 2:
       return (reader.readLongList(offset) ?? []) as P;
     case 3:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 4:
-      return (reader.readDateTime(offset)) as P;
-    case 5:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 5:
+      return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1742,76 +1594,147 @@ extension RoutineMetaDataQueryFilter
   }
 
   QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      dayOfMonthIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'dayOfMonth',
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      dayOfMonthIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'dayOfMonth',
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      dayOfMonthEqualTo(int? value) {
+      daysOfMonthElementEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dayOfMonth',
+        property: r'daysOfMonth',
         value: value,
       ));
     });
   }
 
   QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      dayOfMonthGreaterThan(
-    int? value, {
+      daysOfMonthElementGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'dayOfMonth',
+        property: r'daysOfMonth',
         value: value,
       ));
     });
   }
 
   QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      dayOfMonthLessThan(
-    int? value, {
+      daysOfMonthElementLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'dayOfMonth',
+        property: r'daysOfMonth',
         value: value,
       ));
     });
   }
 
   QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      dayOfMonthBetween(
-    int? lower,
-    int? upper, {
+      daysOfMonthElementBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'dayOfMonth',
+        property: r'daysOfMonth',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfMonthLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfMonth',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfMonthIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfMonth',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfMonthIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfMonth',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfMonthLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfMonth',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfMonthLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfMonth',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      daysOfMonthLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfMonth',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1961,6 +1884,16 @@ extension RoutineMetaDataQueryFilter
   }
 
   QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      isFlexibleEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isFlexible',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
       lastDoneAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2035,6 +1968,62 @@ extension RoutineMetaDataQueryFilter
   }
 
   QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      repetitionsPerFrequencyPeriodEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'repetitionsPerFrequencyPeriod',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      repetitionsPerFrequencyPeriodGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'repetitionsPerFrequencyPeriod',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      repetitionsPerFrequencyPeriodLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'repetitionsPerFrequencyPeriod',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
+      repetitionsPerFrequencyPeriodBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'repetitionsPerFrequencyPeriod',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
       updatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2082,80 +2071,6 @@ extension RoutineMetaDataQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'updatedAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      yearlyRoutineDateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'yearlyRoutineDate',
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      yearlyRoutineDateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'yearlyRoutineDate',
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      yearlyRoutineDateEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'yearlyRoutineDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      yearlyRoutineDateGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'yearlyRoutineDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      yearlyRoutineDateLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'yearlyRoutineDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      yearlyRoutineDateBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'yearlyRoutineDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,

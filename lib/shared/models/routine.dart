@@ -12,8 +12,6 @@ class Routine {
   RoutineStatus status;
   @Enumerated(EnumType.name)
   RoutineFrequency frequency;
-  bool isFlexible;
-  int timesPerPeriod; // Number of times the routine should be performed in a time period (determined by frequency)
   bool notifications;
   int repetitionsNumberToComplete; // Number of repetitions to mark the routine as completed
   int singleRepetitionDuration; // Number of repetitions to mark the routine as completed
@@ -29,8 +27,6 @@ class Routine {
     this.frequency = RoutineFrequency.daily,
     this.repetitionsNumberToComplete = 30,
     this.singleRepetitionDuration = 30,
-    this.timesPerPeriod = 1,
-    this.isFlexible = false,
     this.notifications = false,
   })  : metaData = RoutineMetaData(),
         stats = RoutineStats();
@@ -51,10 +47,10 @@ enum RoutineStatus {
 
 enum RoutineFrequency {
   daily,
-  dayAfterDay,
+  // dayAfterDay,
   weekly,
   monthly,
-  yearly,
+  // yearly,
   ;
 
   String get label {
@@ -62,8 +58,8 @@ enum RoutineFrequency {
       RoutineFrequency.daily => 'daily',
       RoutineFrequency.weekly => 'weekly',
       RoutineFrequency.monthly => 'monthly',
-      RoutineFrequency.yearly => 'yearly',
-      RoutineFrequency.dayAfterDay => 'dayAfterDay',
+      // RoutineFrequency.yearly => 'yearly',
+      // RoutineFrequency.dayAfterDay => 'dayAfterDay',
     };
   }
 }
@@ -73,20 +69,20 @@ class RoutineMetaData {
   DateTime createdAt;
   DateTime updatedAt;
   DateTime? lastDoneAt;
+  bool isFlexible;
 
-  /// List of days the routine occurs on, for weekly routines
+  /// Number of times the routine should be performed in a time period (determined by frequency)
+  int repetitionsPerFrequencyPeriod;
   List<int> daysOfWeek;
-
-  /// The day of the month the routine occurs on, for monthly routines
-  int? dayOfMonth;
-
-  /// The day of the year the routine occurs on, for yearly routines
-  DateTime? yearlyRoutineDate;
+  List<int> daysOfMonth;
 
   RoutineMetaData()
       : createdAt = DateTime.now(),
         updatedAt = DateTime.now(),
-        daysOfWeek = [];
+        isFlexible = false,
+        repetitionsPerFrequencyPeriod = 1,
+        daysOfWeek = [],
+        daysOfMonth = [];
 }
 
 @Embedded()
