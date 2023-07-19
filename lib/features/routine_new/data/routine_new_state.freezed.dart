@@ -22,9 +22,9 @@ mixin _$RoutineNewState {
   RoutineFrequency get frequency => throw _privateConstructorUsedError;
   bool get isFlexible => throw _privateConstructorUsedError;
   int get repetitionsToComplete => throw _privateConstructorUsedError;
-  int get signleRepetititionDuration => throw _privateConstructorUsedError;
-  List<int> get daysOfWeek => throw _privateConstructorUsedError;
-  List<int> get daysOfMonths => throw _privateConstructorUsedError;
+  int get singleRepetititionDuration => throw _privateConstructorUsedError;
+  List<Weekday> get daysOfWeek => throw _privateConstructorUsedError;
+  List<int> get daysOfMonth => throw _privateConstructorUsedError;
   int get repetitionsPerPeriod => throw _privateConstructorUsedError;
   IconData? get icon => throw _privateConstructorUsedError; // helpers
   int get page => throw _privateConstructorUsedError;
@@ -48,9 +48,9 @@ abstract class $RoutineNewStateCopyWith<$Res> {
       RoutineFrequency frequency,
       bool isFlexible,
       int repetitionsToComplete,
-      int signleRepetititionDuration,
-      List<int> daysOfWeek,
-      List<int> daysOfMonths,
+      int singleRepetititionDuration,
+      List<Weekday> daysOfWeek,
+      List<int> daysOfMonth,
       int repetitionsPerPeriod,
       IconData? icon,
       int page,
@@ -76,9 +76,9 @@ class _$RoutineNewStateCopyWithImpl<$Res, $Val extends RoutineNewState>
     Object? frequency = null,
     Object? isFlexible = null,
     Object? repetitionsToComplete = null,
-    Object? signleRepetititionDuration = null,
+    Object? singleRepetititionDuration = null,
     Object? daysOfWeek = null,
-    Object? daysOfMonths = null,
+    Object? daysOfMonth = null,
     Object? repetitionsPerPeriod = null,
     Object? icon = freezed,
     Object? page = null,
@@ -106,17 +106,17 @@ class _$RoutineNewStateCopyWithImpl<$Res, $Val extends RoutineNewState>
           ? _value.repetitionsToComplete
           : repetitionsToComplete // ignore: cast_nullable_to_non_nullable
               as int,
-      signleRepetititionDuration: null == signleRepetititionDuration
-          ? _value.signleRepetititionDuration
-          : signleRepetititionDuration // ignore: cast_nullable_to_non_nullable
+      singleRepetititionDuration: null == singleRepetititionDuration
+          ? _value.singleRepetititionDuration
+          : singleRepetititionDuration // ignore: cast_nullable_to_non_nullable
               as int,
       daysOfWeek: null == daysOfWeek
           ? _value.daysOfWeek
           : daysOfWeek // ignore: cast_nullable_to_non_nullable
-              as List<int>,
-      daysOfMonths: null == daysOfMonths
-          ? _value.daysOfMonths
-          : daysOfMonths // ignore: cast_nullable_to_non_nullable
+              as List<Weekday>,
+      daysOfMonth: null == daysOfMonth
+          ? _value.daysOfMonth
+          : daysOfMonth // ignore: cast_nullable_to_non_nullable
               as List<int>,
       repetitionsPerPeriod: null == repetitionsPerPeriod
           ? _value.repetitionsPerPeriod
@@ -156,9 +156,9 @@ abstract class _$$_RoutineNewStateCopyWith<$Res>
       RoutineFrequency frequency,
       bool isFlexible,
       int repetitionsToComplete,
-      int signleRepetititionDuration,
-      List<int> daysOfWeek,
-      List<int> daysOfMonths,
+      int singleRepetititionDuration,
+      List<Weekday> daysOfWeek,
+      List<int> daysOfMonth,
       int repetitionsPerPeriod,
       IconData? icon,
       int page,
@@ -182,9 +182,9 @@ class __$$_RoutineNewStateCopyWithImpl<$Res>
     Object? frequency = null,
     Object? isFlexible = null,
     Object? repetitionsToComplete = null,
-    Object? signleRepetititionDuration = null,
+    Object? singleRepetititionDuration = null,
     Object? daysOfWeek = null,
-    Object? daysOfMonths = null,
+    Object? daysOfMonth = null,
     Object? repetitionsPerPeriod = null,
     Object? icon = freezed,
     Object? page = null,
@@ -212,17 +212,17 @@ class __$$_RoutineNewStateCopyWithImpl<$Res>
           ? _value.repetitionsToComplete
           : repetitionsToComplete // ignore: cast_nullable_to_non_nullable
               as int,
-      signleRepetititionDuration: null == signleRepetititionDuration
-          ? _value.signleRepetititionDuration
-          : signleRepetititionDuration // ignore: cast_nullable_to_non_nullable
+      singleRepetititionDuration: null == singleRepetititionDuration
+          ? _value.singleRepetititionDuration
+          : singleRepetititionDuration // ignore: cast_nullable_to_non_nullable
               as int,
       daysOfWeek: null == daysOfWeek
           ? _value._daysOfWeek
           : daysOfWeek // ignore: cast_nullable_to_non_nullable
-              as List<int>,
-      daysOfMonths: null == daysOfMonths
-          ? _value._daysOfMonths
-          : daysOfMonths // ignore: cast_nullable_to_non_nullable
+              as List<Weekday>,
+      daysOfMonth: null == daysOfMonth
+          ? _value._daysOfMonth
+          : daysOfMonth // ignore: cast_nullable_to_non_nullable
               as List<int>,
       repetitionsPerPeriod: null == repetitionsPerPeriod
           ? _value.repetitionsPerPeriod
@@ -257,16 +257,16 @@ class _$_RoutineNewState implements _RoutineNewState {
       this.frequency = RoutineFrequency.daily,
       this.isFlexible = false,
       this.repetitionsToComplete = 30,
-      this.signleRepetititionDuration = 30,
-      final List<int> daysOfWeek = const [],
-      final List<int> daysOfMonths = const [],
+      this.singleRepetititionDuration = 30,
+      final List<Weekday> daysOfWeek = const [],
+      final List<int> daysOfMonth = const [],
       this.repetitionsPerPeriod = 1,
       this.icon = null,
       this.page = 0,
       this.iconIndex = 7,
       this.submitLoading = false})
       : _daysOfWeek = daysOfWeek,
-        _daysOfMonths = daysOfMonths;
+        _daysOfMonth = daysOfMonth;
 
 // form state
   @override
@@ -286,23 +286,23 @@ class _$_RoutineNewState implements _RoutineNewState {
   final int repetitionsToComplete;
   @override
   @JsonKey()
-  final int signleRepetititionDuration;
-  final List<int> _daysOfWeek;
+  final int singleRepetititionDuration;
+  final List<Weekday> _daysOfWeek;
   @override
   @JsonKey()
-  List<int> get daysOfWeek {
+  List<Weekday> get daysOfWeek {
     if (_daysOfWeek is EqualUnmodifiableListView) return _daysOfWeek;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_daysOfWeek);
   }
 
-  final List<int> _daysOfMonths;
+  final List<int> _daysOfMonth;
   @override
   @JsonKey()
-  List<int> get daysOfMonths {
-    if (_daysOfMonths is EqualUnmodifiableListView) return _daysOfMonths;
+  List<int> get daysOfMonth {
+    if (_daysOfMonth is EqualUnmodifiableListView) return _daysOfMonth;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_daysOfMonths);
+    return EqualUnmodifiableListView(_daysOfMonth);
   }
 
   @override
@@ -325,7 +325,7 @@ class _$_RoutineNewState implements _RoutineNewState {
 
   @override
   String toString() {
-    return 'RoutineNewState(name: $name, description: $description, frequency: $frequency, isFlexible: $isFlexible, repetitionsToComplete: $repetitionsToComplete, signleRepetititionDuration: $signleRepetititionDuration, daysOfWeek: $daysOfWeek, daysOfMonths: $daysOfMonths, repetitionsPerPeriod: $repetitionsPerPeriod, icon: $icon, page: $page, iconIndex: $iconIndex, submitLoading: $submitLoading)';
+    return 'RoutineNewState(name: $name, description: $description, frequency: $frequency, isFlexible: $isFlexible, repetitionsToComplete: $repetitionsToComplete, singleRepetititionDuration: $singleRepetititionDuration, daysOfWeek: $daysOfWeek, daysOfMonth: $daysOfMonth, repetitionsPerPeriod: $repetitionsPerPeriod, icon: $icon, page: $page, iconIndex: $iconIndex, submitLoading: $submitLoading)';
   }
 
   @override
@@ -342,14 +342,14 @@ class _$_RoutineNewState implements _RoutineNewState {
                 other.isFlexible == isFlexible) &&
             (identical(other.repetitionsToComplete, repetitionsToComplete) ||
                 other.repetitionsToComplete == repetitionsToComplete) &&
-            (identical(other.signleRepetititionDuration,
-                    signleRepetititionDuration) ||
-                other.signleRepetititionDuration ==
-                    signleRepetititionDuration) &&
+            (identical(other.singleRepetititionDuration,
+                    singleRepetititionDuration) ||
+                other.singleRepetititionDuration ==
+                    singleRepetititionDuration) &&
             const DeepCollectionEquality()
                 .equals(other._daysOfWeek, _daysOfWeek) &&
             const DeepCollectionEquality()
-                .equals(other._daysOfMonths, _daysOfMonths) &&
+                .equals(other._daysOfMonth, _daysOfMonth) &&
             (identical(other.repetitionsPerPeriod, repetitionsPerPeriod) ||
                 other.repetitionsPerPeriod == repetitionsPerPeriod) &&
             (identical(other.icon, icon) || other.icon == icon) &&
@@ -368,9 +368,9 @@ class _$_RoutineNewState implements _RoutineNewState {
       frequency,
       isFlexible,
       repetitionsToComplete,
-      signleRepetititionDuration,
+      singleRepetititionDuration,
       const DeepCollectionEquality().hash(_daysOfWeek),
-      const DeepCollectionEquality().hash(_daysOfMonths),
+      const DeepCollectionEquality().hash(_daysOfMonth),
       repetitionsPerPeriod,
       icon,
       page,
@@ -391,9 +391,9 @@ abstract class _RoutineNewState implements RoutineNewState {
       final RoutineFrequency frequency,
       final bool isFlexible,
       final int repetitionsToComplete,
-      final int signleRepetititionDuration,
-      final List<int> daysOfWeek,
-      final List<int> daysOfMonths,
+      final int singleRepetititionDuration,
+      final List<Weekday> daysOfWeek,
+      final List<int> daysOfMonth,
       final int repetitionsPerPeriod,
       final IconData? icon,
       final int page,
@@ -411,11 +411,11 @@ abstract class _RoutineNewState implements RoutineNewState {
   @override
   int get repetitionsToComplete;
   @override
-  int get signleRepetititionDuration;
+  int get singleRepetititionDuration;
   @override
-  List<int> get daysOfWeek;
+  List<Weekday> get daysOfWeek;
   @override
-  List<int> get daysOfMonths;
+  List<int> get daysOfMonth;
   @override
   int get repetitionsPerPeriod;
   @override

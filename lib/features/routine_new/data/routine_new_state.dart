@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:memoroutines/shared/models/routine.dart';
+import 'package:memoroutines/shared/models/weekday.dart';
 
 part 'routine_new_state.freezed.dart';
 
@@ -14,9 +15,9 @@ class RoutineNewState with _$RoutineNewState {
     @Default(RoutineFrequency.daily) RoutineFrequency frequency,
     @Default(false) bool isFlexible,
     @Default(30) int repetitionsToComplete,
-    @Default(30) int signleRepetititionDuration,
-    @Default([]) List<int> daysOfWeek,
-    @Default([]) List<int> daysOfMonths,
+    @Default(30) int singleRepetititionDuration,
+    @Default([]) List<Weekday> daysOfWeek,
+    @Default([]) List<int> daysOfMonth,
     @Default(1) int repetitionsPerPeriod,
     @Default(null) IconData? icon,
     // helpers
@@ -41,5 +42,13 @@ extension RoutineNewStateExt on RoutineNewState {
 
   Set<RoutineFrequency> get frequencySet {
     return {frequency};
+  }
+
+  Set<Weekday> get daysOfWeekSet {
+    return Set.from(daysOfWeek.isEmpty ? [Weekday.fromNow()] : daysOfWeek);
+  }
+
+  Set<int> get daysOfMonthsSet {
+    return Set.from(daysOfMonth.isEmpty ? [DateTime.now().day] : daysOfMonth);
   }
 }

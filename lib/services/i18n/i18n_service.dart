@@ -27,7 +27,7 @@ class I18nService {
           _log.warning(object.toString(), null, stackTrace ?? StackTrace.empty);
           return;
         case 'LevelMessages.info':
-          _log.info(object.toString());
+          // _log.info(object.toString());
           return;
         case 'LevelMessages.debug':
           // _log.debug(object.toString());

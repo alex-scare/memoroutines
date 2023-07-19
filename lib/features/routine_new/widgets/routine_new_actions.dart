@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
@@ -30,7 +32,6 @@ class RoutineNewActions extends HookConsumerWidget {
       [],
     );
 
-    print('pageController page ${pageController.page}');
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -44,7 +45,7 @@ class RoutineNewActions extends HookConsumerWidget {
   FilledButton _cancelButton() {
     return FilledButton(
       onPressed: () => AppNavigation().router.pop(),
-      child: const Text('cancel'),
+      child: Text(LocaleKey.screensNewRoutineActionsCancel.tr()),
     );
   }
 
@@ -54,7 +55,7 @@ class RoutineNewActions extends HookConsumerWidget {
         duration: 200.milliseconds,
         curve: Curves.bounceInOut,
       ),
-      child: const Text('prev'),
+      child: Text(LocaleKey.screensNewRoutineActionsPrevStep.tr()),
     );
   }
 
@@ -64,7 +65,7 @@ class RoutineNewActions extends HookConsumerWidget {
         duration: 200.milliseconds,
         curve: Curves.bounceInOut,
       ),
-      child: const Text('next'),
+      child: Text(LocaleKey.screensNewRoutineActionsNextStep.tr()),
     );
   }
 
@@ -72,7 +73,7 @@ class RoutineNewActions extends HookConsumerWidget {
     return FilledButton(
       // TODO add save
       onPressed: () => AppNavigation().router.pop(),
-      child: const Text('save'),
+      child: Text(LocaleKey.screensNewRoutineActionsSave.tr()),
     );
   }
 }

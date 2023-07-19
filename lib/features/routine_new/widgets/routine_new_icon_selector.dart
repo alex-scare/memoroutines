@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
+import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
 import 'package:memoroutines/shared/theme.dart';
 
@@ -55,11 +57,11 @@ class RoutineNewIconSelector extends HookConsumerWidget {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  width: 80,
-                  height: 80,
+                  width: 70,
+                  height: 70,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: context.colors.primary,
+                    color: context.colors.primaryContainer,
                   ),
                 ),
               ),
@@ -86,16 +88,13 @@ class RoutineNewIconSelector extends HookConsumerWidget {
                   itemBuilder: (context, index) {
                     final isCurrent = formPod.iconIndex == index;
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Center(
-                        child: Icon(
-                          iconList[index],
-                          size: isCurrent ? 48.0 : 20.0,
-                          color: isCurrent
-                              ? context.colors.onPrimary
-                              : context.colors.primary,
-                        ),
+                    return Center(
+                      child: Icon(
+                        iconList[index],
+                        size: isCurrent ? 40.0 : 20.0,
+                        color: isCurrent
+                            ? context.colors.onPrimaryContainer
+                            : context.colors.primaryContainer,
                       ),
                     );
                   },
@@ -110,7 +109,7 @@ class RoutineNewIconSelector extends HookConsumerWidget {
             onPressed: () => _showIconGrid(context, ref),
             style: TextButton.styleFrom(foregroundColor: Colors.transparent),
             child: Text(
-              'tap to see more icons',
+              LocaleKey.screensNewRoutineMainInfoIconsShowMore.tr(),
               style: context.texts.bodyMedium!
                   .copyWith(fontStyle: FontStyle.italic),
             ),
@@ -149,7 +148,7 @@ class RoutineNewIconSelector extends HookConsumerWidget {
                       child: Icon(
                         iconList[index],
                         size: 32.0,
-                        color: Colors.white,
+                        color: context.colors.onPrimaryContainer,
                       ),
                     )
                   : Icon(iconList[index], size: 32.0),
@@ -160,9 +159,6 @@ class RoutineNewIconSelector extends HookConsumerWidget {
     );
   }
 }
-
-// prepare icon pack
-final iconList = LineIcons.values.values.toList();
 
 class CustomScrollPhysics extends ScrollPhysics {
   const CustomScrollPhysics({ScrollPhysics? parent}) : super(parent: parent);
@@ -178,3 +174,6 @@ class CustomScrollPhysics extends ScrollPhysics {
     return super.applyPhysicsToUserOffset(position, offset) * 5.0;
   }
 }
+
+// TODO prepare icon pack
+final iconList = LineIcons.values.values.toList();

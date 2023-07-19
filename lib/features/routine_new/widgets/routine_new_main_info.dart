@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_state.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_icon_selector.dart';
+import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_text_input.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/theme.dart';
@@ -18,11 +20,11 @@ class RoutineNewMainInfo extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: Spacing.xl),
+        const SizedBox(height: Spacing.md),
         const SizedBox(height: 150, child: RoutineNewIconSelector()),
         const SizedBox(height: Spacing.sm),
         Text(
-          'Give a name for your new routine'.toUpperCase(),
+          LocaleKey.screensNewRoutineMainInfoTitleLabel.tr(),
           style: context.texts.titleMedium,
         ),
         const SizedBox(height: Spacing.xxs),
@@ -30,7 +32,9 @@ class RoutineNewMainInfo extends HookConsumerWidget {
           autofocus: true,
           initialValue: formPod.name,
           onChanged: (value) => formPodNotifier.setName(value),
-          placeholder: 'name',
+          placeholder: LocaleKey.screensNewRoutineMainInfoTitlePlaceholder
+              .tr()
+              .toUpperCase(),
           textColor: context.colors.onBackground,
           textStyle: context.texts.titleLarge!.copyWith(
             fontWeight: FontWeight.w700,
@@ -40,7 +44,7 @@ class RoutineNewMainInfo extends HookConsumerWidget {
         ),
         const SizedBox(height: Spacing.xl),
         Text(
-          'And add a description (optional)'.toUpperCase(),
+          LocaleKey.screensNewRoutineMainInfoDescriptionLabel.tr(),
           style: context.texts.titleSmall,
         ),
         const SizedBox(height: Spacing.xxs),
@@ -48,7 +52,9 @@ class RoutineNewMainInfo extends HookConsumerWidget {
           autofocus: true,
           initialValue: formPod.description,
           onChanged: (value) => formPodNotifier.setDescription(value),
-          placeholder: 'description'.toUpperCase(),
+          placeholder: LocaleKey.screensNewRoutineMainInfoDescriptionPlaceholder
+              .tr()
+              .toUpperCase(),
           textColor: context.colors.onBackground,
           textStyle: context.texts.bodyLarge!.copyWith(
             fontWeight: FontWeight.w700,

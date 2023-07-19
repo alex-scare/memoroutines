@@ -4,33 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const pageTransition = PageTransitionsTheme(
-    builders: <TargetPlatform, PageTransitionsBuilder>{
-      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-    },
-  );
-
-  static final filledButtonStyle = FilledButtonThemeData(
-    style: ButtonStyle(
-      shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
-      ),
-    ),
-  );
-
-  static final textButtonStyle = TextButtonThemeData(
-    style: TextButton.styleFrom(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-      ),
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-    ),
-  );
-
   static final textTheme = GoogleFonts.exo2TextTheme();
 
   static FlexScheme schemeColor = FlexScheme.aquaBlue;

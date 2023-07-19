@@ -60,7 +60,10 @@ Set<String> extractKeys(Map<String, dynamic> json, {String prefix = ''}) {
     if (value is Map<String, dynamic>) {
       keys.addAll(extractKeys(value, prefix: fullKey));
     } else {
-      keys.add(fullKey);
+      final value = fullKey.endsWith('!plural')
+          ? fullKey.replaceAll('!plural', '')
+          : fullKey;
+      keys.add(value);
     }
   });
   return keys;
@@ -92,7 +95,8 @@ extension StringExtension on String {
     String result = '';
 
     for (int i = 0; i < parts.length; i++) {
-      String part = parts[i];
+      final part = parts[i];
+
       if (i > 0) {
         result += part.substring(0, 1).toUpperCase() + part.substring(1);
       } else {
