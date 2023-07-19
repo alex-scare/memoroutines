@@ -8,6 +8,7 @@ import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
+// TODO refactor this logic. It's unclear
 class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
   const RoutineNewSingleRepetitionDuration({super.key});
 
