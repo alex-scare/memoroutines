@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_actions.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_app_bar.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_duration_range.dart';
+import 'package:memoroutines/features/routine_new/widgets/routine_new_final_step.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_frequency.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_main_info.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_single_repetition_duration.dart';
@@ -31,7 +32,7 @@ class RoutineNewScreen extends HookWidget {
             PageView.builder(
               physics: const NeverScrollableScrollPhysics(),
               controller: pageController,
-              itemCount: 3,
+              itemCount: 4,
               itemBuilder: (context, index) {
                 return switch (index) {
                   0 => const RoutineNewMainInfo(),
@@ -43,7 +44,7 @@ class RoutineNewScreen extends HookWidget {
                       ],
                     ),
                   2 => const RoutineNewFrequency(),
-                  _ => const SizedBox(width: 10),
+                  _ => const RoutineNewFinalStep(),
                 };
               },
             ).padding(horizontal: Spacing.md).expanded(),

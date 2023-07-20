@@ -4,8 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routines/widgets/routines_list.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
+import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
 import 'package:memoroutines/shared/repositories/routines_repository.dart';
+import 'package:styled_widget/styled_widget.dart';
 
 class RoutinesScreen extends ConsumerWidget {
   const RoutinesScreen({super.key});
@@ -24,7 +26,8 @@ class RoutinesScreen extends ConsumerWidget {
           )
         ],
       ),
-      body: RoutinesList(listenRounines: routines.listenAll()),
+      body: RoutinesList(listenRounines: routines.listenAll())
+          .padding(horizontal: Spacing.md),
     );
   }
 }

@@ -51,4 +51,20 @@ extension RoutineNewStateExt on RoutineNewState {
   Set<int> get daysOfMonthsSet {
     return Set.from(daysOfMonth.isEmpty ? [DateTime.now().day] : daysOfMonth);
   }
+
+  Routine get currentRoutine {
+    return Routine(
+      name: name,
+      description: description,
+      singleRepetitionDuration: singleRepetititionDuration,
+      repetitionsNumberToComplete: repetitionsToComplete,
+      frequency: frequency,
+      iconData: icon,
+    )..metaData = RoutineMetaData(
+        isFlexible: isFlexible,
+        daysOfMonth: daysOfMonth,
+        daysOfWeek: daysOfWeek,
+        repetitionsPerFrequencyPeriod: repetitionsPerPeriod,
+      );
+  }
 }

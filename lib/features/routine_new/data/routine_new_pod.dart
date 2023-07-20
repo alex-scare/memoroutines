@@ -26,7 +26,7 @@ class RoutineNewStateNotifier extends StateNotifier<RoutineNewState> {
   }
 
   Future<void> submitRoutine() async {
-    final routine = Routine(description: state.description, name: state.name);
+    final routine = state.currentRoutine;
     await _ref.read(routinesPod).createRoutineAndGenerateCompletions(routine);
   }
 

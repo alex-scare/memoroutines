@@ -22,11 +22,16 @@ class LocaleKey {
   static const screensNewRoutineFrequencyIsFlexible = 'screens.newRoutine.frequency.isFlexible';
   static const screensNewRoutineFrequencyIsFlexibleDescription = 'screens.newRoutine.frequency.isFlexibleDescription';
   static const screensNewRoutineFrequencyTitle = 'screens.newRoutine.frequency.title';
+  static const screensNewRoutineCreationCompleteTitle = 'screens.newRoutine.creationComplete.title';
+  static const screensNewRoutineCreationCompleteDescription = 'screens.newRoutine.creationComplete.description';
+  static const modelsRoutineFrequencyDisplayName = 'models.routine.frequency.displayName';
   static const modelsRoutineFrequencyDaily = 'models.routine.frequency.daily';
   static const modelsRoutineFrequencyWeekly = 'models.routine.frequency.weekly';
   static const modelsRoutineFrequencyMonthly = 'models.routine.frequency.monthly';
   static const modelsRoutineFrequencyYearly = 'models.routine.frequency.yearly';
   static const modelsRoutineFrequencyEveryOtherDay = 'models.routine.frequency.everyOtherDay';
+  static const modelsRoutineRepetitionsToCompleteDisplayName = 'models.routine.repetitionsToComplete.displayName';
+  static const modelsRoutineSingleRepetitionDurationDisplayName = 'models.routine.singleRepetitionDuration.displayName';
   static const durationsWeek = 'durations.week';
   static const durationsWeekOne = 'durations.week.one';
   static const durationsWeekFew = 'durations.week.few';

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
@@ -16,6 +17,7 @@ class RoutineNewActions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPage = useState<int>(pageController.initialPage);
+    final formPodNotifier = ref.read(routineNewPod(null).notifier);
 
     useEffect(
       () {
@@ -37,7 +39,10 @@ class RoutineNewActions extends HookConsumerWidget {
       children: [
         (currentPage.value == 0 ? _cancelButton() : _prevButton()).expanded(),
         const SizedBox(width: 12),
-        (currentPage.value == 3 ? _saveButton() : _nextButton()).expanded(),
+        (currentPage.value == 3
+                ? _saveButton(formPodNotifier.submitRoutine)
+                : _nextButton())
+            .expanded(),
       ],
     ).padding(horizontal: Spacing.sm, bottom: Spacing.sm);
   }
@@ -69,10 +74,12 @@ class RoutineNewActions extends HookConsumerWidget {
     );
   }
 
-  FilledButton _saveButton() {
+  FilledButton _saveButton(Function() saveCallback) {
     return FilledButton(
-      // TODO add save
-      onPressed: () => AppNavigation().router.pop(),
+      onPressed: () {
+        saveCallback();
+        AppNavigation().router.pop();
+      },
       child: Text(LocaleKey.screensNewRoutineActionsSave.tr()),
     );
   }

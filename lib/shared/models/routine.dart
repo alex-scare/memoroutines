@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/models/completion.dart';
+import 'package:memoroutines/shared/models/weekday.dart';
 
 part 'routine.g.dart';
 
@@ -10,7 +12,8 @@ class Routine {
   Id id = Isar.autoIncrement;
   String name;
   String description;
-  int? _iconCodePoint;
+  // ignore: non_constant_identifier_names
+  int? PRIVATE__iconCodePoint;
   @Enumerated(EnumType.name)
   RoutineStatus status;
   @Enumerated(EnumType.name)
@@ -31,17 +34,34 @@ class Routine {
     this.repetitionsNumberToComplete = 30,
     this.singleRepetitionDuration = 30,
     this.notifications = false,
+    IconData? iconData,
   })  : metaData = RoutineMetaData(),
-        stats = RoutineStats();
+        stats = RoutineStats(),
+        PRIVATE__iconCodePoint = iconData?.codePoint;
+}
 
-  @ignore
+extension RoutineExt on Routine {
+  String singleRepetitionDurationString(BuildContext context) {
+    final value = singleRepetitionDuration;
+
+    return switch (singleRepetitionDuration) {
+      < 60 => context.plural(LocaleKey.durationsMinute, value),
+      <= 60 * 24 => context.plural(LocaleKey.durationsHour, value ~/ 60),
+      _ => ''
+    };
+  }
+
   IconData? get iconData {
-    if (_iconCodePoint == null) return null;
-    return IconData(_iconCodePoint!, fontFamily: 'MaterialIcons');
+    if (PRIVATE__iconCodePoint == null) return null;
+    return IconData(
+      PRIVATE__iconCodePoint!,
+      fontFamily: 'Awesome Line Icons 1.3.0',
+      fontPackage: 'line_icons',
+    );
   }
 
   set iconData(IconData? value) {
-    _iconCodePoint = value?.codePoint;
+    PRIVATE__iconCodePoint = value?.codePoint;
   }
 }
 
@@ -86,16 +106,26 @@ class RoutineMetaData {
 
   /// Number of times the routine should be performed in a time period (determined by frequency)
   int repetitionsPerFrequencyPeriod;
-  List<int> daysOfWeek;
+  List<int> _daysOfWeek;
   List<int> daysOfMonth;
 
-  RoutineMetaData()
-      : createdAt = DateTime.now(),
+  RoutineMetaData({
+    this.isFlexible = false,
+    this.repetitionsPerFrequencyPeriod = 1,
+    List<Weekday> daysOfWeek = const [],
+    this.daysOfMonth = const [],
+  })  : createdAt = DateTime.now(),
         updatedAt = DateTime.now(),
-        isFlexible = false,
-        repetitionsPerFrequencyPeriod = 1,
-        daysOfWeek = [],
-        daysOfMonth = [];
+        _daysOfWeek = daysOfWeek.map((e) => e.number).toList();
+
+  @ignore
+  List<Weekday> get daysOfWeek {
+    return _daysOfWeek.map((day) => Weekday.values[day]).toList();
+  }
+
+  set daysOfWeek(List<Weekday> daysOfWeek) {
+    _daysOfWeek = daysOfWeek.map((e) => e.number).toList();
+  }
 }
 
 @Embedded()

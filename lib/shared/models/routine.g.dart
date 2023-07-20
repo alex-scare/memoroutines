@@ -17,51 +17,56 @@ const RoutineSchema = CollectionSchema(
   name: r'Routine',
   id: 9144663503541703680,
   properties: {
-    r'description': PropertySchema(
+    r'PRIVATE__iconCodePoint': PropertySchema(
       id: 0,
+      name: r'PRIVATE__iconCodePoint',
+      type: IsarType.long,
+    ),
+    r'description': PropertySchema(
+      id: 1,
       name: r'description',
       type: IsarType.string,
     ),
     r'frequency': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'frequency',
       type: IsarType.string,
       enumMap: _RoutinefrequencyEnumValueMap,
     ),
     r'metaData': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'metaData',
       type: IsarType.object,
       target: r'RoutineMetaData',
     ),
     r'name': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
     r'notifications': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'notifications',
       type: IsarType.bool,
     ),
     r'repetitionsNumberToComplete': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'repetitionsNumberToComplete',
       type: IsarType.long,
     ),
     r'singleRepetitionDuration': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'singleRepetitionDuration',
       type: IsarType.long,
     ),
     r'stats': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'stats',
       type: IsarType.object,
       target: r'RoutineStats',
     ),
     r'status': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'status',
       type: IsarType.string,
       enumMap: _RoutinestatusEnumValueMap,
@@ -116,25 +121,26 @@ void _routineSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.description);
-  writer.writeString(offsets[1], object.frequency.name);
+  writer.writeLong(offsets[0], object.PRIVATE__iconCodePoint);
+  writer.writeString(offsets[1], object.description);
+  writer.writeString(offsets[2], object.frequency.name);
   writer.writeObject<RoutineMetaData>(
-    offsets[2],
+    offsets[3],
     allOffsets,
     RoutineMetaDataSchema.serialize,
     object.metaData,
   );
-  writer.writeString(offsets[3], object.name);
-  writer.writeBool(offsets[4], object.notifications);
-  writer.writeLong(offsets[5], object.repetitionsNumberToComplete);
-  writer.writeLong(offsets[6], object.singleRepetitionDuration);
+  writer.writeString(offsets[4], object.name);
+  writer.writeBool(offsets[5], object.notifications);
+  writer.writeLong(offsets[6], object.repetitionsNumberToComplete);
+  writer.writeLong(offsets[7], object.singleRepetitionDuration);
   writer.writeObject<RoutineStats>(
-    offsets[7],
+    offsets[8],
     allOffsets,
     RoutineStatsSchema.serialize,
     object.stats,
   );
-  writer.writeString(offsets[8], object.status.name);
+  writer.writeString(offsets[9], object.status.name);
 }
 
 Routine _routineDeserialize(
@@ -144,26 +150,27 @@ Routine _routineDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Routine(
-    description: reader.readString(offsets[0]),
+    description: reader.readString(offsets[1]),
     frequency:
-        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[1])] ??
+        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[2])] ??
             RoutineFrequency.daily,
-    name: reader.readString(offsets[3]),
-    notifications: reader.readBoolOrNull(offsets[4]) ?? false,
-    repetitionsNumberToComplete: reader.readLongOrNull(offsets[5]) ?? 30,
-    singleRepetitionDuration: reader.readLongOrNull(offsets[6]) ?? 30,
-    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[8])] ??
+    name: reader.readString(offsets[4]),
+    notifications: reader.readBoolOrNull(offsets[5]) ?? false,
+    repetitionsNumberToComplete: reader.readLongOrNull(offsets[6]) ?? 30,
+    singleRepetitionDuration: reader.readLongOrNull(offsets[7]) ?? 30,
+    status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
         RoutineStatus.active,
   );
+  object.PRIVATE__iconCodePoint = reader.readLongOrNull(offsets[0]);
   object.id = id;
   object.metaData = reader.readObjectOrNull<RoutineMetaData>(
-        offsets[2],
+        offsets[3],
         RoutineMetaDataSchema.deserialize,
         allOffsets,
       ) ??
       RoutineMetaData();
   object.stats = reader.readObjectOrNull<RoutineStats>(
-        offsets[7],
+        offsets[8],
         RoutineStatsSchema.deserialize,
         allOffsets,
       ) ??
@@ -179,33 +186,35 @@ P _routineDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
       return (_RoutinefrequencyValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineFrequency.daily) as P;
-    case 2:
+    case 3:
       return (reader.readObjectOrNull<RoutineMetaData>(
             offset,
             RoutineMetaDataSchema.deserialize,
             allOffsets,
           ) ??
           RoutineMetaData()) as P;
-    case 3:
-      return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readLongOrNull(offset) ?? 30) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
       return (reader.readLongOrNull(offset) ?? 30) as P;
     case 7:
+      return (reader.readLongOrNull(offset) ?? 30) as P;
+    case 8:
       return (reader.readObjectOrNull<RoutineStats>(
             offset,
             RoutineStatsSchema.deserialize,
             allOffsets,
           ) ??
           RoutineStats()) as P;
-    case 8:
+    case 9:
       return (_RoutinestatusValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineStatus.active) as P;
     default:
@@ -327,6 +336,80 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
 
 extension RoutineQueryFilter
     on QueryBuilder<Routine, Routine, QFilterCondition> {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      pRIVATE__iconCodePointIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'PRIVATE__iconCodePoint',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      pRIVATE__iconCodePointIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'PRIVATE__iconCodePoint',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      pRIVATE__iconCodePointEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'PRIVATE__iconCodePoint',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      pRIVATE__iconCodePointGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'PRIVATE__iconCodePoint',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      pRIVATE__iconCodePointLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'PRIVATE__iconCodePoint',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      pRIVATE__iconCodePointBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'PRIVATE__iconCodePoint',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterFilterCondition> descriptionEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1104,6 +1187,19 @@ extension RoutineQueryLinks
 }
 
 extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByPRIVATE__iconCodePoint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      sortByPRIVATE__iconCodePointDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.desc);
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.asc);
@@ -1195,6 +1291,19 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
 
 extension RoutineQuerySortThenBy
     on QueryBuilder<Routine, Routine, QSortThenBy> {
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByPRIVATE__iconCodePoint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy>
+      thenByPRIVATE__iconCodePointDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.desc);
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.asc);
@@ -1298,6 +1407,12 @@ extension RoutineQuerySortThenBy
 
 extension RoutineQueryWhereDistinct
     on QueryBuilder<Routine, Routine, QDistinct> {
+  QueryBuilder<Routine, Routine, QDistinct> distinctByPRIVATE__iconCodePoint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'PRIVATE__iconCodePoint');
+    });
+  }
+
   QueryBuilder<Routine, Routine, QDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1352,6 +1467,13 @@ extension RoutineQueryProperty
   QueryBuilder<Routine, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Routine, int?, QQueryOperations>
+      PRIVATE__iconCodePointProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'PRIVATE__iconCodePoint');
     });
   }
 
@@ -1434,28 +1556,23 @@ const RoutineMetaDataSchema = Schema(
       name: r'daysOfMonth',
       type: IsarType.longList,
     ),
-    r'daysOfWeek': PropertySchema(
-      id: 2,
-      name: r'daysOfWeek',
-      type: IsarType.longList,
-    ),
     r'isFlexible': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'isFlexible',
       type: IsarType.bool,
     ),
     r'lastDoneAt': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'lastDoneAt',
       type: IsarType.dateTime,
     ),
     r'repetitionsPerFrequencyPeriod': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'repetitionsPerFrequencyPeriod',
       type: IsarType.long,
     ),
     r'updatedAt': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -1473,7 +1590,6 @@ int _routineMetaDataEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.daysOfMonth.length * 8;
-  bytesCount += 3 + object.daysOfWeek.length * 8;
   return bytesCount;
 }
 
@@ -1485,11 +1601,10 @@ void _routineMetaDataSerialize(
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
   writer.writeLongList(offsets[1], object.daysOfMonth);
-  writer.writeLongList(offsets[2], object.daysOfWeek);
-  writer.writeBool(offsets[3], object.isFlexible);
-  writer.writeDateTime(offsets[4], object.lastDoneAt);
-  writer.writeLong(offsets[5], object.repetitionsPerFrequencyPeriod);
-  writer.writeDateTime(offsets[6], object.updatedAt);
+  writer.writeBool(offsets[2], object.isFlexible);
+  writer.writeDateTime(offsets[3], object.lastDoneAt);
+  writer.writeLong(offsets[4], object.repetitionsPerFrequencyPeriod);
+  writer.writeDateTime(offsets[5], object.updatedAt);
 }
 
 RoutineMetaData _routineMetaDataDeserialize(
@@ -1498,14 +1613,14 @@ RoutineMetaData _routineMetaDataDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = RoutineMetaData();
+  final object = RoutineMetaData(
+    daysOfMonth: reader.readLongList(offsets[1]) ?? const [],
+    isFlexible: reader.readBoolOrNull(offsets[2]) ?? false,
+    repetitionsPerFrequencyPeriod: reader.readLongOrNull(offsets[4]) ?? 1,
+  );
   object.createdAt = reader.readDateTime(offsets[0]);
-  object.daysOfMonth = reader.readLongList(offsets[1]) ?? [];
-  object.daysOfWeek = reader.readLongList(offsets[2]) ?? [];
-  object.isFlexible = reader.readBool(offsets[3]);
-  object.lastDoneAt = reader.readDateTimeOrNull(offsets[4]);
-  object.repetitionsPerFrequencyPeriod = reader.readLong(offsets[5]);
-  object.updatedAt = reader.readDateTime(offsets[6]);
+  object.lastDoneAt = reader.readDateTimeOrNull(offsets[3]);
+  object.updatedAt = reader.readDateTime(offsets[5]);
   return object;
 }
 
@@ -1519,16 +1634,14 @@ P _routineMetaDataDeserializeProp<P>(
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
-      return (reader.readLongList(offset) ?? []) as P;
+      return (reader.readLongList(offset) ?? const []) as P;
     case 2:
-      return (reader.readLongList(offset) ?? []) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
-    case 4:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 4:
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
-    case 6:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1730,151 +1843,6 @@ extension RoutineMetaDataQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'daysOfMonth',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekElementEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'daysOfWeek',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekElementGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'daysOfWeek',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekElementLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'daysOfWeek',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekElementBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'daysOfWeek',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        length,
-        true,
-        length,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        0,
-        true,
-        length,
-        include,
-      );
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
-        length,
-        include,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<RoutineMetaData, RoutineMetaData, QAfterFilterCondition>
-      daysOfWeekLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'daysOfWeek',
         lower,
         includeLower,
         upper,
