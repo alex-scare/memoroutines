@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static final textTheme = GoogleFonts.exo2TextTheme();
+  static final textTheme = GoogleFonts.comicNeueTextTheme();
 
   static FlexScheme schemeColor = FlexScheme.aquaBlue;
 

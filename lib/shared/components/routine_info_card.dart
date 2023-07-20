@@ -17,8 +17,14 @@ class RoutineInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0.1,
-      color: context.colors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: BorderSide(
+          color: context.colors.onBackground,
+          width: 3,
+        ),
+      ),
+      color: context.colors.background,
       child: Container(
         padding: const EdgeInsets.all(Spacing.sm),
         child: Column(
@@ -27,19 +33,24 @@ class RoutineInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (routine.iconData != null)
-                  Icon(routine.iconData, size: 50).padding(right: Spacing.md),
+                  Icon(routine.iconData, size: 50, color: Colors.black87)
+                      .padding(right: Spacing.md), // Colored icons
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       routine.name,
-                      style: context.texts.titleMedium!
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: context.texts.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: context.colors.onBackground.withOpacity(0.9),
+                      ),
                     ),
                     Text(
                       routine.description,
-                      style: context.texts.bodySmall,
+                      style: context.texts.bodySmall!.copyWith(
+                        color: context.colors.onBackground.withOpacity(0.7),
+                      ),
                       softWrap: true,
                     ),
                   ],
@@ -54,20 +65,17 @@ class RoutineInfoCard extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKey.modelsRoutineFrequencyDisplayName.tr(),
-                      style: context.texts.bodyMedium!
-                          .copyWith(fontStyle: FontStyle.italic),
+                      style: _routineParameterNameStyle(context),
                     ),
                     Text(
                       LocaleKey.modelsRoutineRepetitionsToCompleteDisplayName
                           .tr(),
-                      style: context.texts.bodyMedium!
-                          .copyWith(fontStyle: FontStyle.italic),
+                      style: _routineParameterNameStyle(context),
                     ),
                     Text(
                       LocaleKey.modelsRoutineSingleRepetitionDurationDisplayName
                           .tr(),
-                      style: context.texts.bodyMedium!
-                          .copyWith(fontStyle: FontStyle.italic),
+                      style: _routineParameterNameStyle(context),
                     ),
                   ],
                 ),
@@ -75,12 +83,19 @@ class RoutineInfoCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(routine.frequency.label.tr()),
+                    Text(
+                      routine.frequency.label.tr(),
+                      style: _routineParameterValueStyle(context),
+                    ),
                     Text(
                       LocaleKey.durationsTime
                           .plural(routine.repetitionsNumberToComplete),
+                      style: _routineParameterValueStyle(context),
                     ),
-                    Text(routine.singleRepetitionDurationString(context)),
+                    Text(
+                      routine.singleRepetitionDurationString(context),
+                      style: _routineParameterValueStyle(context),
+                    ),
                   ],
                 ).flexible(),
               ],
@@ -88,6 +103,19 @@ class RoutineInfoCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  TextStyle _routineParameterNameStyle(BuildContext context) {
+    return context.texts.bodyMedium!.copyWith(
+      fontStyle: FontStyle.italic,
+      color: context.colors.onBackground.withOpacity(0.7),
+    );
+  }
+
+  TextStyle _routineParameterValueStyle(BuildContext context) {
+    return context.texts.bodyMedium!.copyWith(
+      color: context.colors.onBackground,
     );
   }
 }
