@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routines/widgets/routines_list.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:memoroutines/shared/repositories/routines_repository.dart';
 import 'package:styled_widget/styled_widget.dart';
 
-class RoutinesScreen extends ConsumerWidget {
+// TODO add search bar, add sorting options, add filtering options,
+// end of TODO redesign card (remove base info, add streaks info and last completed date)
+class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final routines = ref.read(routinesPod);
-
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         title: LocaleKey.screensRoutinesTitle,
         actions: [
           IconButton(
             onPressed: () => context.pushNamed(RouteName.newRoutine.name),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_circle_outline_rounded),
+            iconSize: 32,
           )
         ],
       ),
-      body: RoutinesList(listenRounines: routines.listenAll())
-          .padding(horizontal: Spacing.md),
+      body: const RoutinesList().padding(horizontal: Spacing.md),
     );
   }
 }

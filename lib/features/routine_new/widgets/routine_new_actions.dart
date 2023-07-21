@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
+import 'package:memoroutines/shared/components/custom_filled_button.dart';
 import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
@@ -47,15 +48,15 @@ class RoutineNewActions extends HookConsumerWidget {
     ).padding(horizontal: Spacing.sm, bottom: Spacing.sm);
   }
 
-  FilledButton _cancelButton() {
-    return FilledButton(
+  Widget _cancelButton() {
+    return CustomFilledButton(
       onPressed: () => AppNavigation().router.pop(),
       child: Text(LocaleKey.screensNewRoutineActionsCancel.tr()),
     );
   }
 
-  FilledButton _prevButton() {
-    return FilledButton(
+  Widget _prevButton() {
+    return CustomFilledButton(
       onPressed: () => pageController.previousPage(
         duration: 200.milliseconds,
         curve: Curves.bounceInOut,
@@ -64,8 +65,8 @@ class RoutineNewActions extends HookConsumerWidget {
     );
   }
 
-  FilledButton _nextButton() {
-    return FilledButton(
+  Widget _nextButton() {
+    return CustomFilledButton(
       onPressed: () => pageController.nextPage(
         duration: 200.milliseconds,
         curve: Curves.bounceInOut,
@@ -74,8 +75,8 @@ class RoutineNewActions extends HookConsumerWidget {
     );
   }
 
-  FilledButton _saveButton(Function() saveCallback) {
-    return FilledButton(
+  Widget _saveButton(Function() saveCallback) {
+    return CustomFilledButton(
       onPressed: () {
         saveCallback();
         AppNavigation().router.pop();

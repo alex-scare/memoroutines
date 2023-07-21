@@ -1,6 +1,7 @@
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/features/home/home_screen.dart';
 import 'package:memoroutines/features/routine_new/routine_new_screen.dart';
 import 'package:memoroutines/features/routines/routines_screen.dart';
@@ -69,21 +70,21 @@ class AppNavigation {
       name: RouteName.home,
       path: '/home',
       // label: 'Home',
-      icon: Icons.home,
+      icon: LineIcons.home,
       builder: (_, __) => const HomeScreen(),
     ),
     AppRoute(
       name: RouteName.routines,
       path: '/routines',
       // label: 'Routines',
-      icon: Icons.list,
+      icon: LineIcons.bookOpen,
       builder: (_, __) => const RoutinesScreen(),
     ),
     AppRoute(
       name: RouteName.settings,
       path: '/settings',
       // label: 'Settings',
-      icon: Icons.settings,
+      icon: LineIcons.cog,
       builder: (_, __) => const SettingsScreen(),
     ),
   ];

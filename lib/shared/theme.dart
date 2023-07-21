@@ -68,4 +68,7 @@ extension AppThemeHelper on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colors => theme.colorScheme;
   TextTheme get texts => theme.textTheme;
+
+  TextStyle get mainFontFamily => GoogleFonts.comicNeue();
+  TextStyle get alterFontFamily => GoogleFonts.bangers();
 }

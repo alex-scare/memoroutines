@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:memoroutines/shared/extensions/list.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
+import 'package:memoroutines/shared/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class CustomAppBar extends HookWidget implements PreferredSizeWidget {
@@ -54,7 +55,15 @@ class CustomAppBar extends HookWidget implements PreferredSizeWidget {
         scrolledUnderElevation: 0.0,
         actions: actionWidgets.value,
         automaticallyImplyLeading: false,
-        title: titleWidget ?? (title != null ? Text(context.tr(title!)) : null),
+        title: titleWidget ??
+            (title != null
+                ? Text(
+                    context.tr(title!),
+                    style: context.texts.titleLarge!.copyWith(
+                      fontFamily: context.alterFontFamily.fontFamily,
+                    ),
+                  )
+                : null),
       ),
     );
   }
