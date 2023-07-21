@@ -59,7 +59,7 @@ class CustomAppBar extends HookWidget implements PreferredSizeWidget {
                 ? Text(
                     context.tr(title!),
                     style: context.texts.titleLarge!.copyWith(
-                      fontFamily: context.alterFontFamily.fontFamily,
+                      fontFamily: context.alterFont.fontFamily,
                     ),
                   )
                 : null),

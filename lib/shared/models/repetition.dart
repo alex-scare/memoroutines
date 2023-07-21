@@ -1,9 +1,9 @@
 import 'package:isar/isar.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 
-part 'completion.g.dart';
+part 'repetition.g.dart';
 
-enum CompletionStatus {
+enum RepetitionStatus {
   completed, // The routine was completed
   missed, // The routine was not completed and is now overdue
   upcoming, // The routine is due to be completed in the future
@@ -11,23 +11,23 @@ enum CompletionStatus {
 }
 
 @Collection()
-class Completion {
+class Repetition {
   Id id = Isar.autoIncrement;
   DateTime dateToBeCompleted;
   DateTime? actionedAt;
   @Enumerated(EnumType.name)
-  CompletionStatus status;
+  RepetitionStatus status;
 
-  @Backlink(to: 'completions')
+  @Backlink(to: 'repetitions')
   final routine = IsarLink<Routine>();
 
-  Completion({
+  Repetition({
     required this.dateToBeCompleted,
     this.actionedAt,
-    this.status = CompletionStatus.upcoming,
+    this.status = RepetitionStatus.upcoming,
   });
 
-  Completion.now()
+  Repetition.now()
       : dateToBeCompleted = DateTime.now(),
-        status = CompletionStatus.upcoming;
+        status = RepetitionStatus.upcoming;
 }

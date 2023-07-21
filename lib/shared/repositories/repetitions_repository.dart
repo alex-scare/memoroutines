@@ -1,27 +1,27 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:memoroutines/shared/models/completion.dart';
+import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/repositories/base_repository.dart';
 
-class CompletionsRepository extends BaseRepository<Completion> {
-  CompletionsRepository(ProviderRef ref) : super(ref, 'completions_repo');
+class RepetitionsRepository extends BaseRepository<Repetition> {
+  RepetitionsRepository(ProviderRef ref) : super(ref, 'repetitions_repo');
 
-  Future<void> generateCompletions(Routine routine) async {
+  Future<void> generateRepetitions(Routine routine) async {
     var date = DateTime.now();
     for (var i = 0; i < 30; i++) {
-      if (_shouldCreateCompletion(routine, date)) {
-        var completion = Completion(
+      if (_shouldCreateRepetition(routine, date)) {
+        var completion = Repetition(
           dateToBeCompleted: date,
-          status: CompletionStatus.upcoming,
+          status: RepetitionStatus.upcoming,
         );
-        routine.completions.add(completion);
+        routine.repetitions.add(completion);
       }
       date = date.add(const Duration(days: 1));
     }
   }
 
-  bool _shouldCreateCompletion(Routine routine, DateTime date) {
+  bool _shouldCreateRepetition(Routine routine, DateTime date) {
     switch (routine.frequency) {
       case RoutineFrequency.daily:
         return true;
@@ -39,45 +39,45 @@ class CompletionsRepository extends BaseRepository<Completion> {
     }
   }
 
-  Future<void> complete(Completion completion) async {
+  Future<void> complete(Repetition completion) async {
     final db = await isar;
     await db.writeTxn(() async {
-      completion.status = CompletionStatus.completed;
+      completion.status = RepetitionStatus.completed;
       completion.actionedAt = DateTime.now();
-      await db.completions.put(completion);
+      await db.repetitions.put(completion);
     });
   }
 
-  Future<void> miss(Completion completion) async {
+  Future<void> miss(Repetition completion) async {
     final db = await isar;
     await db.writeTxn(() async {
-      completion.status = CompletionStatus.missed;
+      completion.status = RepetitionStatus.missed;
       completion.actionedAt = DateTime.now();
-      await db.completions.put(completion);
+      await db.repetitions.put(completion);
     });
   }
 
-  Future<List<Completion>> getCompletionsOfRoutine(Id routineId) async {
+  Future<List<Repetition>> getRepetitionsForRoutine(Id routineId) async {
     final db = await isar;
-    return db.completions
+    return db.repetitions
         .where()
         .filter()
         .routine((routine) => routine.idEqualTo(routineId))
         .findAll();
   }
 
-  Future<void> removeUpcomingCompletionsOfRoutine(Id routineId) async {
+  Future<void> removeUpcomingRepetitionsForRoutine(Id routineId) async {
     final db = await isar;
     await db.writeTxn(() async {
-      final completions = await getCompletionsOfRoutine(routineId);
-      for (var completion in completions) {
+      final repetitions = await getRepetitionsForRoutine(routineId);
+      for (var completion in repetitions) {
         if (completion.dateToBeCompleted.isAfter(DateTime.now()) &&
-            completion.status == CompletionStatus.upcoming) {
-          await db.completions.delete(completion.id);
+            completion.status == RepetitionStatus.upcoming) {
+          await db.repetitions.delete(completion.id);
         }
       }
     });
   }
 }
 
-final completionsPod = Provider((ref) => CompletionsRepository(ref));
+final completionsPod = Provider((ref) => RepetitionsRepository(ref));

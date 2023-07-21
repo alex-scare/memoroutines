@@ -79,10 +79,10 @@ const RoutineSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {
-    r'completions': LinkSchema(
-      id: -2116845057547117351,
-      name: r'completions',
-      target: r'Completion',
+    r'repetitions': LinkSchema(
+      id: -1494824519875501274,
+      name: r'repetitions',
+      target: r'Repetition',
       single: false,
     )
   },
@@ -250,13 +250,13 @@ Id _routineGetId(Routine object) {
 }
 
 List<IsarLinkBase<dynamic>> _routineGetLinks(Routine object) {
-  return [object.completions];
+  return [object.repetitions];
 }
 
 void _routineAttach(IsarCollection<dynamic> col, Id id, Routine object) {
   object.id = id;
-  object.completions
-      .attach(col, col.isar.collection<Completion>(), r'completions', id);
+  object.repetitions
+      .attach(col, col.isar.collection<Repetition>(), r'repetitions', id);
 }
 
 extension RoutineQueryWhereSort on QueryBuilder<Routine, Routine, QWhere> {
@@ -1125,55 +1125,55 @@ extension RoutineQueryObject
 
 extension RoutineQueryLinks
     on QueryBuilder<Routine, Routine, QFilterCondition> {
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> completions(
-      FilterQuery<Completion> q) {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitions(
+      FilterQuery<Repetition> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'completions');
+      return query.link(q, r'repetitions');
     });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      completionsLengthEqualTo(int length) {
+      repetitionsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'completions', length, true, length, true);
+      return query.linkLength(r'repetitions', length, true, length, true);
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> completionsIsEmpty() {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> repetitionsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'completions', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      completionsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'completions', 0, false, 999999, true);
+      return query.linkLength(r'repetitions', 0, true, 0, true);
     });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      completionsLengthLessThan(
+      repetitionsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'repetitions', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition>
+      repetitionsLengthLessThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'completions', 0, true, length, include);
+      return query.linkLength(r'repetitions', 0, true, length, include);
     });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      completionsLengthGreaterThan(
+      repetitionsLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'completions', length, include, 999999, true);
+      return query.linkLength(r'repetitions', length, include, 999999, true);
     });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      completionsLengthBetween(
+      repetitionsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1181,7 +1181,7 @@ extension RoutineQueryLinks
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
-          r'completions', lower, includeLower, upper, includeUpper);
+          r'repetitions', lower, includeLower, upper, includeUpper);
     });
   }
 }

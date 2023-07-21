@@ -1,8 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
-import 'package:memoroutines/shared/models/completion.dart';
+import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/weekday.dart';
 
 part 'routine.g.dart';
@@ -24,7 +25,7 @@ class Routine {
   RoutineMetaData metaData;
   RoutineStats stats;
 
-  final completions = IsarLinks<Completion>();
+  final repetitions = IsarLinks<Repetition>();
 
   Routine({
     required this.name,
@@ -38,6 +39,11 @@ class Routine {
   })  : metaData = RoutineMetaData(),
         stats = RoutineStats(),
         PRIVATE__iconCodePoint = iconData?.codePoint;
+
+  @override
+  String toString() {
+    return 'Routine(id: $id, name: $name, description: $description, PRIVATE__iconCodePoint: $PRIVATE__iconCodePoint, notifications: $notifications, repetitionsNumberToComplete: $repetitionsNumberToComplete, singleRepetitionDuration: $singleRepetitionDuration)';
+  }
 }
 
 extension RoutineExt on Routine {

@@ -27,11 +27,16 @@ class RoutineNewIconSelector extends HookConsumerWidget {
           iconsController.jumpToPage(formPod.iconIndex);
         }
 
-        iconsController.addListener(() {
+        void listener() {
           final index = iconsController.page!.round();
           formPodNotifier.setIcon(iconList[index], index);
-        });
-        return iconsController.dispose;
+        }
+
+        iconsController.addListener(listener);
+        return () {
+          iconsController.removeListener(listener);
+          iconsController.dispose;
+        };
       },
       const [],
     );

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'completion.dart';
+part of 'repetition.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'completion.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetCompletionCollection on Isar {
-  IsarCollection<Completion> get completions => this.collection();
+extension GetRepetitionCollection on Isar {
+  IsarCollection<Repetition> get repetitions => this.collection();
 }
 
-const CompletionSchema = CollectionSchema(
-  name: r'Completion',
-  id: -5586095416965545486,
+const RepetitionSchema = CollectionSchema(
+  name: r'Repetition',
+  id: 3953275675774205543,
   properties: {
     r'actionedAt': PropertySchema(
       id: 0,
@@ -31,33 +31,33 @@ const CompletionSchema = CollectionSchema(
       id: 2,
       name: r'status',
       type: IsarType.string,
-      enumMap: _CompletionstatusEnumValueMap,
+      enumMap: _RepetitionstatusEnumValueMap,
     )
   },
-  estimateSize: _completionEstimateSize,
-  serialize: _completionSerialize,
-  deserialize: _completionDeserialize,
-  deserializeProp: _completionDeserializeProp,
+  estimateSize: _repetitionEstimateSize,
+  serialize: _repetitionSerialize,
+  deserialize: _repetitionDeserialize,
+  deserializeProp: _repetitionDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {
     r'routine': LinkSchema(
-      id: -4468112437395105708,
+      id: 613267370174553022,
       name: r'routine',
       target: r'Routine',
       single: true,
-      linkName: r'completions',
+      linkName: r'repetitions',
     )
   },
   embeddedSchemas: {},
-  getId: _completionGetId,
-  getLinks: _completionGetLinks,
-  attach: _completionAttach,
+  getId: _repetitionGetId,
+  getLinks: _repetitionGetLinks,
+  attach: _repetitionAttach,
   version: '3.1.0+1',
 );
 
-int _completionEstimateSize(
-  Completion object,
+int _repetitionEstimateSize(
+  Repetition object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -66,8 +66,8 @@ int _completionEstimateSize(
   return bytesCount;
 }
 
-void _completionSerialize(
-  Completion object,
+void _repetitionSerialize(
+  Repetition object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -77,24 +77,24 @@ void _completionSerialize(
   writer.writeString(offsets[2], object.status.name);
 }
 
-Completion _completionDeserialize(
+Repetition _repetitionDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Completion(
+  final object = Repetition(
     actionedAt: reader.readDateTimeOrNull(offsets[0]),
     dateToBeCompleted: reader.readDateTime(offsets[1]),
     status:
-        _CompletionstatusValueEnumMap[reader.readStringOrNull(offsets[2])] ??
-            CompletionStatus.upcoming,
+        _RepetitionstatusValueEnumMap[reader.readStringOrNull(offsets[2])] ??
+            RepetitionStatus.upcoming,
   );
   object.id = id;
   return object;
 }
 
-P _completionDeserializeProp<P>(
+P _repetitionDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -106,51 +106,51 @@ P _completionDeserializeProp<P>(
     case 1:
       return (reader.readDateTime(offset)) as P;
     case 2:
-      return (_CompletionstatusValueEnumMap[reader.readStringOrNull(offset)] ??
-          CompletionStatus.upcoming) as P;
+      return (_RepetitionstatusValueEnumMap[reader.readStringOrNull(offset)] ??
+          RepetitionStatus.upcoming) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _CompletionstatusEnumValueMap = {
+const _RepetitionstatusEnumValueMap = {
   r'completed': r'completed',
   r'missed': r'missed',
   r'upcoming': r'upcoming',
   r'skipped': r'skipped',
 };
-const _CompletionstatusValueEnumMap = {
-  r'completed': CompletionStatus.completed,
-  r'missed': CompletionStatus.missed,
-  r'upcoming': CompletionStatus.upcoming,
-  r'skipped': CompletionStatus.skipped,
+const _RepetitionstatusValueEnumMap = {
+  r'completed': RepetitionStatus.completed,
+  r'missed': RepetitionStatus.missed,
+  r'upcoming': RepetitionStatus.upcoming,
+  r'skipped': RepetitionStatus.skipped,
 };
 
-Id _completionGetId(Completion object) {
+Id _repetitionGetId(Repetition object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _completionGetLinks(Completion object) {
+List<IsarLinkBase<dynamic>> _repetitionGetLinks(Repetition object) {
   return [object.routine];
 }
 
-void _completionAttach(IsarCollection<dynamic> col, Id id, Completion object) {
+void _repetitionAttach(IsarCollection<dynamic> col, Id id, Repetition object) {
   object.id = id;
   object.routine.attach(col, col.isar.collection<Routine>(), r'routine', id);
 }
 
-extension CompletionQueryWhereSort
-    on QueryBuilder<Completion, Completion, QWhere> {
-  QueryBuilder<Completion, Completion, QAfterWhere> anyId() {
+extension RepetitionQueryWhereSort
+    on QueryBuilder<Repetition, Repetition, QWhere> {
+  QueryBuilder<Repetition, Repetition, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension CompletionQueryWhere
-    on QueryBuilder<Completion, Completion, QWhereClause> {
-  QueryBuilder<Completion, Completion, QAfterWhereClause> idEqualTo(Id id) {
+extension RepetitionQueryWhere
+    on QueryBuilder<Repetition, Repetition, QWhereClause> {
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -159,7 +159,7 @@ extension CompletionQueryWhere
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -181,7 +181,7 @@ extension CompletionQueryWhere
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -190,7 +190,7 @@ extension CompletionQueryWhere
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -199,7 +199,7 @@ extension CompletionQueryWhere
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterWhereClause> idBetween(
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -216,9 +216,9 @@ extension CompletionQueryWhere
   }
 }
 
-extension CompletionQueryFilter
-    on QueryBuilder<Completion, Completion, QFilterCondition> {
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+extension RepetitionQueryFilter
+    on QueryBuilder<Repetition, Repetition, QFilterCondition> {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       actionedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -227,7 +227,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       actionedAtIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -236,7 +236,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> actionedAtEqualTo(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> actionedAtEqualTo(
       DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -246,7 +246,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       actionedAtGreaterThan(
     DateTime? value, {
     bool include = false,
@@ -260,7 +260,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       actionedAtLessThan(
     DateTime? value, {
     bool include = false,
@@ -274,7 +274,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> actionedAtBetween(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> actionedAtBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
@@ -291,7 +291,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       dateToBeCompletedEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -301,7 +301,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       dateToBeCompletedGreaterThan(
     DateTime value, {
     bool include = false,
@@ -315,7 +315,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       dateToBeCompletedLessThan(
     DateTime value, {
     bool include = false,
@@ -329,7 +329,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       dateToBeCompletedBetween(
     DateTime lower,
     DateTime upper, {
@@ -347,7 +347,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> idEqualTo(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -357,7 +357,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -370,7 +370,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> idLessThan(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -383,7 +383,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> idBetween(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -400,8 +400,8 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusEqualTo(
-    CompletionStatus value, {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusEqualTo(
+    RepetitionStatus value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -413,8 +413,8 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusGreaterThan(
-    CompletionStatus value, {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusGreaterThan(
+    RepetitionStatus value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -428,8 +428,8 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusLessThan(
-    CompletionStatus value, {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusLessThan(
+    RepetitionStatus value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -443,9 +443,9 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusBetween(
-    CompletionStatus lower,
-    CompletionStatus upper, {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusBetween(
+    RepetitionStatus lower,
+    RepetitionStatus upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -462,7 +462,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusStartsWith(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -475,7 +475,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusEndsWith(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -488,7 +488,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusContains(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -500,7 +500,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusMatches(
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -512,7 +512,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> statusIsEmpty() {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> statusIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'status',
@@ -521,7 +521,7 @@ extension CompletionQueryFilter
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition>
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
       statusIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -532,133 +532,133 @@ extension CompletionQueryFilter
   }
 }
 
-extension CompletionQueryObject
-    on QueryBuilder<Completion, Completion, QFilterCondition> {}
+extension RepetitionQueryObject
+    on QueryBuilder<Repetition, Repetition, QFilterCondition> {}
 
-extension CompletionQueryLinks
-    on QueryBuilder<Completion, Completion, QFilterCondition> {
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> routine(
+extension RepetitionQueryLinks
+    on QueryBuilder<Repetition, Repetition, QFilterCondition> {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> routine(
       FilterQuery<Routine> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'routine');
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterFilterCondition> routineIsNull() {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> routineIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'routine', 0, true, 0, true);
     });
   }
 }
 
-extension CompletionQuerySortBy
-    on QueryBuilder<Completion, Completion, QSortBy> {
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByActionedAt() {
+extension RepetitionQuerySortBy
+    on QueryBuilder<Repetition, Repetition, QSortBy> {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByActionedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'actionedAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByActionedAtDesc() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByActionedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'actionedAt', Sort.desc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByDateToBeCompleted() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByDateToBeCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dateToBeCompleted', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy>
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
       sortByDateToBeCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dateToBeCompleted', Sort.desc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByStatus() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> sortByStatusDesc() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByStatusDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.desc);
     });
   }
 }
 
-extension CompletionQuerySortThenBy
-    on QueryBuilder<Completion, Completion, QSortThenBy> {
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByActionedAt() {
+extension RepetitionQuerySortThenBy
+    on QueryBuilder<Repetition, Repetition, QSortThenBy> {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByActionedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'actionedAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByActionedAtDesc() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByActionedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'actionedAt', Sort.desc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByDateToBeCompleted() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByDateToBeCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dateToBeCompleted', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy>
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
       thenByDateToBeCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dateToBeCompleted', Sort.desc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenById() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByStatus() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
     });
   }
 
-  QueryBuilder<Completion, Completion, QAfterSortBy> thenByStatusDesc() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByStatusDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.desc);
     });
   }
 }
 
-extension CompletionQueryWhereDistinct
-    on QueryBuilder<Completion, Completion, QDistinct> {
-  QueryBuilder<Completion, Completion, QDistinct> distinctByActionedAt() {
+extension RepetitionQueryWhereDistinct
+    on QueryBuilder<Repetition, Repetition, QDistinct> {
+  QueryBuilder<Repetition, Repetition, QDistinct> distinctByActionedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'actionedAt');
     });
   }
 
-  QueryBuilder<Completion, Completion, QDistinct>
+  QueryBuilder<Repetition, Repetition, QDistinct>
       distinctByDateToBeCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'dateToBeCompleted');
     });
   }
 
-  QueryBuilder<Completion, Completion, QDistinct> distinctByStatus(
+  QueryBuilder<Repetition, Repetition, QDistinct> distinctByStatus(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'status', caseSensitive: caseSensitive);
@@ -666,28 +666,28 @@ extension CompletionQueryWhereDistinct
   }
 }
 
-extension CompletionQueryProperty
-    on QueryBuilder<Completion, Completion, QQueryProperty> {
-  QueryBuilder<Completion, int, QQueryOperations> idProperty() {
+extension RepetitionQueryProperty
+    on QueryBuilder<Repetition, Repetition, QQueryProperty> {
+  QueryBuilder<Repetition, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<Completion, DateTime?, QQueryOperations> actionedAtProperty() {
+  QueryBuilder<Repetition, DateTime?, QQueryOperations> actionedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'actionedAt');
     });
   }
 
-  QueryBuilder<Completion, DateTime, QQueryOperations>
+  QueryBuilder<Repetition, DateTime, QQueryOperations>
       dateToBeCompletedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'dateToBeCompleted');
     });
   }
 
-  QueryBuilder<Completion, CompletionStatus, QQueryOperations>
+  QueryBuilder<Repetition, RepetitionStatus, QQueryOperations>
       statusProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'status');

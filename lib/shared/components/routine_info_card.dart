@@ -48,7 +48,7 @@ class RoutineInfoCard extends StatelessWidget {
                       style:
                           context.theme.primaryTextTheme.titleMedium!.copyWith(
                         color: context.colors.onBackground,
-                        fontFamily: context.alterFontFamily.fontFamily,
+                        fontFamily: context.alterFont.fontFamily,
                         fontSize: 18,
                       ),
                     ),

@@ -22,7 +22,7 @@ class RoutineNewAppBar extends ConsumerWidget implements PreferredSizeWidget {
       titleWidget: Text(
         formPod.name.isEmpty ? 'New Routine' : formPod.name,
         style: context.texts.titleLarge!
-            .copyWith(fontFamily: context.alterFontFamily.fontFamily),
+            .copyWith(fontFamily: context.alterFont.fontFamily),
       ),
     );
   }

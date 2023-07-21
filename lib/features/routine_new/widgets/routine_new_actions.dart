@@ -1,50 +1,38 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_filled_button.dart';
-import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
 import 'package:styled_widget/styled_widget.dart';
 
-class RoutineNewActions extends HookConsumerWidget {
-  const RoutineNewActions({super.key, required this.pageController});
+class RoutineNewActions extends ConsumerWidget {
+  const RoutineNewActions({
+    super.key,
+    required this.currentSection,
+    required this.nextSection,
+    required this.prevSection,
+  });
 
-  final PageController pageController;
+  final int currentSection;
+  final Function() nextSection;
+  final Function() prevSection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentSection = useState<int>(pageController.initialPage);
     final formPodNotifier = ref.read(routineNewPod(null).notifier);
-
-    useEffect(
-      () {
-        void listener() {
-          currentSection.value = pageController.page!.round();
-        }
-
-        pageController.addListener(listener);
-
-        return () {
-          pageController.removeListener(listener);
-        };
-      },
-      [],
-    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        (currentSection.value == 0 ? _cancelButton() : _prevButton())
-            .expanded(),
+        (currentSection == 0 ? _cancelButton() : _prevButton()).expanded(),
         const SizedBox(width: Spacing.sm),
-        (currentSection.value == 3
+        (currentSection == 3
                 ? _saveButton(formPodNotifier.submitRoutine)
                 : _nextButton(
-                    () => formPodNotifier.isSectionValid(currentSection.value),
+                    () => formPodNotifier.isSectionValid(currentSection),
                   ))
             .expanded(),
       ],
@@ -60,10 +48,7 @@ class RoutineNewActions extends HookConsumerWidget {
 
   Widget _prevButton() {
     return CustomFilledButton(
-      onPressed: () => pageController.previousPage(
-        duration: 200.milliseconds,
-        curve: Curves.bounceInOut,
-      ),
+      onPressed: () => prevSection(),
       child: Text(LocaleKey.screensNewRoutineActionsPrevStep.tr()),
     );
   }
@@ -74,10 +59,7 @@ class RoutineNewActions extends HookConsumerWidget {
       onPressed: () {
         if (!isSectionValidCallback()) return;
 
-        pageController.nextPage(
-          duration: 200.milliseconds,
-          curve: Curves.bounceInOut,
-        );
+        nextSection();
       },
       child: Text(LocaleKey.screensNewRoutineActionsNextStep.tr()),
     );

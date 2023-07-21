@@ -2,7 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/repositories/base_repository.dart';
-import 'package:memoroutines/shared/repositories/completions_repository.dart';
+import 'package:memoroutines/shared/repositories/repetitions_repository.dart';
 
 class RoutinesRepository extends BaseRepository<Routine> {
   RoutinesRepository(ProviderRef ref) : super(ref, 'routines_repo');
@@ -10,7 +10,11 @@ class RoutinesRepository extends BaseRepository<Routine> {
   Future<void> createRoutineAndGenerateCompletions(Routine routine) async {
     final db = await isar;
     await db.writeTxn(() async {
-      await ref.read(completionsPod).generateCompletions(routine);
+      log.info('Creating routine: $routine');
+      await ref.read(completionsPod).generateRepetitions(routine);
+      log.info(
+        'Routine repetitions: ${routine.repetitions.map((e) => e.dateToBeCompleted)}',
+      );
       await db.routines.put(routine);
     });
   }
@@ -36,7 +40,7 @@ class RoutinesRepository extends BaseRepository<Routine> {
       if (status.needRemoveUpcomingCompletions) {
         await ref
             .read(completionsPod)
-            .removeUpcomingCompletionsOfRoutine(routineId);
+            .removeUpcomingRepetitionsForRoutine(routineId);
       }
     });
   }

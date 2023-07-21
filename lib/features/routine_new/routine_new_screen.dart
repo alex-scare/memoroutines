@@ -8,6 +8,7 @@ import 'package:memoroutines/features/routine_new/widgets/routine_new_final_step
 import 'package:memoroutines/features/routine_new/widgets/routine_new_frequency.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_main_info.dart';
 import 'package:memoroutines/features/routine_new/widgets/routine_new_single_repetition_duration.dart';
+import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -20,8 +21,19 @@ class RoutineNewScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final pageController = usePageController(initialPage: 0);
+    final currentPage = useState(pageController.initialPage);
 
-    print('screen rebuild');
+    useEffect(
+      () {
+        void listener() {
+          currentPage.value = pageController.page?.round() ?? 0;
+        }
+
+        pageController.addListener(listener);
+        return () => pageController.removeListener(listener);
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: const RoutineNewAppBar(),
@@ -48,7 +60,17 @@ class RoutineNewScreen extends HookWidget {
                 };
               },
             ).padding(horizontal: Spacing.md).expanded(),
-            RoutineNewActions(pageController: pageController),
+            RoutineNewActions(
+              currentSection: currentPage.value,
+              nextSection: () => pageController.nextPage(
+                duration: 200.milliseconds,
+                curve: Curves.bounceInOut,
+              ),
+              prevSection: () => pageController.previousPage(
+                duration: 200.milliseconds,
+                curve: Curves.bounceInOut,
+              ),
+            ),
           ],
         ).backgroundColor(context.colors.background),
       ),

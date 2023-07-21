@@ -1,17 +1,23 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:memoroutines/services/i18n/locale_key.g.dart';
+import 'package:memoroutines/features/home/widgets/repetitions_list.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
+import 'package:memoroutines/shared/theme.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Home'),
-      body: Center(
-        child: Text(LocaleKey.screensHomeTitle.tr()),
+      appBar: CustomAppBar(
+        titleWidget: Text(
+          'Today',
+          style: context.texts.titleLarge!
+              .copyWith(fontFamily: context.alterFont.fontFamily),
+        ),
+      ),
+      body: const Column(
+        children: [RepetitionsList()],
       ),
     );
   }
