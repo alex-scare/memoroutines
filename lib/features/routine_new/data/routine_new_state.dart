@@ -31,7 +31,7 @@ extension RoutineNewStateExt on RoutineNewState {
   LengthLimitingTextInputFormatter _lengthFormatter(int length) =>
       LengthLimitingTextInputFormatter(length);
 
-  List<TextInputFormatter> get nameFormatters => [_lengthFormatter(50)];
+  List<TextInputFormatter> get nameFormatters => [_lengthFormatter(30)];
   List<TextInputFormatter> get descriptionFormatters => [_lengthFormatter(50)];
 
   // validations

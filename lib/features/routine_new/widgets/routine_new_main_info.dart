@@ -48,6 +48,8 @@ class RoutineNewMainInfo extends HookConsumerWidget {
         const SizedBox(height: Spacing.xxs),
         CustomTextInput(
           autofocus: true,
+          minLines: 1,
+          maxLines: 2,
           initialValue: formPod.description,
           onChanged: (value) => formPodNotifier.setDescription(value),
           placeholder: LocaleKey.screensNewRoutineMainInfoDescriptionPlaceholder

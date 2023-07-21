@@ -43,7 +43,7 @@ class CustomAppBar extends HookWidget implements PreferredSizeWidget {
     return Padding(
       padding: const EdgeInsets.only(top: additionHeight),
       child: AppBar(
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         centerTitle: centerTitle,
         leading: showBackButton
             ? IconButton(

@@ -8,17 +8,7 @@ class AppTheme {
 
   static FlexScheme schemeColor = FlexScheme.aquaBlue;
 
-  static final overlayStyleDark = SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Colors.transparent,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarDividerColor: Colors.transparent,
-  );
-
-  static final overlayStyleLight = SystemUiOverlayStyle.light.copyWith(
-    statusBarColor: Colors.transparent,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarDividerColor: Colors.transparent,
-  );
+  static const overlayStyleLight = SystemUiOverlayStyle.light;
 
   static final light = FlexThemeData.light(
     scheme: FlexScheme.ebonyClay,

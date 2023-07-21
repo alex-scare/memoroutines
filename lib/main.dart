@@ -17,7 +17,7 @@ void main() async {
   log.empty(lines: 2);
   log.infoWithDelimiters('app starting');
 
-  SystemChrome.setSystemUIOverlayStyle(AppTheme.overlayStyleDark);
+  SystemChrome.setSystemUIOverlayStyle(AppTheme.overlayStyleLight);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
 

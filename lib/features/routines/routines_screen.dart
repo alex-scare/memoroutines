@@ -3,9 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:memoroutines/features/routines/widgets/routines_list.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
-import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:styled_widget/styled_widget.dart';
 
 // TODO add search bar, add sorting options, add filtering options,
 // end of TODO redesign card (remove base info, add streaks info and last completed date)
@@ -25,7 +23,7 @@ class RoutinesScreen extends StatelessWidget {
           )
         ],
       ),
-      body: const RoutinesList().padding(horizontal: Spacing.md),
+      body: const RoutinesList(),
     );
   }
 }

@@ -16,14 +16,16 @@ class RoutinesList extends ConsumerWidget {
       stream: routines.listenAll(),
       builder: (_, snapshot) => ListView.separated(
         itemCount: snapshot.data?.length ?? 0,
-        separatorBuilder: (_, __) {
-          return const SizedBox(height: Spacing.xs);
-        },
+        separatorBuilder: (_, __) => const SizedBox(height: Spacing.xs),
         itemBuilder: (context, index) {
           final routine = snapshot.data?[index];
+          final isLastRoutine = index == snapshot.data!.length - 1;
 
           if (routine == null) return null;
-          return RoutineInfoCard(routine: routine);
+          return Padding(
+            padding: EdgeInsets.only(bottom: isLastRoutine ? Spacing.sm : 0),
+            child: RoutineInfoCard(routine: routine),
+          );
         },
       ),
     );
