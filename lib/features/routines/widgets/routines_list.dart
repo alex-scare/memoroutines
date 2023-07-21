@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/shared/components/routine_info_card.dart';
+import 'package:memoroutines/shared/components/slidable_widget.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/repositories/routines_repository.dart';
+import 'package:memoroutines/shared/theme.dart';
 
 class RoutinesList extends ConsumerWidget {
   const RoutinesList({Key? key}) : super(key: key);
@@ -24,7 +27,19 @@ class RoutinesList extends ConsumerWidget {
           if (routine == null) return null;
           return Padding(
             padding: EdgeInsets.only(bottom: isLastRoutine ? Spacing.sm : 0),
-            child: RoutineInfoCard(routine: routine),
+            child: SlidableWidget(
+              borderRadius: Spacing.md,
+              endActions: [
+                SlidableWidgetAction(
+                  icon: const Icon(LineIcons.trash),
+                  onPressed: (_) => routines.delete(routine.id),
+                  backgroundColor: context.colors.error,
+                  foregroundColor: context.colors.onError,
+                  isDismissable: true,
+                )
+              ],
+              child: RoutineInfoCard(routine: routine),
+            ),
           );
         },
       ),

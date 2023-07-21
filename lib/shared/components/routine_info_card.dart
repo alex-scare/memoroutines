@@ -16,15 +16,16 @@ class RoutineInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colors.background,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(Spacing.md),
+        border: Border.all(
           color: context.colors.onBackground,
           width: 4,
         ),
       ),
-      color: context.colors.background,
       child: Container(
         padding: const EdgeInsets.all(Spacing.sm),
         child: Column(
