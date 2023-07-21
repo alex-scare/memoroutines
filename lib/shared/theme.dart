@@ -41,27 +41,6 @@ class AppTheme {
     swapLegacyOnMaterial3: true,
     textTheme: textTheme,
   );
-
-  static final dark = FlexThemeData.dark(
-    scheme: FlexScheme.ebonyClay,
-    surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
-    blendLevel: 25,
-    subThemesData: const FlexSubThemesData(
-      blendOnLevel: 19,
-      useM2StyleDividerInM3: true,
-      defaultRadius: 4.0,
-      inputDecoratorIsFilled: false,
-      inputDecoratorUnfocusedHasBorder: false,
-      inputDecoratorFocusedHasBorder: false,
-      inputDecoratorBorderType: FlexInputBorderType.underline,
-      segmentedButtonSchemeColor: SchemeColor.primaryContainer,
-      segmentedButtonRadius: 8.0,
-    ),
-    visualDensity: FlexColorScheme.comfortablePlatformDensity,
-    useMaterial3: true,
-    swapLegacyOnMaterial3: true,
-    textTheme: textTheme,
-  );
 }
 
 extension AppThemeHelper on BuildContext {

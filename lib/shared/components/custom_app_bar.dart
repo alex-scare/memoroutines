@@ -47,10 +47,9 @@ class CustomAppBar extends HookWidget implements PreferredSizeWidget {
         centerTitle: centerTitle,
         leading: showBackButton
             ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                iconSize: 24,
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () => context.navigateBack(),
-              ).decorated().padding(left: 16)
+              )
             : null,
         scrolledUnderElevation: 0.0,
         actions: actionWidgets.value,

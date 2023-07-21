@@ -73,4 +73,11 @@ class RoutineNewStateNotifier extends StateNotifier<RoutineNewState> {
 
     state = state.copyWith(daysOfMonth: days);
   }
+
+  bool isSectionValid(int sectionNumber) {
+    return switch (sectionNumber) {
+      0 => state.isNameValid && state.isDescriptionValid,
+      _ => true,
+    };
+  }
 }

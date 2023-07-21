@@ -20,25 +20,26 @@ class RoutineNewState with _$RoutineNewState {
     @Default([]) List<int> daysOfMonth,
     @Default(1) int repetitionsPerPeriod,
     @Default(null) IconData? icon,
-    // helpers
-    @Default(0) int page,
+    // form helpers
     @Default(7) int iconIndex,
-    // loaders
-    @Default(false) bool submitLoading,
   }) = _RoutineNewState;
 }
 
 extension RoutineNewStateExt on RoutineNewState {
-  String? nameValidator(String? value) {
-    if (value!.isEmpty) {
-      return 'invalid!';
-    }
-    return null;
-  }
+  // formatters
 
-  List<TextInputFormatter> get nameFormatters {
-    return [LengthLimitingTextInputFormatter(50)];
-  }
+  LengthLimitingTextInputFormatter _lengthFormatter(int length) =>
+      LengthLimitingTextInputFormatter(length);
+
+  List<TextInputFormatter> get nameFormatters => [_lengthFormatter(50)];
+  List<TextInputFormatter> get descriptionFormatters => [_lengthFormatter(50)];
+
+  // validations
+
+  bool get isNameValid => name.isNotEmpty;
+  bool get isDescriptionValid => true;
+
+  // data transformation getters
 
   Set<RoutineFrequency> get frequencySet {
     return {frequency};
@@ -48,7 +49,7 @@ extension RoutineNewStateExt on RoutineNewState {
     return Set.from(daysOfWeek.isEmpty ? [Weekday.fromNow()] : daysOfWeek);
   }
 
-  Set<int> get daysOfMonthsSet {
+  Set<int> get daysOfMonthSet {
     return Set.from(daysOfMonth.isEmpty ? [DateTime.now().day] : daysOfMonth);
   }
 

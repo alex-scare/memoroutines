@@ -17,13 +17,13 @@ class RoutineNewActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentPage = useState<int>(pageController.initialPage);
+    final currentSection = useState<int>(pageController.initialPage);
     final formPodNotifier = ref.read(routineNewPod(null).notifier);
 
     useEffect(
       () {
         void listener() {
-          currentPage.value = pageController.page!.round();
+          currentSection.value = pageController.page!.round();
         }
 
         pageController.addListener(listener);
@@ -38,11 +38,14 @@ class RoutineNewActions extends HookConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        (currentPage.value == 0 ? _cancelButton() : _prevButton()).expanded(),
-        const SizedBox(width: 12),
-        (currentPage.value == 3
+        (currentSection.value == 0 ? _cancelButton() : _prevButton())
+            .expanded(),
+        const SizedBox(width: Spacing.sm),
+        (currentSection.value == 3
                 ? _saveButton(formPodNotifier.submitRoutine)
-                : _nextButton())
+                : _nextButton(
+                    () => formPodNotifier.isSectionValid(currentSection.value),
+                  ))
             .expanded(),
       ],
     ).padding(horizontal: Spacing.sm, bottom: Spacing.sm);
@@ -65,19 +68,24 @@ class RoutineNewActions extends HookConsumerWidget {
     );
   }
 
-  Widget _nextButton() {
+  Widget _nextButton(bool Function() isSectionValidCallback) {
     return CustomFilledButton(
-      isMainAction: true,
-      onPressed: () => pageController.nextPage(
-        duration: 200.milliseconds,
-        curve: Curves.bounceInOut,
-      ),
+      type: CustomFilledButtonType.bold,
+      onPressed: () {
+        if (!isSectionValidCallback()) return;
+
+        pageController.nextPage(
+          duration: 200.milliseconds,
+          curve: Curves.bounceInOut,
+        );
+      },
       child: Text(LocaleKey.screensNewRoutineActionsNextStep.tr()),
     );
   }
 
   Widget _saveButton(Function() saveCallback) {
     return CustomFilledButton(
+      type: CustomFilledButtonType.bold,
       onPressed: () {
         saveCallback();
         AppNavigation().router.pop();

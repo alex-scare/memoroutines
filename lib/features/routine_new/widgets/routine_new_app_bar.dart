@@ -18,6 +18,7 @@ class RoutineNewAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final formPod = ref.watch(routineNewPod(null));
 
     return CustomAppBar(
+      showBackButton: true,
       titleWidget: Text(
         formPod.name.isEmpty ? 'New Routine' : formPod.name,
         style: context.texts.titleLarge!

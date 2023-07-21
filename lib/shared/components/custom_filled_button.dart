@@ -1,79 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:memoroutines/shared/theme.dart';
+
+enum CustomFilledButtonType {
+  bold,
+  normal,
+  ;
+}
 
 class CustomFilledButton extends StatelessWidget {
   const CustomFilledButton({
     Key? key,
     required this.onPressed,
     required this.child,
-    this.isMainAction = false,
+    this.type = CustomFilledButtonType.normal,
+    this.width = 150,
+    this.height = 50,
   }) : super(key: key);
 
   final VoidCallback onPressed;
   final Widget child;
-  final bool isMainAction;
+  final CustomFilledButtonType type;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: Stack(
-        children: [
-          Container(
-            width: 150, // width of button
-            height: 50, // height of button
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.black,
-                width: isMainAction ? 4 : 2,
-              ),
-            ),
-          ),
-          CustomPaint(
-            painter: DottedPatternPainter(),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onPressed,
-                child: Container(
-                  width: 150,
-                  height: 50,
-                  alignment: Alignment.center,
-                  child: DefaultTextStyle.merge(
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                    child: child,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+    return SizedBox(
+      width: width,
+      height: height,
+      child: FilledButton(
+        onPressed: onPressed,
+        style: _buildButtonStyle(context),
+        child: _buildChild(context),
       ),
     );
   }
-}
 
-// The rest of your code remains the same.
+  Widget _buildChild(BuildContext context) {
+    final bool isBold = type == CustomFilledButtonType.bold;
 
-class DottedPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    const dotRadius = 1.0;
-    const offset = 2 * dotRadius + 4;
-    final dotPaint = Paint()..color = Colors.black;
-
-    for (double y = 0; y < size.height; y += offset) {
-      for (double x = 0; x < size.width; x += offset) {
-        canvas.drawCircle(Offset(x, y), dotRadius, dotPaint);
-      }
-    }
+    return Center(
+      child: DefaultTextStyle.merge(
+        style: TextStyle(
+          color: isBold
+              ? context.colors.onBackground
+              : context.colors.onBackground.withOpacity(0.8),
+          height: 1,
+          fontWeight: isBold ? FontWeight.w900 : FontWeight.w600,
+          fontSize: 16,
+        ),
+        child: child,
+      ),
+    );
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  ButtonStyle _buildButtonStyle(BuildContext context) {
+    final bool isBold = type == CustomFilledButtonType.bold;
+
+    return ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(context.colors.background),
+      overlayColor: MaterialStateProperty.all(
+        context.colors.onBackground.withOpacity(0.05),
+      ),
+      shape: MaterialStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            color: context.colors.onBackground,
+            width: isBold ? 4 : 2,
+          ),
+        ),
+      ),
+      padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+      foregroundColor: MaterialStateProperty.all(context.colors.background),
+    );
+  }
 }

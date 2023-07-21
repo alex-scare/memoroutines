@@ -36,10 +36,8 @@ class RoutineNewMainInfo extends HookConsumerWidget {
               .tr()
               .toUpperCase(),
           textColor: context.colors.onBackground,
-          textStyle: context.texts.titleLarge!.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-          validator: formPod.nameValidator,
+          textStyle:
+              context.texts.titleLarge!.copyWith(fontWeight: FontWeight.bold),
           inputFormatters: formPod.nameFormatters,
         ),
         const SizedBox(height: Spacing.xl),
@@ -56,9 +54,9 @@ class RoutineNewMainInfo extends HookConsumerWidget {
               .tr()
               .toUpperCase(),
           textColor: context.colors.onBackground,
-          textStyle: context.texts.bodyLarge!.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          textStyle:
+              context.texts.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+          inputFormatters: formPod.descriptionFormatters,
         ),
       ],
     );

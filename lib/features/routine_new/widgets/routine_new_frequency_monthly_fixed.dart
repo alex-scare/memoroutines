@@ -43,12 +43,12 @@ class RoutineNewFrequencyMonthlyFixed extends ConsumerWidget {
               crossAxisSpacing: 1, // space between cells horizontally
             ),
             itemBuilder: (context, index) {
-              final isSelected = formPod.daysOfMonthsSet.contains(index);
+              final isSelected = formPod.daysOfMonthSet.contains(index);
               return GestureDetector(
                 onTap: () => formPodNotifier.toggleDayOfMonth(index),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: formPod.daysOfMonthsSet.contains(index)
+                    color: formPod.daysOfMonthSet.contains(index)
                         ? context.colors.primaryContainer
                         : Colors.transparent,
                     border: Border.all(
