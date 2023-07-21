@@ -67,6 +67,7 @@ class RoutineNewActions extends HookConsumerWidget {
 
   Widget _nextButton() {
     return CustomFilledButton(
+      isMainAction: true,
       onPressed: () => pageController.nextPage(
         duration: 200.milliseconds,
         curve: Curves.bounceInOut,

@@ -5,67 +5,75 @@ class CustomFilledButton extends StatelessWidget {
     Key? key,
     required this.onPressed,
     required this.child,
+    this.isMainAction = false,
   }) : super(key: key);
 
   final VoidCallback onPressed;
   final Widget child;
+  final bool isMainAction;
 
   @override
   Widget build(BuildContext context) {
-    return withDecoration(
-      FilledButton(onPressed: onPressed, style: style, child: child),
-    );
-  }
-
-  static Widget withDecoration(Widget widget) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      child: CustomPaint(
-        painter: HatchPainter(),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              width: 4,
-              color: Colors.black,
-            ), // Increase border width
+      child: Stack(
+        children: [
+          Container(
+            width: 150, // width of button
+            height: 50, // height of button
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.black,
+                width: isMainAction ? 4 : 2,
+              ),
+            ),
           ),
-          child: widget,
-        ),
+          CustomPaint(
+            painter: DottedPatternPainter(),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onPressed,
+                child: Container(
+                  width: 150,
+                  height: 50,
+                  alignment: Alignment.center,
+                  child: DefaultTextStyle.merge(
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    child: child,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  static final style = ButtonStyle(
-    backgroundColor: MaterialStateProperty.all(Colors.transparent),
-    foregroundColor: MaterialStateProperty.all(Colors.black),
-    overlayColor: MaterialStateProperty.all(Colors.grey),
-    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
-  );
 }
 
-class HatchPainter extends CustomPainter {
+// The rest of your code remains the same.
+
+class DottedPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final hatchPaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 1.5; // Increase hatch line thickness
+    const dotRadius = 1.0;
+    const offset = 2 * dotRadius + 4;
+    final dotPaint = Paint()..color = Colors.black;
 
-    int step = 10;
-
-    for (int i = 0; i < size.width; i += step) {
-      for (int j = 0; j < size.height; j += step) {
-        canvas.drawLine(
-          Offset(i.toDouble(), j.toDouble() + step),
-          Offset(i.toDouble() + step, j.toDouble()),
-          hatchPaint,
-        );
+    for (double y = 0; y < size.height; y += offset) {
+      for (double x = 0; x < size.width; x += offset) {
+        canvas.drawCircle(Offset(x, y), dotRadius, dotPaint);
       }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
