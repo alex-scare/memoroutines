@@ -71,6 +71,7 @@ class AppNavigation {
       path: '/home',
       // label: 'Home',
       icon: LineIcons.home,
+      transitionType: PageTransitionType.instant,
       builder: (_, __) => const HomeScreen(),
     ),
     AppRoute(
@@ -78,6 +79,7 @@ class AppNavigation {
       path: '/routines',
       // label: 'Routines',
       icon: LineIcons.bookOpen,
+      transitionType: PageTransitionType.instant,
       builder: (_, __) => const RoutinesScreen(),
     ),
     AppRoute(
@@ -85,6 +87,7 @@ class AppNavigation {
       path: '/settings',
       // label: 'Settings',
       icon: LineIcons.cog,
+      transitionType: PageTransitionType.instant,
       builder: (_, __) => const SettingsScreen(),
     ),
   ];
@@ -121,12 +124,19 @@ class AppNavigation {
   }
 }
 
-// Add requireAnonimous and requireAuth
+enum PageTransitionType {
+  instant,
+  cupertino,
+  ;
+}
+
+// TODO Add requireAnonimous and requireAuth
 class AppRoute {
   final RouteName name;
   final String path;
   final Widget Function(BuildContext, GoRouterState)? builder;
   final String? Function(BuildContext, GoRouterState)? redirectCheck;
+  final PageTransitionType transitionType;
 
   // Only for tab routes
   final String? label;
@@ -138,6 +148,7 @@ class AppRoute {
     required this.path,
     this.builder,
     this.redirectCheck,
+    this.transitionType = PageTransitionType.cupertino,
     this.label,
     this.icon,
     this.children = const [],
@@ -148,6 +159,11 @@ class AppRoute {
         path: path,
         builder: builder,
         name: name.name,
+        pageBuilder: transitionType == PageTransitionType.cupertino
+            ? null
+            : (context, state) => InstantTransitionPage(
+                  child: builder!.call(context, state),
+                ),
         routes: children.map((route) => route.route(key)).toList(),
         redirect: (context, state) {
           _log.info('redirecting to ${state.name} (${state.location})');
@@ -166,5 +182,33 @@ extension ContextNavigationExt on BuildContext {
     if (!Navigator.of(this).canPop()) return;
 
     Navigator.of(this).pop();
+  }
+}
+
+class InstantTransitionPage extends Page {
+  final Widget child;
+
+  InstantTransitionPage({required this.child}) : super(key: ValueKey(child));
+
+  @override
+  Route createRoute(BuildContext context) {
+    return PageRouteBuilder(
+      settings: this,
+      pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) =>
+          child,
+      transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+      ) {
+        // Return the child directly, without any transition.
+        return child;
+      },
+    );
   }
 }

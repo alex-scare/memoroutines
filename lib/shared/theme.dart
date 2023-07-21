@@ -4,6 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+  static const pageTransition = PageTransitionsTheme(
+    builders: <TargetPlatform, PageTransitionsBuilder>{
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+    },
+  );
+
   static final textTheme = GoogleFonts.comicNeueTextTheme();
 
   static FlexScheme schemeColor = FlexScheme.aquaBlue;
@@ -30,6 +37,7 @@ class AppTheme {
     useMaterial3: true,
     swapLegacyOnMaterial3: true,
     textTheme: textTheme,
+    pageTransitionsTheme: pageTransition,
   );
 }
 
