@@ -5,6 +5,8 @@ import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/features/routine_new/routine_new_screen.dart';
 import 'package:memoroutines/features/routines/routines_screen.dart';
 import 'package:memoroutines/features/schedule/schedule_screen.dart';
+import 'package:memoroutines/features/settings/advanced_settings_screen.dart';
+import 'package:memoroutines/features/settings/interface_locale_screen.dart';
 import 'package:memoroutines/features/settings/settings_screen.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/navigation/tab_navigation_scaffold.dart';
@@ -13,6 +15,8 @@ enum RouteName {
   initial,
   schedule,
   settings,
+  advancedSettings,
+  interfaceLocale,
   routines,
   newRoutine,
   ;
@@ -62,6 +66,16 @@ class AppNavigation {
       name: RouteName.newRoutine,
       path: '/routines/new',
       builder: (_, state) => RoutineNewScreen(goState: state),
+    ),
+    AppRoute(
+      name: RouteName.advancedSettings,
+      path: '/settings/advanced',
+      builder: (_, __) => const AdvancedSettignsScreen(),
+    ),
+    AppRoute(
+      name: RouteName.interfaceLocale,
+      path: '/interface_locale',
+      builder: (_, __) => const InterfaceLocaleScreen(),
     ),
   ];
 
@@ -127,7 +141,6 @@ enum PageTransitionType {
   ;
 }
 
-// TODO Add requireAnonimous and requireAuth
 class AppRoute {
   final RouteName name;
   final String path;

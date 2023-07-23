@@ -11,8 +11,10 @@ class AppLogFilter extends LogFilter {
   }
 }
 
+// TODO Add persisting loggerEnabled value
 class DevLogger {
   static const int _loggerGroupMinLength = 20;
+  static var loggerEnabled = false;
   static final Future<Logger> _loggerFuture = _initLogger();
   final String group;
 
@@ -30,6 +32,16 @@ class DevLogger {
       file.writeAsStringSync('');
     }
     return file;
+  }
+
+  static Future clearLogsFile() async {
+    final file = await getFile();
+    file.writeAsStringSync('');
+  }
+
+  static bool toggleLogsWriting() {
+    loggerEnabled = !loggerEnabled;
+    return loggerEnabled;
   }
 
   static void _logFilePath(File file) {
@@ -58,11 +70,6 @@ class DevLogger {
     );
   }
 
-  static Future clearLogsFile() async {
-    final file = await getFile();
-    file.writeAsStringSync('');
-  }
-
   String get _groupName {
     return group.length > _loggerGroupMinLength
         ? group
@@ -76,12 +83,14 @@ class DevLogger {
   }
 
   Future<void> empty({lines = 1}) async {
+    if (!loggerEnabled) return;
     final logger = await _loggerFuture;
     final message = '\n' * lines;
     logger.i(message, null, StackTrace.empty);
   }
 
   Future<void> infoWithDelimiters(String message) async {
+    if (!loggerEnabled) return;
     final logger = await _loggerFuture;
 
     final date = DateTime.now().toIso8601String();
@@ -99,6 +108,7 @@ class DevLogger {
   }
 
   Future<void> info(String message) async {
+    if (!loggerEnabled) return;
     final logger = await _loggerFuture;
     logger.i(_createMessage(message), null, StackTrace.empty);
   }
@@ -107,20 +117,26 @@ class DevLogger {
     String message, [
     dynamic error,
     StackTrace stack = StackTrace.empty,
-  ]) async =>
-      (await _loggerFuture).w(_createMessage(message), error, stack);
+  ]) async {
+    if (!loggerEnabled) return;
+    (await _loggerFuture).w(_createMessage(message), error, stack);
+  }
 
   Future<void> error(
     String message, [
     dynamic error,
     StackTrace stack = StackTrace.empty,
-  ]) async =>
-      (await _loggerFuture).e(_createMessage(message), error, stack);
+  ]) async {
+    if (!loggerEnabled) return;
+    (await _loggerFuture).e(_createMessage(message), error, stack);
+  }
 
   Future<void> wtf(
     String message, [
     dynamic error,
     StackTrace stack = StackTrace.empty,
-  ]) async =>
-      (await _loggerFuture).wtf(_createMessage(message), error, stack);
+  ]) async {
+    if (!loggerEnabled) return;
+    (await _loggerFuture).wtf(_createMessage(message), error, stack);
+  }
 }

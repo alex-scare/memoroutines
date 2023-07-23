@@ -37,7 +37,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
       // case RoutineFrequency.dayAfterDay:
       //   return date.difference(routine.metaData.lastDoneAt ?? date).inDays >= 1;
       case RoutineFrequency.weekly:
-        // TODO fix this logic
+        // TODO fix this logic (see warning below)
         return routine.metaData.daysOfWeek.contains(date.weekday);
       case RoutineFrequency.monthly:
         return routine.metaData.daysOfMonth.contains(date.day);

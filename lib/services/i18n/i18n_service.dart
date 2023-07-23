@@ -40,6 +40,7 @@ class I18nService {
 
   static const (String, String) _en = ('en', 'US');
   static const (String, String) _ru = ('ru', 'RU');
+  // static const (String, String) _de = ('de', 'DE');
 
   static const (String, String) defaultLocaleString = _en;
 

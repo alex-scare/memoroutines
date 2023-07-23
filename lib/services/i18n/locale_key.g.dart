@@ -41,9 +41,10 @@ class LocaleKey {
   static const modelsRoutineFrequencyEveryOtherDay = 'models.routine.frequency.everyOtherDay';
   static const modelsRoutineRepetitionsToCompleteDisplayName = 'models.routine.repetitionsToComplete.displayName';
   static const modelsRoutineSingleRepetitionDurationDisplayName = 'models.routine.singleRepetitionDuration.displayName';
-  static const modelsLanguageCurrent = 'models.language.current';
-  static const modelsLanguageEnUS = 'models.language.enUS';
-  static const modelsLanguageRuRU = 'models.language.ruRU';
+  static const modelsInterfaceLanguageCurrent = 'models.interfaceLanguage.current';
+  static const modelsInterfaceLanguageEn = 'models.interfaceLanguage.en';
+  static const modelsInterfaceLanguageRu = 'models.interfaceLanguage.ru';
+  static const modelsInterfaceLanguage = 'models.interfaceLanguage';
   static const durationsWeek = 'durations.week';
   static const durationsWeekOne = 'durations.week.one';
   static const durationsWeekFew = 'durations.week.few';
