@@ -2,6 +2,15 @@ class LocaleKey {
   const LocaleKey();
   static const screensRoutinesTitle = 'screens.routines.title';
   static const screensSettingsTitle = 'screens.settings.title';
+  static const screensSettingsAdvancedSettingsLink = 'screens.settings.advancedSettingsLink';
+  static const screensSettingsLanguageLink = 'screens.settings.languageLink';
+  static const screensSettingsVersion = 'screens.settings.version';
+  static const screensAdvancedSettingsTitle = 'screens.advancedSettings.title';
+  static const screensAdvancedSettingsLogsTitle = 'screens.advancedSettings.logs.title';
+  static const screensAdvancedSettingsLogsWriteLog = 'screens.advancedSettings.logs.writeLog';
+  static const screensAdvancedSettingsLogsShareLog = 'screens.advancedSettings.logs.shareLog';
+  static const screensAdvancedSettingsLogsDeleteLog = 'screens.advancedSettings.logs.deleteLog';
+  static const screensInterfaceLanguageTitle = 'screens.interfaceLanguage.title';
   static const screensNewRoutineActionsPrevStep = 'screens.newRoutine.actions.prevStep';
   static const screensNewRoutineActionsNextStep = 'screens.newRoutine.actions.nextStep';
   static const screensNewRoutineActionsSave = 'screens.newRoutine.actions.save';
@@ -32,6 +41,9 @@ class LocaleKey {
   static const modelsRoutineFrequencyEveryOtherDay = 'models.routine.frequency.everyOtherDay';
   static const modelsRoutineRepetitionsToCompleteDisplayName = 'models.routine.repetitionsToComplete.displayName';
   static const modelsRoutineSingleRepetitionDurationDisplayName = 'models.routine.singleRepetitionDuration.displayName';
+  static const modelsLanguageCurrent = 'models.language.current';
+  static const modelsLanguageEnUS = 'models.language.enUS';
+  static const modelsLanguageRuRU = 'models.language.ruRU';
   static const durationsWeek = 'durations.week';
   static const durationsWeekOne = 'durations.week.one';
   static const durationsWeekFew = 'durations.week.few';
