@@ -28,6 +28,7 @@ class RoutineNewMainInfo extends HookConsumerWidget {
           style: context.texts.titleMedium,
         ),
         const SizedBox(height: Spacing.xxs),
+        // TODO close input on change page
         CustomTextInput(
           autofocus: true,
           initialValue: formPod.name,

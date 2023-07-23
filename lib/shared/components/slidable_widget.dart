@@ -20,7 +20,7 @@ class SlidableWidgetAction {
 }
 
 // TODO add watching current action for background color customization
-// TODO fix expanded console error
+// TODO dismissable works badly. research other libraries
 class SlidableWidget extends StatelessWidget {
   const SlidableWidget({
     super.key,

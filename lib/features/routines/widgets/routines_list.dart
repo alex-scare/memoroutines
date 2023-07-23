@@ -35,7 +35,6 @@ class RoutinesList extends ConsumerWidget {
                   onPressed: (_) => routines.deleteWithRepetitions(routine.id),
                   backgroundColor: context.colors.error,
                   foregroundColor: context.colors.onError,
-                  isDismissable: true,
                 )
               ],
               child: RoutineInfoCard(routine: routine),
