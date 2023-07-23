@@ -20,6 +20,7 @@ class CustomTextInput extends StatelessWidget {
     this.controller,
     this.validator,
     this.inputFormatters,
+    this.focusNode,
     this.enabled = true,
   }) : super(key: key);
 
@@ -39,6 +40,7 @@ class CustomTextInput extends StatelessWidget {
   final Color? labelColor;
   final double? labelWidth;
   final bool enabled;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +63,7 @@ class CustomTextInput extends StatelessWidget {
       textCapitalization: TextCapitalization.sentences,
       autofocus: autofocus,
       inputFormatters: inputFormatters,
+      focusNode: focusNode,
       maxLines: maxLines,
       minLines: minLines,
       onChanged: onChanged,

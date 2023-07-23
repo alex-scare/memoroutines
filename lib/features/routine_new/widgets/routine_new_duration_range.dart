@@ -15,44 +15,47 @@ class RoutineNewDurationRange extends ConsumerWidget {
     final formPod = ref.watch(routineNewPod(null));
     final formPodNotifier = ref.read(routineNewPod(null).notifier);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: Spacing.md),
-        Text(
-          LocaleKey.screensNewRoutineDurationTitle.tr(),
-          style:
-              context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          LocaleKey.screensNewRoutineDurationDescription.tr(),
-          style: context.texts.bodySmall!.copyWith(fontStyle: FontStyle.italic),
-        ),
-        const SizedBox(height: Spacing.sm),
-        SliderTheme(
-          data: context.theme.sliderTheme.copyWith(
-            trackShape: CustomTrackShape(),
-            trackHeight: 2,
-            thumbShape: SliderComponentShape.noThumb,
-            overlayShape: const RoundSliderOverlayShape(overlayRadius: 15.0),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: Spacing.md),
+          Text(
+            LocaleKey.screensNewRoutineDurationTitle.tr(),
+            style:
+                context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
-          child: Slider(
-            value: formPod.repetitionsToComplete.toDouble(),
-            max: 365,
-            min: 1,
-            onChanged: (value) {
-              formPodNotifier.setRepetitionsToComplete(value.toInt());
-            },
+          Text(
+            LocaleKey.screensNewRoutineDurationDescription.tr(),
+            style:
+                context.texts.bodySmall!.copyWith(fontStyle: FontStyle.italic),
           ),
-        ),
-        Text(
-          _getDurationString(context, formPod.repetitionsToComplete),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: context.colors.onBackground.withOpacity(0.5),
+          const SizedBox(height: Spacing.sm),
+          SliderTheme(
+            data: context.theme.sliderTheme.copyWith(
+              trackShape: CustomTrackShape(),
+              trackHeight: 2,
+              thumbShape: SliderComponentShape.noThumb,
+              overlayShape: const RoundSliderOverlayShape(overlayRadius: 15.0),
+            ),
+            child: Slider(
+              value: formPod.repetitionsToComplete.toDouble(),
+              max: 365,
+              min: 1,
+              onChanged: (value) {
+                formPodNotifier.setRepetitionsToComplete(value.toInt());
+              },
+            ),
           ),
-        ).width(double.infinity),
-      ],
+          Text(
+            _getDurationString(context, formPod.repetitionsToComplete),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: context.colors.onBackground.withOpacity(0.5),
+            ),
+          ).width(double.infinity),
+        ],
+      ),
     );
   }
 
