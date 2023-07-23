@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
+import 'package:memoroutines/shared/helpers/routine_icon.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
 import 'package:memoroutines/shared/theme.dart';
 
@@ -29,7 +29,7 @@ class RoutineNewIconSelector extends HookConsumerWidget {
 
         void listener() {
           final index = iconsController.page!.round();
-          formPodNotifier.setIcon(iconList[index], index);
+          formPodNotifier.setIcon(RoutineIcon.values[index], index);
         }
 
         iconsController.addListener(listener);
@@ -87,7 +87,7 @@ class RoutineNewIconSelector extends HookConsumerWidget {
                 blendMode: BlendMode.dstOut,
                 child: PageView.builder(
                   controller: iconsController,
-                  itemCount: iconList.length,
+                  itemCount: RoutineIcon.values.length,
                   physics: const CustomScrollPhysics(),
                   pageSnapping: true,
                   itemBuilder: (context, index) {
@@ -95,7 +95,7 @@ class RoutineNewIconSelector extends HookConsumerWidget {
 
                     return Center(
                       child: Icon(
-                        iconList[index],
+                        RoutineIcon.values[index].icon,
                         size: isCurrent ? 40.0 : 20.0,
                         color: isCurrent
                             ? context.colors.onPrimaryContainer
@@ -138,25 +138,25 @@ class RoutineNewIconSelector extends HookConsumerWidget {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: iconList.length,
+          itemCount: RoutineIcon.values.length,
           itemBuilder: (ctx, index) {
             final isSelected = formPod.iconIndex == index;
 
             return GestureDetector(
               onTap: () {
-                formPodNotifier.setIcon(iconList[index], index);
+                formPodNotifier.setIcon(RoutineIcon.values[index], index);
                 Navigator.of(context).pop();
               },
               child: isSelected
                   ? CircleAvatar(
                       backgroundColor: context.colors.primaryContainer,
                       child: Icon(
-                        iconList[index],
+                        RoutineIcon.values[index].icon,
                         size: 32.0,
                         color: context.colors.onPrimaryContainer,
                       ),
                     )
-                  : Icon(iconList[index], size: 32.0),
+                  : Icon(RoutineIcon.values[index].icon, size: 32.0),
             );
           },
         );
@@ -179,6 +179,3 @@ class CustomScrollPhysics extends ScrollPhysics {
     return super.applyPhysicsToUserOffset(position, offset) * 5.0;
   }
 }
-
-// TODO prepare icon pack
-final iconList = LineIcons.values.values.toList();

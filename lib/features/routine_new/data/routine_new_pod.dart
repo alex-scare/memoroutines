@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_state.dart';
+import 'package:memoroutines/shared/helpers/routine_icon.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/models/weekday.dart';
 import 'package:memoroutines/shared/repositories/routines_repository.dart';
@@ -58,7 +58,7 @@ class RoutineNewStateNotifier extends StateNotifier<RoutineNewState> {
     state = state.copyWith(singleRepetititionDuration: value);
   }
 
-  void setIcon(IconData icon, int index) {
+  void setIcon(RoutineIcon icon, int index) {
     state = state.copyWith(icon: icon, iconIndex: index);
   }
 

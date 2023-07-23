@@ -24,13 +24,13 @@ enum Weekday {
 
   String get shortName {
     return switch (this) {
-      monday => LocaleKey.durationNamesWeekDayNameMondayShort,
-      tuesday => LocaleKey.durationNamesWeekDayNameTuesdayShort,
-      wednesday => LocaleKey.durationNamesWeekDayNameWednesdayShort,
-      thursday => LocaleKey.durationNamesWeekDayNameThursdayShort,
-      friday => LocaleKey.durationNamesWeekDayNameFridayShort,
-      saturday => LocaleKey.durationNamesWeekDayNameSaturdayShort,
-      sunday => LocaleKey.durationNamesWeekDayNameSundayShort,
+      monday => LocaleKey.durationNamesWeekDayMondayShort,
+      tuesday => LocaleKey.durationNamesWeekDayTuesdayShort,
+      wednesday => LocaleKey.durationNamesWeekDayWednesdayShort,
+      thursday => LocaleKey.durationNamesWeekDayThursdayShort,
+      friday => LocaleKey.durationNamesWeekDayFridayShort,
+      saturday => LocaleKey.durationNamesWeekDaySaturdayShort,
+      sunday => LocaleKey.durationNamesWeekDaySundayShort,
     };
   }
 

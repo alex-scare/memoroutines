@@ -12,6 +12,7 @@ class AppLogFilter extends LogFilter {
 }
 
 class DevLogger {
+  static const int _loggerGroupMinLength = 20;
   static final Future<Logger> _loggerFuture = _initLogger();
   final String group;
 
@@ -63,7 +64,9 @@ class DevLogger {
   }
 
   String get _groupName {
-    return group.length > 15 ? group : group.padRight(15, '.');
+    return group.length > _loggerGroupMinLength
+        ? group
+        : group.padRight(_loggerGroupMinLength, '.');
   }
 
   String _createMessage(String message) {

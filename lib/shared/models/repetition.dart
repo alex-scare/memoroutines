@@ -13,6 +13,7 @@ enum RepetitionStatus {
 @Collection()
 class Repetition {
   Id id = Isar.autoIncrement;
+  @Index()
   DateTime dateToBeCompleted;
   DateTime? actionedAt;
   @Enumerated(EnumType.name)

@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/repositories/base_repository.dart';
@@ -7,18 +8,26 @@ import 'package:memoroutines/shared/repositories/base_repository.dart';
 class RepetitionsRepository extends BaseRepository<Repetition> {
   RepetitionsRepository(ProviderRef ref) : super(ref, 'repetitions_repo');
 
-  Future<void> generateRepetitions(Routine routine) async {
-    var date = DateTime.now();
+  List<Repetition> generateRepetitions(Routine routine) {
+    final List<Repetition> repetitionsToCreate = [];
+    var now = DateTime.now();
+    var onlyDate = DateTime(now.year, now.month, now.day);
     for (var i = 0; i < 30; i++) {
-      if (_shouldCreateRepetition(routine, date)) {
+      final shouldCreateRepetition = _shouldCreateRepetition(routine, onlyDate);
+      if (shouldCreateRepetition) {
         var completion = Repetition(
-          dateToBeCompleted: date,
+          dateToBeCompleted: onlyDate,
           status: RepetitionStatus.upcoming,
         );
-        routine.repetitions.add(completion);
+        repetitionsToCreate.add(completion);
       }
-      date = date.add(const Duration(days: 1));
+      onlyDate = onlyDate.add(1.days);
     }
+
+    log.info(
+      'repetitionsToCreate: ${repetitionsToCreate.length}. from ${repetitionsToCreate.first.dateToBeCompleted} to ${repetitionsToCreate.last.dateToBeCompleted}',
+    );
+    return repetitionsToCreate;
   }
 
   bool _shouldCreateRepetition(Routine routine, DateTime date) {
@@ -28,6 +37,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
       // case RoutineFrequency.dayAfterDay:
       //   return date.difference(routine.metaData.lastDoneAt ?? date).inDays >= 1;
       case RoutineFrequency.weekly:
+        // TODO fix this logic
         return routine.metaData.daysOfWeek.contains(date.weekday);
       case RoutineFrequency.monthly:
         return routine.metaData.daysOfMonth.contains(date.day);
@@ -66,7 +76,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
         .findAll();
   }
 
-  Future<void> removeUpcomingRepetitionsForRoutine(Id routineId) async {
+  Future<void> deleteUpcomingRepetitionsForRoutine(Id routineId) async {
     final db = await isar;
     await db.writeTxn(() async {
       final repetitions = await getRepetitionsForRoutine(routineId);
@@ -78,6 +88,36 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
       }
     });
   }
+
+  Future<void> deleteAllRepetitionsForRoutine(Id routineId) async {
+    final db = await isar;
+    final repetitions = await getRepetitionsForRoutine(routineId);
+
+    await db.repetitions
+        .deleteAll(repetitions.map((routine) => routine.id).toList());
+  }
+
+  Future<List<Repetition>> getRepetitionsForDate(DateTime date) async {
+    final onlyDate = DateTime(date.year, date.month, date.day);
+
+    final db = await isar;
+    return db.repetitions
+        .where()
+        .filter()
+        .dateToBeCompletedEqualTo(onlyDate)
+        .findAll();
+  }
+
+  Stream<List<Repetition>> listenRepetitionsForDate(DateTime date) async* {
+    final onlyDate = DateTime(date.year, date.month, date.day);
+
+    final db = await isar;
+    yield* db.repetitions
+        .where()
+        .filter()
+        .dateToBeCompletedEqualTo(onlyDate)
+        .watch(fireImmediately: true);
+  }
 }
 
-final completionsPod = Provider((ref) => RepetitionsRepository(ref));
+final repetitionsPod = Provider((ref) => RepetitionsRepository(ref));

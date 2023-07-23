@@ -2,16 +2,16 @@ import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:memoroutines/features/home/home_screen.dart';
 import 'package:memoroutines/features/routine_new/routine_new_screen.dart';
 import 'package:memoroutines/features/routines/routines_screen.dart';
+import 'package:memoroutines/features/schedule/schedule_screen.dart';
 import 'package:memoroutines/features/settings/settings_screen.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/navigation/tab_navigation_scaffold.dart';
 
 enum RouteName {
   initial,
-  home,
+  schedule,
   settings,
   routines,
   newRoutine,
@@ -56,7 +56,7 @@ class AppNavigation {
     AppRoute(
       name: RouteName.initial,
       path: '/',
-      redirectCheck: (_, __) => '/home',
+      redirectCheck: (_, __) => '/schedule',
     ),
     AppRoute(
       name: RouteName.newRoutine,
@@ -67,17 +67,15 @@ class AppNavigation {
 
   final List<AppRoute> tabRoutes = [
     AppRoute(
-      name: RouteName.home,
-      path: '/home',
-      // label: 'Home',
-      icon: LineIcons.home,
+      name: RouteName.schedule,
+      path: '/schedule',
+      icon: LineIcons.calendar,
       transitionType: PageTransitionType.instant,
-      builder: (_, __) => const HomeScreen(),
+      builder: (_, __) => const ScheduleScreen(),
     ),
     AppRoute(
       name: RouteName.routines,
       path: '/routines',
-      // label: 'Routines',
       icon: LineIcons.bookOpen,
       transitionType: PageTransitionType.instant,
       builder: (_, __) => const RoutinesScreen(),
@@ -85,7 +83,6 @@ class AppNavigation {
     AppRoute(
       name: RouteName.settings,
       path: '/settings',
-      // label: 'Settings',
       icon: LineIcons.cog,
       transitionType: PageTransitionType.instant,
       builder: (_, __) => const SettingsScreen(),

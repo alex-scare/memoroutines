@@ -1,7 +1,7 @@
 class LocaleKey {
   const LocaleKey();
-  static const screensHomeTitle = 'screens.home.title';
   static const screensRoutinesTitle = 'screens.routines.title';
+  static const screensSettingsTitle = 'screens.settings.title';
   static const screensNewRoutineActionsPrevStep = 'screens.newRoutine.actions.prevStep';
   static const screensNewRoutineActionsNextStep = 'screens.newRoutine.actions.nextStep';
   static const screensNewRoutineActionsSave = 'screens.newRoutine.actions.save';
@@ -67,11 +67,14 @@ class LocaleKey {
   static const durationsYearFew = 'durations.year.few';
   static const durationsYearMany = 'durations.year.many';
   static const durationsYearOther = 'durations.year.other';
-  static const durationNamesWeekDayNameMondayShort = 'durationNames.weekDay.name.monday.short';
-  static const durationNamesWeekDayNameTuesdayShort = 'durationNames.weekDay.name.tuesday.short';
-  static const durationNamesWeekDayNameWednesdayShort = 'durationNames.weekDay.name.wednesday.short';
-  static const durationNamesWeekDayNameThursdayShort = 'durationNames.weekDay.name.thursday.short';
-  static const durationNamesWeekDayNameFridayShort = 'durationNames.weekDay.name.friday.short';
-  static const durationNamesWeekDayNameSaturdayShort = 'durationNames.weekDay.name.saturday.short';
-  static const durationNamesWeekDayNameSundayShort = 'durationNames.weekDay.name.sunday.short';
+  static const durationNamesWeekDayMondayShort = 'durationNames.weekDay.monday.short';
+  static const durationNamesWeekDayTuesdayShort = 'durationNames.weekDay.tuesday.short';
+  static const durationNamesWeekDayWednesdayShort = 'durationNames.weekDay.wednesday.short';
+  static const durationNamesWeekDayThursdayShort = 'durationNames.weekDay.thursday.short';
+  static const durationNamesWeekDayFridayShort = 'durationNames.weekDay.friday.short';
+  static const durationNamesWeekDaySaturdayShort = 'durationNames.weekDay.saturday.short';
+  static const durationNamesWeekDaySundayShort = 'durationNames.weekDay.sunday.short';
+  static const durationNamesToday = 'durationNames.today';
+  static const durationNamesYesterday = 'durationNames.yesterday';
+  static const durationNamesTomorrow = 'durationNames.tomorrow';
 }

@@ -32,7 +32,7 @@ class RoutinesList extends ConsumerWidget {
               endActions: [
                 SlidableWidgetAction(
                   icon: const Icon(LineIcons.trash),
-                  onPressed: (_) => routines.delete(routine.id),
+                  onPressed: (_) => routines.deleteWithRepetitions(routine.id),
                   backgroundColor: context.colors.error,
                   foregroundColor: context.colors.onError,
                   isDismissable: true,

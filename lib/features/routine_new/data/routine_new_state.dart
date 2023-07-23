@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:memoroutines/shared/helpers/routine_icon.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/models/weekday.dart';
 
@@ -19,7 +19,7 @@ class RoutineNewState with _$RoutineNewState {
     @Default([]) List<Weekday> daysOfWeek,
     @Default([]) List<int> daysOfMonth,
     @Default(1) int repetitionsPerPeriod,
-    @Default(null) IconData? icon,
+    @Default(RoutineIcon.book) RoutineIcon icon,
     // form helpers
     @Default(7) int iconIndex,
   }) = _RoutineNewState;
@@ -60,7 +60,7 @@ extension RoutineNewStateExt on RoutineNewState {
       singleRepetitionDuration: singleRepetititionDuration,
       repetitionsNumberToComplete: repetitionsToComplete,
       frequency: frequency,
-      iconData: icon,
+      icon: icon,
     )..metaData = RoutineMetaData(
         isFlexible: isFlexible,
         daysOfMonth: daysOfMonth,

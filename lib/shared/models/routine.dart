@@ -1,8 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
+
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
+import 'package:memoroutines/shared/helpers/routine_icon.dart';
 import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/weekday.dart';
 
@@ -13,8 +14,8 @@ class Routine {
   Id id = Isar.autoIncrement;
   String name;
   String description;
-  // ignore: non_constant_identifier_names
-  int? PRIVATE__iconCodePoint;
+  @Enumerated(EnumType.name)
+  RoutineIcon icon;
   @Enumerated(EnumType.name)
   RoutineStatus status;
   @Enumerated(EnumType.name)
@@ -30,19 +31,22 @@ class Routine {
   Routine({
     required this.name,
     required this.description,
+    required this.icon,
     this.status = RoutineStatus.active,
     this.frequency = RoutineFrequency.daily,
     this.repetitionsNumberToComplete = 30,
     this.singleRepetitionDuration = 30,
     this.notifications = false,
-    IconData? iconData,
   })  : metaData = RoutineMetaData(),
-        stats = RoutineStats(),
-        PRIVATE__iconCodePoint = iconData?.codePoint;
+        stats = RoutineStats();
 
   @override
   String toString() {
-    return 'Routine(id: $id, name: $name, description: $description, PRIVATE__iconCodePoint: $PRIVATE__iconCodePoint, notifications: $notifications, repetitionsNumberToComplete: $repetitionsNumberToComplete, singleRepetitionDuration: $singleRepetitionDuration)';
+    return 'Routine(id: $id, name: $name, description: $description, notifications: $notifications, repetitionsNumberToComplete: $repetitionsNumberToComplete, singleRepetitionDuration: $singleRepetitionDuration)';
+  }
+
+  void addRepetitions(List<Repetition> repetitions) {
+    this.repetitions.addAll(repetitions);
   }
 }
 
@@ -55,19 +59,6 @@ extension RoutineExt on Routine {
       <= 60 * 24 => context.plural(LocaleKey.durationsHour, value ~/ 60),
       _ => ''
     };
-  }
-
-  IconData? get iconData {
-    if (PRIVATE__iconCodePoint == null) return null;
-    return IconData(
-      PRIVATE__iconCodePoint!,
-      fontFamily: 'Awesome Line Icons 1.3.0',
-      fontPackage: 'line_icons',
-    );
-  }
-
-  set iconData(IconData? value) {
-    PRIVATE__iconCodePoint = value?.codePoint;
   }
 }
 
@@ -149,6 +140,7 @@ class RoutineStats {
   });
 }
 
+// TODO this realization looks not really cool. Try to implement this another way
 enum SingleRepetitionDuration {
   minute(1),
   twoMinutes(2),

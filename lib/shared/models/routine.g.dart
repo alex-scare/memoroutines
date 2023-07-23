@@ -17,21 +17,22 @@ const RoutineSchema = CollectionSchema(
   name: r'Routine',
   id: 9144663503541703680,
   properties: {
-    r'PRIVATE__iconCodePoint': PropertySchema(
-      id: 0,
-      name: r'PRIVATE__iconCodePoint',
-      type: IsarType.long,
-    ),
     r'description': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'description',
       type: IsarType.string,
     ),
     r'frequency': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'frequency',
       type: IsarType.string,
       enumMap: _RoutinefrequencyEnumValueMap,
+    ),
+    r'icon': PropertySchema(
+      id: 2,
+      name: r'icon',
+      type: IsarType.string,
+      enumMap: _RoutineiconEnumValueMap,
     ),
     r'metaData': PropertySchema(
       id: 3,
@@ -104,6 +105,7 @@ int _routineEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.description.length * 3;
   bytesCount += 3 + object.frequency.name.length * 3;
+  bytesCount += 3 + object.icon.name.length * 3;
   bytesCount += 3 +
       RoutineMetaDataSchema.estimateSize(
           object.metaData, allOffsets[RoutineMetaData]!, allOffsets);
@@ -121,9 +123,9 @@ void _routineSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.PRIVATE__iconCodePoint);
-  writer.writeString(offsets[1], object.description);
-  writer.writeString(offsets[2], object.frequency.name);
+  writer.writeString(offsets[0], object.description);
+  writer.writeString(offsets[1], object.frequency.name);
+  writer.writeString(offsets[2], object.icon.name);
   writer.writeObject<RoutineMetaData>(
     offsets[3],
     allOffsets,
@@ -150,10 +152,12 @@ Routine _routineDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Routine(
-    description: reader.readString(offsets[1]),
+    description: reader.readString(offsets[0]),
     frequency:
-        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[2])] ??
+        _RoutinefrequencyValueEnumMap[reader.readStringOrNull(offsets[1])] ??
             RoutineFrequency.daily,
+    icon: _RoutineiconValueEnumMap[reader.readStringOrNull(offsets[2])] ??
+        RoutineIcon.cat,
     name: reader.readString(offsets[4]),
     notifications: reader.readBoolOrNull(offsets[5]) ?? false,
     repetitionsNumberToComplete: reader.readLongOrNull(offsets[6]) ?? 30,
@@ -161,7 +165,6 @@ Routine _routineDeserialize(
     status: _RoutinestatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
         RoutineStatus.active,
   );
-  object.PRIVATE__iconCodePoint = reader.readLongOrNull(offsets[0]);
   object.id = id;
   object.metaData = reader.readObjectOrNull<RoutineMetaData>(
         offsets[3],
@@ -186,12 +189,13 @@ P _routineDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
-    case 1:
       return (reader.readString(offset)) as P;
-    case 2:
+    case 1:
       return (_RoutinefrequencyValueEnumMap[reader.readStringOrNull(offset)] ??
           RoutineFrequency.daily) as P;
+    case 2:
+      return (_RoutineiconValueEnumMap[reader.readStringOrNull(offset)] ??
+          RoutineIcon.cat) as P;
     case 3:
       return (reader.readObjectOrNull<RoutineMetaData>(
             offset,
@@ -231,6 +235,170 @@ const _RoutinefrequencyValueEnumMap = {
   r'daily': RoutineFrequency.daily,
   r'weekly': RoutineFrequency.weekly,
   r'monthly': RoutineFrequency.monthly,
+};
+const _RoutineiconEnumValueMap = {
+  r'cat': r'cat',
+  r'dog': r'dog',
+  r'paw': r'paw',
+  r'hiking': r'hiking',
+  r'glassCheers': r'glassCheers',
+  r'cocktail': r'cocktail',
+  r'coffee': r'coffee',
+  r'freeCodeCamp': r'freeCodeCamp',
+  r'git': r'git',
+  r'github': r'github',
+  r'gitlab': r'gitlab',
+  r'instagram': r'instagram',
+  r'microsoft': r'microsoft',
+  r'java': r'java',
+  r'python': r'python',
+  r'react': r'react',
+  r'swift': r'swift',
+  r'telegram': r'telegram',
+  r'windows': r'windows',
+  r'campground': r'campground',
+  r'route': r'route',
+  r'mountain': r'mountain',
+  r'fire': r'fire',
+  r'compass': r'compass',
+  r'seedling': r'seedling',
+  r'handHoldingHeart': r'handHoldingHeart',
+  r'chess': r'chess',
+  r'gamepad': r'gamepad',
+  r'terminal': r'terminal',
+  r'code': r'code',
+  r'laptop': r'laptop',
+  r'paintRoller': r'paintRoller',
+  r'paintBrush': r'paintBrush',
+  r'ethereum': r'ethereum',
+  r'btc': r'btc',
+  r'moneyBill': r'moneyBill',
+  r'palette': r'palette',
+  r'glasses': r'glasses',
+  r'atom': r'atom',
+  r'laptopCode': r'laptopCode',
+  r'theaterMasks': r'theaterMasks',
+  r'microscope': r'microscope',
+  r'music': r'music',
+  r'water': r'water',
+  r'wallet': r'wallet',
+  r'coins': r'coins',
+  r'bicycle': r'bicycle',
+  r'skiing': r'skiing',
+  r'running': r'running',
+  r'swimmer': r'swimmer',
+  r'spa': r'spa',
+  r'pizzaSlice': r'pizzaSlice',
+  r'cheese': r'cheese',
+  r'twitch': r'twitch',
+  r'steam': r'steam',
+  r'diceD6': r'diceD6',
+  r'dumbbell': r'dumbbell',
+  r'camera': r'camera',
+  r'bomb': r'bomb',
+  r'car': r'car',
+  r'globe': r'globe',
+  r'book': r'book',
+  r'couch': r'couch',
+  r'spotify': r'spotify',
+  r'drum': r'drum',
+  r'beer': r'beer',
+  r'futbol': r'futbol',
+  r'graduationCap': r'graduationCap',
+  r'gem': r'gem',
+  r'guitar': r'guitar',
+  r'shoppingCart': r'shoppingCart',
+  r'university': r'university',
+  r'golfBall': r'golfBall',
+  r'skating': r'skating',
+  r'scroll': r'scroll',
+  r'dungeon': r'dungeon',
+  r'dragon': r'dragon',
+  r'bed': r'bed',
+  r'meteor': r'meteor',
+  r'snowboarding': r'snowboarding',
+};
+const _RoutineiconValueEnumMap = {
+  r'cat': RoutineIcon.cat,
+  r'dog': RoutineIcon.dog,
+  r'paw': RoutineIcon.paw,
+  r'hiking': RoutineIcon.hiking,
+  r'glassCheers': RoutineIcon.glassCheers,
+  r'cocktail': RoutineIcon.cocktail,
+  r'coffee': RoutineIcon.coffee,
+  r'freeCodeCamp': RoutineIcon.freeCodeCamp,
+  r'git': RoutineIcon.git,
+  r'github': RoutineIcon.github,
+  r'gitlab': RoutineIcon.gitlab,
+  r'instagram': RoutineIcon.instagram,
+  r'microsoft': RoutineIcon.microsoft,
+  r'java': RoutineIcon.java,
+  r'python': RoutineIcon.python,
+  r'react': RoutineIcon.react,
+  r'swift': RoutineIcon.swift,
+  r'telegram': RoutineIcon.telegram,
+  r'windows': RoutineIcon.windows,
+  r'campground': RoutineIcon.campground,
+  r'route': RoutineIcon.route,
+  r'mountain': RoutineIcon.mountain,
+  r'fire': RoutineIcon.fire,
+  r'compass': RoutineIcon.compass,
+  r'seedling': RoutineIcon.seedling,
+  r'handHoldingHeart': RoutineIcon.handHoldingHeart,
+  r'chess': RoutineIcon.chess,
+  r'gamepad': RoutineIcon.gamepad,
+  r'terminal': RoutineIcon.terminal,
+  r'code': RoutineIcon.code,
+  r'laptop': RoutineIcon.laptop,
+  r'paintRoller': RoutineIcon.paintRoller,
+  r'paintBrush': RoutineIcon.paintBrush,
+  r'ethereum': RoutineIcon.ethereum,
+  r'btc': RoutineIcon.btc,
+  r'moneyBill': RoutineIcon.moneyBill,
+  r'palette': RoutineIcon.palette,
+  r'glasses': RoutineIcon.glasses,
+  r'atom': RoutineIcon.atom,
+  r'laptopCode': RoutineIcon.laptopCode,
+  r'theaterMasks': RoutineIcon.theaterMasks,
+  r'microscope': RoutineIcon.microscope,
+  r'music': RoutineIcon.music,
+  r'water': RoutineIcon.water,
+  r'wallet': RoutineIcon.wallet,
+  r'coins': RoutineIcon.coins,
+  r'bicycle': RoutineIcon.bicycle,
+  r'skiing': RoutineIcon.skiing,
+  r'running': RoutineIcon.running,
+  r'swimmer': RoutineIcon.swimmer,
+  r'spa': RoutineIcon.spa,
+  r'pizzaSlice': RoutineIcon.pizzaSlice,
+  r'cheese': RoutineIcon.cheese,
+  r'twitch': RoutineIcon.twitch,
+  r'steam': RoutineIcon.steam,
+  r'diceD6': RoutineIcon.diceD6,
+  r'dumbbell': RoutineIcon.dumbbell,
+  r'camera': RoutineIcon.camera,
+  r'bomb': RoutineIcon.bomb,
+  r'car': RoutineIcon.car,
+  r'globe': RoutineIcon.globe,
+  r'book': RoutineIcon.book,
+  r'couch': RoutineIcon.couch,
+  r'spotify': RoutineIcon.spotify,
+  r'drum': RoutineIcon.drum,
+  r'beer': RoutineIcon.beer,
+  r'futbol': RoutineIcon.futbol,
+  r'graduationCap': RoutineIcon.graduationCap,
+  r'gem': RoutineIcon.gem,
+  r'guitar': RoutineIcon.guitar,
+  r'shoppingCart': RoutineIcon.shoppingCart,
+  r'university': RoutineIcon.university,
+  r'golfBall': RoutineIcon.golfBall,
+  r'skating': RoutineIcon.skating,
+  r'scroll': RoutineIcon.scroll,
+  r'dungeon': RoutineIcon.dungeon,
+  r'dragon': RoutineIcon.dragon,
+  r'bed': RoutineIcon.bed,
+  r'meteor': RoutineIcon.meteor,
+  r'snowboarding': RoutineIcon.snowboarding,
 };
 const _RoutinestatusEnumValueMap = {
   r'active': r'active',
@@ -336,80 +504,6 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
 
 extension RoutineQueryFilter
     on QueryBuilder<Routine, Routine, QFilterCondition> {
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      pRIVATE__iconCodePointIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'PRIVATE__iconCodePoint',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      pRIVATE__iconCodePointIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'PRIVATE__iconCodePoint',
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      pRIVATE__iconCodePointEqualTo(int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'PRIVATE__iconCodePoint',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      pRIVATE__iconCodePointGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'PRIVATE__iconCodePoint',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      pRIVATE__iconCodePointLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'PRIVATE__iconCodePoint',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterFilterCondition>
-      pRIVATE__iconCodePointBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'PRIVATE__iconCodePoint',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterFilterCondition> descriptionEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -666,6 +760,136 @@ extension RoutineQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'frequency',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconEqualTo(
+    RoutineIcon value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconGreaterThan(
+    RoutineIcon value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconLessThan(
+    RoutineIcon value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconBetween(
+    RoutineIcon lower,
+    RoutineIcon upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'icon',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'icon',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'icon',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> iconIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'icon',
         value: '',
       ));
     });
@@ -1187,19 +1411,6 @@ extension RoutineQueryLinks
 }
 
 extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByPRIVATE__iconCodePoint() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy>
-      sortByPRIVATE__iconCodePointDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.asc);
@@ -1221,6 +1432,18 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByFrequencyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frequency', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.desc);
     });
   }
 
@@ -1291,19 +1514,6 @@ extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
 
 extension RoutineQuerySortThenBy
     on QueryBuilder<Routine, Routine, QSortThenBy> {
-  QueryBuilder<Routine, Routine, QAfterSortBy> thenByPRIVATE__iconCodePoint() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy>
-      thenByPRIVATE__iconCodePointDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'PRIVATE__iconCodePoint', Sort.desc);
-    });
-  }
-
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.asc);
@@ -1325,6 +1535,18 @@ extension RoutineQuerySortThenBy
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByFrequencyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frequency', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterSortBy> thenByIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.desc);
     });
   }
 
@@ -1407,12 +1629,6 @@ extension RoutineQuerySortThenBy
 
 extension RoutineQueryWhereDistinct
     on QueryBuilder<Routine, Routine, QDistinct> {
-  QueryBuilder<Routine, Routine, QDistinct> distinctByPRIVATE__iconCodePoint() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'PRIVATE__iconCodePoint');
-    });
-  }
-
   QueryBuilder<Routine, Routine, QDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1424,6 +1640,13 @@ extension RoutineQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'frequency', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QDistinct> distinctByIcon(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'icon', caseSensitive: caseSensitive);
     });
   }
 
@@ -1470,13 +1693,6 @@ extension RoutineQueryProperty
     });
   }
 
-  QueryBuilder<Routine, int?, QQueryOperations>
-      PRIVATE__iconCodePointProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'PRIVATE__iconCodePoint');
-    });
-  }
-
   QueryBuilder<Routine, String, QQueryOperations> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'description');
@@ -1487,6 +1703,12 @@ extension RoutineQueryProperty
       frequencyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'frequency');
+    });
+  }
+
+  QueryBuilder<Routine, RoutineIcon, QQueryOperations> iconProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'icon');
     });
   }
 

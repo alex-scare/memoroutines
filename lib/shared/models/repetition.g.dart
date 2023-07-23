@@ -39,7 +39,21 @@ const RepetitionSchema = CollectionSchema(
   deserialize: _repetitionDeserialize,
   deserializeProp: _repetitionDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'dateToBeCompleted': IndexSchema(
+      id: 705892444378462538,
+      name: r'dateToBeCompleted',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'dateToBeCompleted',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {
     r'routine': LinkSchema(
       id: 613267370174553022,
@@ -146,6 +160,14 @@ extension RepetitionQueryWhereSort
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
+
+  QueryBuilder<Repetition, Repetition, QAfterWhere> anyDateToBeCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'dateToBeCompleted'),
+      );
+    });
+  }
 }
 
 extension RepetitionQueryWhere
@@ -210,6 +232,99 @@ extension RepetitionQueryWhere
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause>
+      dateToBeCompletedEqualTo(DateTime dateToBeCompleted) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'dateToBeCompleted',
+        value: [dateToBeCompleted],
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause>
+      dateToBeCompletedNotEqualTo(DateTime dateToBeCompleted) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateToBeCompleted',
+              lower: [],
+              upper: [dateToBeCompleted],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateToBeCompleted',
+              lower: [dateToBeCompleted],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateToBeCompleted',
+              lower: [dateToBeCompleted],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dateToBeCompleted',
+              lower: [],
+              upper: [dateToBeCompleted],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause>
+      dateToBeCompletedGreaterThan(
+    DateTime dateToBeCompleted, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateToBeCompleted',
+        lower: [dateToBeCompleted],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause>
+      dateToBeCompletedLessThan(
+    DateTime dateToBeCompleted, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateToBeCompleted',
+        lower: [],
+        upper: [dateToBeCompleted],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterWhereClause>
+      dateToBeCompletedBetween(
+    DateTime lowerDateToBeCompleted,
+    DateTime upperDateToBeCompleted, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dateToBeCompleted',
+        lower: [lowerDateToBeCompleted],
+        includeLower: includeLower,
+        upper: [upperDateToBeCompleted],
         includeUpper: includeUpper,
       ));
     });

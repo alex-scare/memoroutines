@@ -7,15 +7,18 @@ import 'package:memoroutines/shared/repositories/repetitions_repository.dart';
 class RoutinesRepository extends BaseRepository<Routine> {
   RoutinesRepository(ProviderRef ref) : super(ref, 'routines_repo');
 
+  // TODO Refactor this logic
   Future<void> createRoutineAndGenerateCompletions(Routine routine) async {
     final db = await isar;
-    await db.writeTxn(() async {
+    db.writeTxnSync(() {
       log.info('Creating routine: $routine');
-      await ref.read(completionsPod).generateRepetitions(routine);
+      final repetitionsToCreate =
+          ref.read(repetitionsPod).generateRepetitions(routine);
+      routine.addRepetitions(repetitionsToCreate.toList());
+      db.routines.putSync(routine);
       log.info(
         'Routine repetitions: ${routine.repetitions.map((e) => e.dateToBeCompleted)}',
       );
-      await db.routines.put(routine);
     });
   }
 
@@ -39,9 +42,24 @@ class RoutinesRepository extends BaseRepository<Routine> {
 
       if (status.needRemoveUpcomingCompletions) {
         await ref
-            .read(completionsPod)
-            .removeUpcomingRepetitionsForRoutine(routineId);
+            .read(repetitionsPod)
+            .deleteUpcomingRepetitionsForRoutine(routineId);
       }
+    });
+  }
+
+  Future<void> deleteWithRepetitions(Id routineId) async {
+    final db = await isar;
+    await db.writeTxn(() async {
+      final routine = await db.routines.get(routineId);
+
+      if (routine == null) {
+        log.error('Failed to find routine with id: $routineId');
+        return;
+      }
+
+      await ref.read(repetitionsPod).deleteAllRepetitionsForRoutine(routineId);
+      await db.routines.delete(routineId);
     });
   }
 }

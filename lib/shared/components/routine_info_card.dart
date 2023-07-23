@@ -33,12 +33,11 @@ class RoutineInfoCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (routine.iconData != null)
-                  Icon(
-                    routine.iconData,
-                    size: 60,
-                    color: context.colors.onBackground,
-                  ).padding(right: Spacing.md),
+                Icon(
+                  routine.icon.icon,
+                  size: 60,
+                  color: context.colors.onBackground,
+                ).padding(right: Spacing.md),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
