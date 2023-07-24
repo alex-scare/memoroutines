@@ -1,51 +1,56 @@
-import 'package:flutter/cupertino.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/repetition.dart';
+import 'package:memoroutines/shared/models/routine.dart';
+import 'package:memoroutines/shared/theme.dart';
 
 class ScheduleRepetition extends StatelessWidget {
   const ScheduleRepetition({
     Key? key,
     required this.repetition,
     required this.onComplete,
-    required this.onCompleteWithTimer,
   }) : super(key: key);
 
   final Repetition repetition;
   final VoidCallback onComplete;
-  final VoidCallback onCompleteWithTimer;
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoContextMenu(
-      actions: [
-        CupertinoContextMenuAction(
-          onPressed: onComplete,
-          child: const Text('Complete'),
-        ),
-        CupertinoContextMenuAction(
-          onPressed: onCompleteWithTimer,
-          child: const Text('Complete with timer'),
-        ),
-      ],
-      child: Container(
-        decoration: BoxDecoration(
-          color: switch (repetition.status) {
-            RepetitionStatus.upcoming => const Color(0xFFE0E0E0),
-            RepetitionStatus.missed => const Color(0xFFEF9A9A),
-            RepetitionStatus.completed => const Color(0xFFA5D6A7),
-            _ => const Color(0xFFE0E0E0),
-          },
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            repetition.routine.value!.name,
-            style: const TextStyle(
-              color: Color(0xFFFAFAFA),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+    var routine = repetition.routine.value!;
+    var frequencyLabel = routine.frequency.label.tr();
+    var durationLabel = routine.singleRepetitionDurationString(context);
+    var subtitle = '$frequencyLabel - $durationLabel';
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.md),
+      leading: Icon(routine.icon.icon, color: Colors.black),
+      title: Text(
+        routine.name,
+        style: context.texts.titleMedium!
+            .copyWith(fontFamily: context.alterFont.fontFamily),
+      ),
+      onTap: onComplete,
+      subtitle: Text(subtitle),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(
+              switch (repetition.status) {
+                RepetitionStatus.completed => LineIcons.checkSquareAlt,
+                _ => LineIcons.square,
+              },
+              color: Colors.black,
             ),
+            onPressed: onComplete,
           ),
-        ),
+          IconButton(
+            icon: const Icon(LineIcons.history, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }

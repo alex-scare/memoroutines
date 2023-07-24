@@ -49,12 +49,7 @@ class ScheduleScreen extends HookWidget {
           controller: pageController,
           itemBuilder: (_, index) {
             final date = _getDateForPage(currentPage.value);
-            return Column(
-              children: [
-                Text(date.toString()),
-                ScheduleRepetitionsList(date: date)
-              ],
-            );
+            return ScheduleRepetitionsList(date: date);
           },
         ),
       ),

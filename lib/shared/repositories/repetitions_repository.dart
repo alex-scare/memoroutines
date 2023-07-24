@@ -49,21 +49,17 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
     }
   }
 
-  Future<void> complete(Repetition completion) async {
+  Future<void> toggleCompletion(Repetition repetition) async {
     final db = await isar;
     await db.writeTxn(() async {
-      completion.status = RepetitionStatus.completed;
-      completion.actionedAt = DateTime.now();
-      await db.repetitions.put(completion);
-    });
-  }
-
-  Future<void> miss(Repetition completion) async {
-    final db = await isar;
-    await db.writeTxn(() async {
-      completion.status = RepetitionStatus.missed;
-      completion.actionedAt = DateTime.now();
-      await db.repetitions.put(completion);
+      repetition.status = switch (repetition.status) {
+        RepetitionStatus.upcoming => RepetitionStatus.completed,
+        RepetitionStatus.completed => RepetitionStatus.upcoming,
+        RepetitionStatus.missed => RepetitionStatus.completed,
+        RepetitionStatus.skipped => RepetitionStatus.completed,
+      };
+      repetition.actionedAt = DateTime.now();
+      await db.repetitions.put(repetition);
     });
   }
 
