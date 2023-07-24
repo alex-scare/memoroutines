@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:memoroutines/services/file_system/file_system_service.dart';
+import 'package:memoroutines/services/shared_preferences/shared_preferences.dart';
 
 class AppLogFilter extends LogFilter {
   @override
@@ -13,7 +14,7 @@ class AppLogFilter extends LogFilter {
 
 class DevLogger {
   static const int _loggerGroupMinLength = 20;
-  static var loggerEnabled = true;
+  static var loggerEnabled = false;
   static final Future<Logger> _loggerFuture = _initLogger();
   final String group;
 
@@ -40,6 +41,8 @@ class DevLogger {
 
   static bool setLogEnabled(bool value) {
     loggerEnabled = value;
+    SharedPreferencesService().setLoggerEnabled(value);
+
     return loggerEnabled;
   }
 
@@ -52,6 +55,9 @@ class DevLogger {
   static Future<Logger> _initLogger() async {
     final file = await getFile();
     _logFilePath(file);
+
+    loggerEnabled = await SharedPreferencesService().isLoggerEnabled;
+
     return Logger(
       printer: PrettyPrinter(
         colors: false,
@@ -82,15 +88,16 @@ class DevLogger {
   }
 
   Future<void> empty({lines = 1}) async {
-    if (!loggerEnabled) return;
     final logger = await _loggerFuture;
+    if (!DevLogger.loggerEnabled) return;
+
     final message = '\n' * lines;
     logger.i(message, null, StackTrace.empty);
   }
 
   Future<void> infoWithDelimiters(String message) async {
-    if (!loggerEnabled) return;
     final logger = await _loggerFuture;
+    if (!loggerEnabled) return;
 
     final date = DateTime.now().toIso8601String();
     final suffix = '-' * 10;
@@ -107,8 +114,9 @@ class DevLogger {
   }
 
   Future<void> info(String message) async {
-    if (!loggerEnabled) return;
     final logger = await _loggerFuture;
+    if (!DevLogger.loggerEnabled) return;
+
     logger.i(_createMessage(message), null, StackTrace.empty);
   }
 
@@ -117,8 +125,10 @@ class DevLogger {
     dynamic error,
     StackTrace stack = StackTrace.empty,
   ]) async {
+    final logger = await _loggerFuture;
     if (!loggerEnabled) return;
-    (await _loggerFuture).w(_createMessage(message), error, stack);
+
+    logger.w(_createMessage(message), error, stack);
   }
 
   Future<void> error(
@@ -126,8 +136,10 @@ class DevLogger {
     dynamic error,
     StackTrace stack = StackTrace.empty,
   ]) async {
+    final logger = await _loggerFuture;
     if (!loggerEnabled) return;
-    (await _loggerFuture).e(_createMessage(message), error, stack);
+
+    logger.e(_createMessage(message), error, stack);
   }
 
   Future<void> wtf(
@@ -135,7 +147,9 @@ class DevLogger {
     dynamic error,
     StackTrace stack = StackTrace.empty,
   ]) async {
+    final logger = await _loggerFuture;
     if (!loggerEnabled) return;
-    (await _loggerFuture).wtf(_createMessage(message), error, stack);
+
+    logger.wtf(_createMessage(message), error, stack);
   }
 }

@@ -13,18 +13,18 @@ class SharedPreferencesService {
 
   late Future<SharedPreferences> _instance;
 
-  Future<String> get globalState async {
+  Future<bool> get isLoggerEnabled async {
     final prefs = await _instance;
-    return prefs.getString(_SharedPreferencesKey.globalState.name) ?? '{}';
+    return prefs.getBool(_SharedPreferencesKey.isLoggerEnabled.name) ?? false;
   }
 
-  Future<void> setGlobalState(String value) async {
+  Future<void> setLoggerEnabled(bool value) async {
     final prefs = await _instance;
-    prefs.setString(_SharedPreferencesKey.globalState.name, value);
+    prefs.setBool(_SharedPreferencesKey.isLoggerEnabled.name, value);
   }
 }
 
 enum _SharedPreferencesKey {
-  globalState,
+  isLoggerEnabled,
   ;
 }

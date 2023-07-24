@@ -5,7 +5,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:memoroutines/features/app/global_error_handler.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:memoroutines/shared/pubs/global_state_pub.dart';
 import 'package:memoroutines/shared/theme.dart';
 
 class App extends HookWidget {
@@ -16,7 +15,6 @@ class App extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(
       () {
-        GlobalStateNotifier();
         FlutterNativeSplash.remove();
         log.infoWithDelimiters('app started. splash removed');
         return null;
