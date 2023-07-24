@@ -20,7 +20,6 @@ class SettingsScreen extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: Spacing.md),
           ListTile(
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),

@@ -36,25 +36,26 @@ class RoutineNewFrequencyMonthlyFixed extends ConsumerWidget {
           itemCount: 31,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 8,
-            mainAxisSpacing: 1, // space between cells vertically
-            crossAxisSpacing: 1, // space between cells horizontally
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
           ),
           itemBuilder: (context, index) {
-            final isSelected = formPod.daysOfMonthSet.contains(index);
+            final currentDayNum = index + 1;
+            final isSelected = formPod.daysOfMonthSet.contains(currentDayNum);
             return GestureDetector(
-              onTap: () => formPodNotifier.toggleDayOfMonth(index),
+              onTap: () => formPodNotifier.toggleDayOfMonth(currentDayNum),
               child: Container(
                 decoration: BoxDecoration(
-                  color: formPod.daysOfMonthSet.contains(index)
+                  color: formPod.daysOfMonthSet.contains(currentDayNum)
                       ? context.colors.primaryContainer
                       : Colors.transparent,
                   border: Border.all(
                     color: context.colors.onBackground.withOpacity(0.3),
-                  ), // border of each cell
+                  ),
                 ),
                 child: Center(
                   child: Text(
-                    (index + 1).toString(),
+                    currentDayNum.toString(),
                     style: context.texts.bodySmall!.copyWith(
                       color: isSelected
                           ? context.colors.onPrimaryContainer
