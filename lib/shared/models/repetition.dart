@@ -3,19 +3,13 @@ import 'package:memoroutines/shared/models/routine.dart';
 
 part 'repetition.g.dart';
 
-enum RepetitionStatus {
-  completed, // The routine was completed
-  missed, // The routine was not completed and is now overdue
-  upcoming, // The routine is due to be completed in the future
-  skipped, // The routine was skipped
-}
-
 @Collection()
 class Repetition {
   Id id = Isar.autoIncrement;
   @Index()
-  DateTime dateToBeCompleted;
-  DateTime? actionedAt;
+  DateTime scheduledCompletionDate;
+  DateTime? performedAt;
+  int? deviationFromPlannedDuration; // In minutes
   @Enumerated(EnumType.name)
   RepetitionStatus status;
 
@@ -23,12 +17,26 @@ class Repetition {
   final routine = IsarLink<Routine>();
 
   Repetition({
-    required this.dateToBeCompleted,
-    this.actionedAt,
+    required this.scheduledCompletionDate,
+    this.performedAt,
     this.status = RepetitionStatus.upcoming,
   });
 
   Repetition.now()
-      : dateToBeCompleted = DateTime.now(),
+      : scheduledCompletionDate = DateTime.now(),
         status = RepetitionStatus.upcoming;
+}
+
+enum RepetitionStatus {
+  /// The repetition was completed
+  completed,
+
+  /// The repetition was not completed and is now overdue
+  missed,
+
+  /// The repetition is due to be completed in the future
+  upcoming,
+
+  /// The repetition was skipped by user (it differ from missed because it was not due to be completed)
+  skipped,
 }

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
@@ -20,9 +21,8 @@ class Routine {
   RoutineStatus status;
   @Enumerated(EnumType.name)
   RoutineFrequency frequency;
-  bool notifications;
-  int repetitionsNumberToComplete; // Number of repetitions to mark the routine as completed
-  int singleRepetitionDuration; // Number of repetitions to mark the routine as completed
+  int completionRepetitionCount;
+  int singleRepetitionDuration;
   RoutineMetaData metaData;
   RoutineStats stats;
 
@@ -34,20 +34,18 @@ class Routine {
     required this.icon,
     this.status = RoutineStatus.active,
     this.frequency = RoutineFrequency.daily,
-    this.repetitionsNumberToComplete = 30,
+    this.completionRepetitionCount = 30,
     this.singleRepetitionDuration = 30,
-    this.notifications = false,
   })  : metaData = RoutineMetaData(),
         stats = RoutineStats();
-
-  @override
-  String toString() {
-    return 'Routine(id: $id, name: $name, description: $description, notifications: $notifications, repetitionsNumberToComplete: $repetitionsNumberToComplete, singleRepetitionDuration: $singleRepetitionDuration)';
-  }
 
   void addRepetitions(List<Repetition> repetitions) {
     this.repetitions.addAll(repetitions);
   }
+
+  // method used in logs!
+  @override
+  String toString() => 'Routine(id: $id, name: $name)';
 }
 
 extension RoutineExt on Routine {
@@ -77,10 +75,8 @@ enum RoutineStatus {
 
 enum RoutineFrequency {
   daily,
-  // dayAfterDay,
   weekly,
   monthly,
-  // yearly,
   ;
 
   String get label {
@@ -88,8 +84,6 @@ enum RoutineFrequency {
       RoutineFrequency.daily => LocaleKey.modelsRoutineFrequencyDaily,
       RoutineFrequency.weekly => LocaleKey.modelsRoutineFrequencyWeekly,
       RoutineFrequency.monthly => LocaleKey.modelsRoutineFrequencyMonthly,
-      // RoutineFrequency.yearly => 'yearly',
-      // RoutineFrequency.dayAfterDay => 'dayAfterDay',
     };
   }
 }
@@ -102,26 +96,27 @@ class RoutineMetaData {
   bool isFlexible;
 
   /// Number of times the routine should be performed in a time period (determined by frequency)
-  int repetitionsPerFrequencyPeriod;
-  List<int> _daysOfWeek;
-  List<int> daysOfMonth;
+  int flexibleRepetitionCount;
+  List<int> _scheduledDaysOfWeek;
+  List<int> scheduledDaysOfMonth;
 
   RoutineMetaData({
     this.isFlexible = false,
-    this.repetitionsPerFrequencyPeriod = 1,
-    List<Weekday> daysOfWeek = const [],
-    this.daysOfMonth = const [],
+    this.flexibleRepetitionCount = 1,
+    List<Weekday> scheduledDaysOfWeek = const [],
+    this.scheduledDaysOfMonth = const [],
   })  : createdAt = DateTime.now(),
         updatedAt = DateTime.now(),
-        _daysOfWeek = daysOfWeek.map((e) => e.number).toList();
+        _scheduledDaysOfWeek =
+            scheduledDaysOfWeek.map((e) => e.number).toList();
 
   @ignore
   List<Weekday> get daysOfWeek {
-    return _daysOfWeek.map((day) => Weekday.values[day]).toList();
+    return _scheduledDaysOfWeek.map((day) => Weekday.values[day]).toList();
   }
 
   set daysOfWeek(List<Weekday> daysOfWeek) {
-    _daysOfWeek = daysOfWeek.map((e) => e.number).toList();
+    _scheduledDaysOfWeek = daysOfWeek.map((e) => e.number).toList();
   }
 }
 
@@ -138,42 +133,4 @@ class RoutineStats {
     this.longestStreak = 0,
     this.currentStreak = 0,
   });
-}
-
-// TODO this realization looks not really cool. Try to implement this another way
-enum SingleRepetitionDuration {
-  minute(1),
-  twoMinutes(2),
-  treeMinutes(3),
-  fourMinutes(4),
-  fiveMinutes(5),
-  tenMinutes(10),
-  fifteenMinutes(15),
-  twentyMinutes(20),
-  twentyFiveMinutes(25),
-  thirtyMinutes(30),
-  fourtyFiveMinutes(45),
-  oneHour(60),
-  twoHours(120),
-  threeHours(180),
-  fourHours(240),
-  fiveHours(300),
-  sixHours(360),
-  sevenHours(420),
-  eightHours(480),
-  nineHours(540),
-  tenHours(600),
-  elevenHours(660),
-  twelveHours(720),
-  ;
-
-  const SingleRepetitionDuration(this.minutes);
-
-  final int minutes;
-
-  static SingleRepetitionDuration durationFromMinutes(int minutes) {
-    return values.firstWhere((element) => element.minutes == minutes);
-  }
-
-  int get indexInList => values.indexWhere((element) => element == this);
 }

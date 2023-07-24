@@ -17,18 +17,23 @@ const RepetitionSchema = CollectionSchema(
   name: r'Repetition',
   id: 3953275675774205543,
   properties: {
-    r'actionedAt': PropertySchema(
+    r'deviationFromPlannedDuration': PropertySchema(
       id: 0,
-      name: r'actionedAt',
+      name: r'deviationFromPlannedDuration',
+      type: IsarType.long,
+    ),
+    r'performedAt': PropertySchema(
+      id: 1,
+      name: r'performedAt',
       type: IsarType.dateTime,
     ),
-    r'dateToBeCompleted': PropertySchema(
-      id: 1,
-      name: r'dateToBeCompleted',
+    r'scheduledCompletionDate': PropertySchema(
+      id: 2,
+      name: r'scheduledCompletionDate',
       type: IsarType.dateTime,
     ),
     r'status': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'status',
       type: IsarType.string,
       enumMap: _RepetitionstatusEnumValueMap,
@@ -40,14 +45,14 @@ const RepetitionSchema = CollectionSchema(
   deserializeProp: _repetitionDeserializeProp,
   idName: r'id',
   indexes: {
-    r'dateToBeCompleted': IndexSchema(
-      id: 705892444378462538,
-      name: r'dateToBeCompleted',
+    r'scheduledCompletionDate': IndexSchema(
+      id: -9188762129815993713,
+      name: r'scheduledCompletionDate',
       unique: false,
       replace: false,
       properties: [
         IndexPropertySchema(
-          name: r'dateToBeCompleted',
+          name: r'scheduledCompletionDate',
           type: IndexType.value,
           caseSensitive: false,
         )
@@ -86,9 +91,10 @@ void _repetitionSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.actionedAt);
-  writer.writeDateTime(offsets[1], object.dateToBeCompleted);
-  writer.writeString(offsets[2], object.status.name);
+  writer.writeLong(offsets[0], object.deviationFromPlannedDuration);
+  writer.writeDateTime(offsets[1], object.performedAt);
+  writer.writeDateTime(offsets[2], object.scheduledCompletionDate);
+  writer.writeString(offsets[3], object.status.name);
 }
 
 Repetition _repetitionDeserialize(
@@ -98,12 +104,13 @@ Repetition _repetitionDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Repetition(
-    actionedAt: reader.readDateTimeOrNull(offsets[0]),
-    dateToBeCompleted: reader.readDateTime(offsets[1]),
+    performedAt: reader.readDateTimeOrNull(offsets[1]),
+    scheduledCompletionDate: reader.readDateTime(offsets[2]),
     status:
-        _RepetitionstatusValueEnumMap[reader.readStringOrNull(offsets[2])] ??
+        _RepetitionstatusValueEnumMap[reader.readStringOrNull(offsets[3])] ??
             RepetitionStatus.upcoming,
   );
+  object.deviationFromPlannedDuration = reader.readLongOrNull(offsets[0]);
   object.id = id;
   return object;
 }
@@ -116,10 +123,12 @@ P _repetitionDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
       return (_RepetitionstatusValueEnumMap[reader.readStringOrNull(offset)] ??
           RepetitionStatus.upcoming) as P;
     default:
@@ -161,10 +170,11 @@ extension RepetitionQueryWhereSort
     });
   }
 
-  QueryBuilder<Repetition, Repetition, QAfterWhere> anyDateToBeCompleted() {
+  QueryBuilder<Repetition, Repetition, QAfterWhere>
+      anyScheduledCompletionDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'dateToBeCompleted'),
+        const IndexWhereClause.any(indexName: r'scheduledCompletionDate'),
       );
     });
   }
@@ -238,44 +248,44 @@ extension RepetitionQueryWhere
   }
 
   QueryBuilder<Repetition, Repetition, QAfterWhereClause>
-      dateToBeCompletedEqualTo(DateTime dateToBeCompleted) {
+      scheduledCompletionDateEqualTo(DateTime scheduledCompletionDate) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'dateToBeCompleted',
-        value: [dateToBeCompleted],
+        indexName: r'scheduledCompletionDate',
+        value: [scheduledCompletionDate],
       ));
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterWhereClause>
-      dateToBeCompletedNotEqualTo(DateTime dateToBeCompleted) {
+      scheduledCompletionDateNotEqualTo(DateTime scheduledCompletionDate) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'dateToBeCompleted',
+              indexName: r'scheduledCompletionDate',
               lower: [],
-              upper: [dateToBeCompleted],
+              upper: [scheduledCompletionDate],
               includeUpper: false,
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'dateToBeCompleted',
-              lower: [dateToBeCompleted],
+              indexName: r'scheduledCompletionDate',
+              lower: [scheduledCompletionDate],
               includeLower: false,
               upper: [],
             ));
       } else {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'dateToBeCompleted',
-              lower: [dateToBeCompleted],
+              indexName: r'scheduledCompletionDate',
+              lower: [scheduledCompletionDate],
               includeLower: false,
               upper: [],
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'dateToBeCompleted',
+              indexName: r'scheduledCompletionDate',
               lower: [],
-              upper: [dateToBeCompleted],
+              upper: [scheduledCompletionDate],
               includeUpper: false,
             ));
       }
@@ -283,14 +293,14 @@ extension RepetitionQueryWhere
   }
 
   QueryBuilder<Repetition, Repetition, QAfterWhereClause>
-      dateToBeCompletedGreaterThan(
-    DateTime dateToBeCompleted, {
+      scheduledCompletionDateGreaterThan(
+    DateTime scheduledCompletionDate, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dateToBeCompleted',
-        lower: [dateToBeCompleted],
+        indexName: r'scheduledCompletionDate',
+        lower: [scheduledCompletionDate],
         includeLower: include,
         upper: [],
       ));
@@ -298,33 +308,33 @@ extension RepetitionQueryWhere
   }
 
   QueryBuilder<Repetition, Repetition, QAfterWhereClause>
-      dateToBeCompletedLessThan(
-    DateTime dateToBeCompleted, {
+      scheduledCompletionDateLessThan(
+    DateTime scheduledCompletionDate, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dateToBeCompleted',
+        indexName: r'scheduledCompletionDate',
         lower: [],
-        upper: [dateToBeCompleted],
+        upper: [scheduledCompletionDate],
         includeUpper: include,
       ));
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterWhereClause>
-      dateToBeCompletedBetween(
-    DateTime lowerDateToBeCompleted,
-    DateTime upperDateToBeCompleted, {
+      scheduledCompletionDateBetween(
+    DateTime lowerScheduledCompletionDate,
+    DateTime upperScheduledCompletionDate, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dateToBeCompleted',
-        lower: [lowerDateToBeCompleted],
+        indexName: r'scheduledCompletionDate',
+        lower: [lowerScheduledCompletionDate],
         includeLower: includeLower,
-        upper: [upperDateToBeCompleted],
+        upper: [upperScheduledCompletionDate],
         includeUpper: includeUpper,
       ));
     });
@@ -334,126 +344,71 @@ extension RepetitionQueryWhere
 extension RepetitionQueryFilter
     on QueryBuilder<Repetition, Repetition, QFilterCondition> {
   QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      actionedAtIsNull() {
+      deviationFromPlannedDurationIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'actionedAt',
+        property: r'deviationFromPlannedDuration',
       ));
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      actionedAtIsNotNull() {
+      deviationFromPlannedDurationIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'actionedAt',
+        property: r'deviationFromPlannedDuration',
       ));
     });
   }
 
-  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> actionedAtEqualTo(
-      DateTime? value) {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      deviationFromPlannedDurationEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'actionedAt',
+        property: r'deviationFromPlannedDuration',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      actionedAtGreaterThan(
-    DateTime? value, {
+      deviationFromPlannedDurationGreaterThan(
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'actionedAt',
+        property: r'deviationFromPlannedDuration',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      actionedAtLessThan(
-    DateTime? value, {
+      deviationFromPlannedDurationLessThan(
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'actionedAt',
+        property: r'deviationFromPlannedDuration',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Repetition, Repetition, QAfterFilterCondition> actionedAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      deviationFromPlannedDurationBetween(
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'actionedAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      dateToBeCompletedEqualTo(DateTime value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dateToBeCompleted',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      dateToBeCompletedGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'dateToBeCompleted',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      dateToBeCompletedLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'dateToBeCompleted',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
-      dateToBeCompletedBetween(
-    DateTime lower,
-    DateTime upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'dateToBeCompleted',
+        property: r'deviationFromPlannedDuration',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -507,6 +462,136 @@ extension RepetitionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      performedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'performedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      performedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'performedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      performedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'performedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      performedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'performedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      performedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'performedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      performedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'performedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      scheduledCompletionDateEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scheduledCompletionDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      scheduledCompletionDateGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'scheduledCompletionDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      scheduledCompletionDateLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'scheduledCompletionDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterFilterCondition>
+      scheduledCompletionDateBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'scheduledCompletionDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -668,28 +753,43 @@ extension RepetitionQueryLinks
 
 extension RepetitionQuerySortBy
     on QueryBuilder<Repetition, Repetition, QSortBy> {
-  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByActionedAt() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
+      sortByDeviationFromPlannedDuration() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'actionedAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByActionedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'actionedAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByDateToBeCompleted() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dateToBeCompleted', Sort.asc);
+      return query.addSortBy(r'deviationFromPlannedDuration', Sort.asc);
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterSortBy>
-      sortByDateToBeCompletedDesc() {
+      sortByDeviationFromPlannedDurationDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dateToBeCompleted', Sort.desc);
+      return query.addSortBy(r'deviationFromPlannedDuration', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByPerformedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'performedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> sortByPerformedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'performedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
+      sortByScheduledCompletionDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduledCompletionDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
+      sortByScheduledCompletionDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduledCompletionDate', Sort.desc);
     });
   }
 
@@ -708,28 +808,17 @@ extension RepetitionQuerySortBy
 
 extension RepetitionQuerySortThenBy
     on QueryBuilder<Repetition, Repetition, QSortThenBy> {
-  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByActionedAt() {
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
+      thenByDeviationFromPlannedDuration() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'actionedAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByActionedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'actionedAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByDateToBeCompleted() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dateToBeCompleted', Sort.asc);
+      return query.addSortBy(r'deviationFromPlannedDuration', Sort.asc);
     });
   }
 
   QueryBuilder<Repetition, Repetition, QAfterSortBy>
-      thenByDateToBeCompletedDesc() {
+      thenByDeviationFromPlannedDurationDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dateToBeCompleted', Sort.desc);
+      return query.addSortBy(r'deviationFromPlannedDuration', Sort.desc);
     });
   }
 
@@ -742,6 +831,32 @@ extension RepetitionQuerySortThenBy
   QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByPerformedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'performedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy> thenByPerformedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'performedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
+      thenByScheduledCompletionDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduledCompletionDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QAfterSortBy>
+      thenByScheduledCompletionDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduledCompletionDate', Sort.desc);
     });
   }
 
@@ -760,16 +875,23 @@ extension RepetitionQuerySortThenBy
 
 extension RepetitionQueryWhereDistinct
     on QueryBuilder<Repetition, Repetition, QDistinct> {
-  QueryBuilder<Repetition, Repetition, QDistinct> distinctByActionedAt() {
+  QueryBuilder<Repetition, Repetition, QDistinct>
+      distinctByDeviationFromPlannedDuration() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'actionedAt');
+      return query.addDistinctBy(r'deviationFromPlannedDuration');
+    });
+  }
+
+  QueryBuilder<Repetition, Repetition, QDistinct> distinctByPerformedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'performedAt');
     });
   }
 
   QueryBuilder<Repetition, Repetition, QDistinct>
-      distinctByDateToBeCompleted() {
+      distinctByScheduledCompletionDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'dateToBeCompleted');
+      return query.addDistinctBy(r'scheduledCompletionDate');
     });
   }
 
@@ -789,16 +911,23 @@ extension RepetitionQueryProperty
     });
   }
 
-  QueryBuilder<Repetition, DateTime?, QQueryOperations> actionedAtProperty() {
+  QueryBuilder<Repetition, int?, QQueryOperations>
+      deviationFromPlannedDurationProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'actionedAt');
+      return query.addPropertyName(r'deviationFromPlannedDuration');
+    });
+  }
+
+  QueryBuilder<Repetition, DateTime?, QQueryOperations> performedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'performedAt');
     });
   }
 
   QueryBuilder<Repetition, DateTime, QQueryOperations>
-      dateToBeCompletedProperty() {
+      scheduledCompletionDateProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'dateToBeCompleted');
+      return query.addPropertyName(r'scheduledCompletionDate');
     });
   }
 

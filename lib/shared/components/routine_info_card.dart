@@ -96,7 +96,7 @@ class RoutineInfoCard extends StatelessWidget {
                     ),
                     Text(
                       LocaleKey.durationsTime
-                          .plural(routine.repetitionsNumberToComplete),
+                          .plural(routine.completionRepetitionCount),
                       style: _routineParameterValueStyle(context),
                     ),
                     Text(

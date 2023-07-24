@@ -58,14 +58,14 @@ extension RoutineNewStateExt on RoutineNewState {
       name: name,
       description: description,
       singleRepetitionDuration: singleRepetititionDuration,
-      repetitionsNumberToComplete: repetitionsToComplete,
+      completionRepetitionCount: repetitionsToComplete,
       frequency: frequency,
       icon: icon,
     )..metaData = RoutineMetaData(
         isFlexible: isFlexible,
-        daysOfMonth: daysOfMonth,
-        daysOfWeek: daysOfWeek,
-        repetitionsPerFrequencyPeriod: repetitionsPerPeriod,
+        scheduledDaysOfMonth: daysOfMonth,
+        scheduledDaysOfWeek: daysOfWeek,
+        flexibleRepetitionCount: repetitionsPerPeriod,
       );
   }
 }

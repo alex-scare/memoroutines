@@ -16,7 +16,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
       final shouldCreateRepetition = _shouldCreateRepetition(routine, onlyDate);
       if (shouldCreateRepetition) {
         var completion = Repetition(
-          dateToBeCompleted: onlyDate,
+          scheduledCompletionDate: onlyDate,
           status: RepetitionStatus.upcoming,
         );
         repetitionsToCreate.add(completion);
@@ -25,7 +25,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
     }
 
     log.info(
-      'repetitionsToCreate: ${repetitionsToCreate.length}. from ${repetitionsToCreate.first.dateToBeCompleted} to ${repetitionsToCreate.last.dateToBeCompleted}',
+      'repetitionsToCreate: ${repetitionsToCreate.length}. from ${repetitionsToCreate.first.scheduledCompletionDate} to ${repetitionsToCreate.last.scheduledCompletionDate}',
     );
     return repetitionsToCreate;
   }
@@ -40,7 +40,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
         // TODO fix this logic (see warning below)
         return routine.metaData.daysOfWeek.contains(date.weekday);
       case RoutineFrequency.monthly:
-        return routine.metaData.daysOfMonth.contains(date.day);
+        return routine.metaData.scheduledDaysOfMonth.contains(date.day);
       // case RoutineFrequency.yearly:
       //   return routine.metaData.yearlyRoutineDate?.day == date.day &&
       //       routine.metaData.yearlyRoutineDate?.month == date.month;
@@ -58,7 +58,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
         RepetitionStatus.missed => RepetitionStatus.completed,
         RepetitionStatus.skipped => RepetitionStatus.completed,
       };
-      repetition.actionedAt = DateTime.now();
+      repetition.performedAt = DateTime.now();
       await db.repetitions.put(repetition);
     });
   }
@@ -77,7 +77,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
     await db.writeTxn(() async {
       final repetitions = await getRepetitionsForRoutine(routineId);
       for (var completion in repetitions) {
-        if (completion.dateToBeCompleted.isAfter(DateTime.now()) &&
+        if (completion.scheduledCompletionDate.isAfter(DateTime.now()) &&
             completion.status == RepetitionStatus.upcoming) {
           await db.repetitions.delete(completion.id);
         }
@@ -89,8 +89,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
     final db = await isar;
     final repetitions = await getRepetitionsForRoutine(routineId);
 
-    await db.repetitions
-        .deleteAll(repetitions.map((routine) => routine.id).toList());
+    db.repetitions.deleteAll(repetitions.map((routine) => routine.id).toList());
   }
 
   Future<List<Repetition>> getRepetitionsForDate(DateTime date) async {
@@ -100,7 +99,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
     return db.repetitions
         .where()
         .filter()
-        .dateToBeCompletedEqualTo(onlyDate)
+        .scheduledCompletionDateEqualTo(onlyDate)
         .findAll();
   }
 
@@ -111,7 +110,7 @@ class RepetitionsRepository extends BaseRepository<Repetition> {
     yield* db.repetitions
         .where()
         .filter()
-        .dateToBeCompletedEqualTo(onlyDate)
+        .scheduledCompletionDateEqualTo(onlyDate)
         .watch(fireImmediately: true);
   }
 }

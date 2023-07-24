@@ -4,11 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/models/routine.dart';
+import 'package:memoroutines/shared/models/single_repetition_duration.dart';
 import 'package:memoroutines/shared/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
-// TODO refactor this logic. It's unclear
 class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
   const RoutineNewSingleRepetitionDuration({super.key});
 
@@ -42,9 +41,8 @@ class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
             max: SingleRepetitionDuration.values.length.toDouble() - 1,
             divisions: SingleRepetitionDuration.values.length - 1,
             onChanged: (value) {
-              formPodNotifier.setSingleRepetitionDuration(
-                SingleRepetitionDuration.values[value.toInt()].minutes,
-              );
+              final current = SingleRepetitionDuration.values[value.toInt()];
+              formPodNotifier.setSingleRepetitionDuration(current.minutes);
             },
           ),
         ),
@@ -59,10 +57,18 @@ class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
     );
   }
 
-  String _getDurationString(BuildContext context, int count) {
-    return switch (count) {
-      < 60 => LocaleKey.durationsMinute.plural(count),
-      _ => LocaleKey.durationsHour.plural((count / 60).round()),
+  String _getDurationString(BuildContext context, int durationInMinutes) {
+    final restMinutes = durationInMinutes % 60;
+    final hours = (durationInMinutes / 60).floor();
+
+    String minutesString(int count) => LocaleKey.durationsMinute.plural(count);
+    String hoursString(int count) => LocaleKey.durationsHour.plural(count);
+    String restMinutesString(int count) =>
+        count != 0 ? ' ${minutesString(count)}' : '';
+
+    return switch (durationInMinutes) {
+      < 60 => minutesString(durationInMinutes),
+      _ => hoursString(hours) + restMinutesString(restMinutes),
     };
   }
 }

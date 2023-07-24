@@ -25,7 +25,7 @@ class ScheduleRepetition extends StatelessWidget {
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.md),
-      leading: Icon(routine.icon.icon, color: Colors.black),
+      leading: Icon(routine.icon.icon),
       title: Text(
         routine.name,
         style: context.texts.titleMedium!
@@ -42,12 +42,11 @@ class ScheduleRepetition extends StatelessWidget {
                 RepetitionStatus.completed => LineIcons.checkSquareAlt,
                 _ => LineIcons.square,
               },
-              color: Colors.black,
             ),
             onPressed: onComplete,
           ),
           IconButton(
-            icon: const Icon(LineIcons.history, color: Colors.black),
+            icon: const Icon(LineIcons.history),
             onPressed: () {},
           ),
         ],
