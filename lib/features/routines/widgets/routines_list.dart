@@ -6,7 +6,7 @@ import 'package:memoroutines/shared/components/slidable_widget.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/repositories/routines_repository.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class RoutinesList extends ConsumerWidget {
   const RoutinesList({Key? key}) : super(key: key);

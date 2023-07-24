@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class TabNavigationScaffold extends HookWidget {
   const TabNavigationScaffold({

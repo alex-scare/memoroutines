@@ -27,7 +27,7 @@ screens.newRoutine.duration.monthlyFixed.title,"Select days when you plan to per
 screens.newRoutine.duration.monthlyFixed.description,"(Note that if a month does not contain selected days, those repetitions will be added to the last day in a month)","(Обратите внимание, что если месяц не содержит выбранных дней, повторения за эти дни будут добавлены к последнему дню месяца)"
 screens.newRoutine.duration.weeklyFixed.title,"Select days when you plan to perform the repetition","Выберите дни, в которые вы планируете выполнять привычку"
 screens.newRoutine.singleRepetitionDuration.title,"How much time do you want to spend for a single repetition?","Сколько времени вы хотите уделять одному повторению?"
-screens.newRoutine.frequency.isFlexible,"Flexible","Гибкий график"
+screens.newRoutine.frequency.isFlexible,"Flexible schedule","Гибкий график"
 screens.newRoutine.frequency.isFlexibleDescription,"(Enable to perform repetitions any desired day)","(Включите, чтобы выполнять повторения в любой день)"
 screens.newRoutine.frequency.title,"How often do you want to perform repetitions to establish the routine?","Как часто вы хотите выполнять повторения для закрепления привычки?"
 screens.newRoutine.creationComplete.title,"This is the overview of your routine!","Это обзор вашей привычки!"

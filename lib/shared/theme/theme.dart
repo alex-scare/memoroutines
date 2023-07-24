@@ -1,7 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:memoroutines/shared/theme/text_theme.dart';
 
 class AppTheme {
   static const pageTransition = PageTransitionsTheme(
@@ -10,8 +10,6 @@ class AppTheme {
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
     },
   );
-
-  static final textTheme = GoogleFonts.comicNeueTextTheme();
 
   static FlexScheme schemeColor = FlexScheme.aquaBlue;
 
@@ -45,7 +43,4 @@ extension AppThemeHelper on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colors => theme.colorScheme;
   TextTheme get texts => theme.textTheme;
-
-  TextStyle get mainFont => GoogleFonts.comicNeue();
-  TextStyle get alterFont => GoogleFonts.bangers();
 }

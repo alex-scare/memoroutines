@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/models/routine.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class RoutineNewTimesPerDuration extends ConsumerWidget {
@@ -20,12 +20,14 @@ class RoutineNewTimesPerDuration extends ConsumerWidget {
       children: [
         Text(
           LocaleKey.screensNewRoutineDurationPerPeriodTitle.tr(),
-          style:
-              context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          style: context.texts.titleSmall,
         ),
         Text(
           LocaleKey.screensNewRoutineDurationPerPeriodDescription.tr(),
-          style: context.texts.bodySmall!.copyWith(fontStyle: FontStyle.italic),
+          style: context.texts.labelSmall!.copyWith(
+            fontStyle: FontStyle.italic,
+            color: context.colors.onBackground.withOpacity(0.7),
+          ),
         ),
         SliderTheme(
           data: context.theme.sliderTheme.copyWith(
@@ -50,7 +52,10 @@ class RoutineNewTimesPerDuration extends ConsumerWidget {
         Text(
           LocaleKey.durationsTime.plural(formPod.repetitionsPerPeriod),
           textAlign: TextAlign.center,
-          style: TextStyle(color: context.colors.onBackground.withOpacity(0.5)),
+          style: context.texts.labelSmall!.copyWith(
+            height: 1,
+            color: context.colors.onBackground.withOpacity(0.5),
+          ),
         ).width(double.infinity),
       ],
     );

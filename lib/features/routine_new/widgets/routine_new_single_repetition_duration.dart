@@ -5,7 +5,7 @@ import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/single_repetition_duration.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
@@ -22,8 +22,7 @@ class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
         const SizedBox(height: Spacing.md),
         Text(
           LocaleKey.screensNewRoutineSingleRepetitionDurationTitle.tr(),
-          style:
-              context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          style: context.texts.titleSmall,
         ),
         const SizedBox(height: Spacing.sm),
         SliderTheme(
@@ -49,7 +48,8 @@ class RoutineNewSingleRepetitionDuration extends ConsumerWidget {
         Text(
           _getDurationString(context, formPod.singleRepetititionDuration),
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: context.texts.labelSmall!.copyWith(
+            height: 1,
             color: context.colors.onBackground.withOpacity(0.5),
           ),
         ).width(double.infinity),

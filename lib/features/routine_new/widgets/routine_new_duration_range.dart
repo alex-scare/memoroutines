@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class RoutineNewDurationRange extends ConsumerWidget {
@@ -22,13 +22,14 @@ class RoutineNewDurationRange extends ConsumerWidget {
           const SizedBox(height: Spacing.md),
           Text(
             LocaleKey.screensNewRoutineDurationTitle.tr(),
-            style:
-                context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: context.texts.titleSmall,
           ),
           Text(
             LocaleKey.screensNewRoutineDurationDescription.tr(),
-            style:
-                context.texts.bodySmall!.copyWith(fontStyle: FontStyle.italic),
+            style: context.texts.labelMedium!.copyWith(
+              fontStyle: FontStyle.italic,
+              color: context.colors.onBackground.withOpacity(0.7),
+            ),
           ),
           const SizedBox(height: Spacing.sm),
           SliderTheme(
@@ -50,7 +51,8 @@ class RoutineNewDurationRange extends ConsumerWidget {
           Text(
             _getDurationString(context, formPod.repetitionsToComplete),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: context.texts.labelSmall!.copyWith(
+              height: 1,
               color: context.colors.onBackground.withOpacity(0.5),
             ),
           ).width(double.infinity),

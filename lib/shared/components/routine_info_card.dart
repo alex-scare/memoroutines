@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/routine.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class RoutineInfoCard extends StatelessWidget {
@@ -35,27 +35,23 @@ class RoutineInfoCard extends StatelessWidget {
               children: [
                 Icon(
                   routine.icon.icon,
-                  size: 60,
+                  size: 52,
                   color: context.colors.onBackground,
-                ).padding(right: Spacing.md),
+                ).padding(right: Spacing.sm),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       routine.name,
-                      style:
-                          context.theme.primaryTextTheme.titleMedium!.copyWith(
-                        color: context.colors.onBackground,
-                        fontFamily: context.alterFont.fontFamily,
-                        fontSize: 18,
-                      ),
+                      style: context.texts.headlineSmall,
                     ),
                     if (routine.description.isNotEmpty)
                       Text(
                         routine.description,
-                        style: context.texts.bodyMedium!.copyWith(
-                          color: context.colors.onBackground.withOpacity(0.9),
+                        style: context.texts.labelMedium!.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: context.colors.onBackground.withOpacity(0.8),
                           height: 1,
                         ),
                         softWrap: true,
@@ -114,14 +110,14 @@ class RoutineInfoCard extends StatelessWidget {
   }
 
   TextStyle _routineParameterNameStyle(BuildContext context) {
-    return context.texts.bodyMedium!.copyWith(
+    return context.texts.bodySmall!.copyWith(
       fontStyle: FontStyle.italic,
       color: context.colors.onBackground.withOpacity(0.8),
     );
   }
 
   TextStyle _routineParameterValueStyle(BuildContext context) {
-    return context.texts.bodyMedium!.copyWith(
+    return context.texts.bodySmall!.copyWith(
       color: context.colors.onBackground,
     );
   }

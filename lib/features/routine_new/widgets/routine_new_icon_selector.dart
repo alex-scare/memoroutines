@@ -6,7 +6,7 @@ import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/routine_icon.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class RoutineNewIconSelector extends HookConsumerWidget {
   const RoutineNewIconSelector({super.key});
@@ -115,7 +115,7 @@ class RoutineNewIconSelector extends HookConsumerWidget {
             style: TextButton.styleFrom(foregroundColor: Colors.transparent),
             child: Text(
               LocaleKey.screensNewRoutineMainInfoIconsShowMore.tr(),
-              style: context.texts.bodyMedium!
+              style: context.texts.labelMedium!
                   .copyWith(fontStyle: FontStyle.italic),
             ),
           ),

@@ -8,7 +8,7 @@ import 'package:memoroutines/features/routine_new/widgets/routine_new_frequency_
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/routine.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class RoutineNewFrequency extends ConsumerWidget {
   const RoutineNewFrequency({super.key});
@@ -24,16 +24,13 @@ class RoutineNewFrequency extends ConsumerWidget {
         const SizedBox(height: Spacing.md),
         Text(
           LocaleKey.screensNewRoutineFrequencyTitle.tr(),
-          style:
-              context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          style: context.texts.titleSmall,
         ),
         const SizedBox(height: Spacing.md),
         SizedBox(
           width: double.infinity,
           child: Theme(
-            data: context.theme.copyWith(
-              visualDensity: VisualDensity.compact,
-            ),
+            data: context.theme.copyWith(visualDensity: VisualDensity.compact),
             child: SegmentedButton(
               onSelectionChanged: formPodNotifier.setFrequency,
               selected: formPod.frequencySet,
@@ -41,7 +38,10 @@ class RoutineNewFrequency extends ConsumerWidget {
                 (frequency) {
                   return ButtonSegment(
                     value: frequency,
-                    label: Text(frequency.label.tr()),
+                    label: Text(
+                      frequency.label.tr(),
+                      style: context.texts.labelSmall!,
+                    ),
                   );
                 },
               ).toList(),

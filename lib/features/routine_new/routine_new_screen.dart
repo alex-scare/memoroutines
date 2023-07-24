@@ -10,7 +10,7 @@ import 'package:memoroutines/features/routine_new/widgets/routine_new_main_info.
 import 'package:memoroutines/features/routine_new/widgets/routine_new_single_repetition_duration.dart';
 import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class RoutineNewScreen extends HookWidget {

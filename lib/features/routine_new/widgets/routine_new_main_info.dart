@@ -9,7 +9,7 @@ import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_text_input.dart';
 import 'package:memoroutines/shared/components/visibility_handler.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class RoutineNewMainInfo extends HookConsumerWidget {
   const RoutineNewMainInfo({super.key});
@@ -37,7 +37,7 @@ class RoutineNewMainInfo extends HookConsumerWidget {
             const SizedBox(height: Spacing.sm),
             Text(
               LocaleKey.screensNewRoutineMainInfoTitleLabel.tr(),
-              style: context.texts.titleMedium,
+              style: context.texts.titleSmall,
             ),
             const SizedBox(height: Spacing.xxs),
             CustomTextInput(
@@ -49,8 +49,7 @@ class RoutineNewMainInfo extends HookConsumerWidget {
                   .tr()
                   .toUpperCase(),
               textColor: context.colors.onBackground,
-              textStyle: context.texts.titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold),
+              textStyle: context.texts.bodyLarge!,
               inputFormatters: formPod.nameFormatters,
             ),
             const SizedBox(height: Spacing.xl),
@@ -70,8 +69,7 @@ class RoutineNewMainInfo extends HookConsumerWidget {
                   .tr()
                   .toUpperCase(),
               textColor: context.colors.onBackground,
-              textStyle: context.texts.bodyLarge!
-                  .copyWith(fontWeight: FontWeight.bold),
+              textStyle: context.texts.bodyMedium!,
               inputFormatters: formPod.descriptionFormatters,
             ),
           ],

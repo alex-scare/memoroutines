@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 enum CustomFilledButtonType {
   bold,
@@ -44,9 +44,8 @@ class CustomFilledButton extends StatelessWidget {
         style: TextStyle(
           color: isBold
               ? context.colors.onBackground
-              : context.colors.onBackground.withOpacity(0.8),
+              : context.colors.onBackground.withOpacity(0.7),
           height: 1,
-          fontWeight: isBold ? FontWeight.w900 : FontWeight.w600,
           fontSize: 16,
         ),
         child: child,

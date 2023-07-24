@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class ScheduleAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const ScheduleAppBar({
@@ -46,8 +46,7 @@ class ScheduleAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   width: 100,
                   child: Text(
                     currentDate,
-                    style: context.texts.titleLarge!
-                        .copyWith(fontFamily: context.alterFont.fontFamily),
+                    style: context.texts.headlineMedium,
                     textAlign: TextAlign.center,
                   ),
                 ),

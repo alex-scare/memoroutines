@@ -5,7 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:memoroutines/features/app/global_error_handler.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class App extends HookWidget {
   const App({super.key});

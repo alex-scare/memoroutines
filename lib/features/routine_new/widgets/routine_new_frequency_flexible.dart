@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:memoroutines/features/routine_new/data/routine_new_pod.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class RoutineNewFrequencyFlexible extends ConsumerWidget {
@@ -26,12 +26,15 @@ class RoutineNewFrequencyFlexible extends ConsumerWidget {
           children: [
             Text(
               LocaleKey.screensNewRoutineFrequencyIsFlexible.tr(),
-              style: context.texts.bodyMedium,
+              style: context.texts.titleSmall,
             ),
             Text(
               LocaleKey.screensNewRoutineFrequencyIsFlexibleDescription.tr(),
-              style: context.texts.bodySmall!
-                  .copyWith(fontStyle: FontStyle.italic),
+              style: context.texts.labelSmall!.copyWith(
+                height: 1,
+                fontStyle: FontStyle.italic,
+                color: context.colors.onBackground.withOpacity(0.5),
+              ),
             ),
           ],
         ).flexible()

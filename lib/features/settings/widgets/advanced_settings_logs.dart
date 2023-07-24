@@ -5,7 +5,7 @@ import 'package:memoroutines/services/file_system/file_system_service.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/services/logger/dev_logger.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class AdvancedSettingsLogs extends HookWidget {
   const AdvancedSettingsLogs({super.key});
@@ -18,10 +18,10 @@ class AdvancedSettingsLogs extends HookWidget {
       children: [
         ListTile(
           dense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xxs),
+          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
           title: Text(
             LocaleKey.screensAdvancedSettingsLogsWriteLog.tr(),
-            style: context.texts.bodyLarge,
+            style: context.texts.bodySmall,
           ),
           trailing: Switch(
             value: logsEnabled.value,
@@ -34,10 +34,10 @@ class AdvancedSettingsLogs extends HookWidget {
         const Divider(height: 1),
         ListTile(
           dense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xxs),
+          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
           title: Text(
             LocaleKey.screensAdvancedSettingsLogsShareLog.tr(),
-            style: context.texts.bodyLarge,
+            style: context.texts.bodySmall,
           ),
           onTap: () async {
             final file = await DevLogger.getFile();
@@ -47,10 +47,10 @@ class AdvancedSettingsLogs extends HookWidget {
         const Divider(height: 1),
         ListTile(
           dense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xxs),
+          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
           title: Text(
             LocaleKey.screensAdvancedSettingsLogsDeleteLog.tr(),
-            style: context.texts.bodyLarge,
+            style: context.texts.bodySmall,
           ),
           onTap: DevLogger.clearLogsFile,
         ),

@@ -6,7 +6,7 @@ import 'package:memoroutines/features/routine_new/data/routine_new_state.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/routine_info_card.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class RoutineNewFinalStep extends ConsumerWidget {
   const RoutineNewFinalStep({super.key});
@@ -21,12 +21,14 @@ class RoutineNewFinalStep extends ConsumerWidget {
         const SizedBox(height: Spacing.md),
         Text(
           LocaleKey.screensNewRoutineCreationCompleteTitle.tr(),
-          style:
-              context.texts.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+          style: context.texts.titleSmall,
         ),
         Text(
           LocaleKey.screensNewRoutineCreationCompleteDescription.tr(),
-          style: context.texts.bodySmall!.copyWith(fontStyle: FontStyle.italic),
+          style: context.texts.labelSmall!.copyWith(
+            fontStyle: FontStyle.italic,
+            color: context.colors.onBackground.withOpacity(0.5),
+          ),
         ),
         const SizedBox(height: Spacing.md),
         RoutineInfoCard(routine: formPod.currentRoutine),

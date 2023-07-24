@@ -6,7 +6,7 @@ import 'package:memoroutines/features/routine_new/data/routine_new_state.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/weekday.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class RoutineNewFrequencyWeeklyFixed extends ConsumerWidget {
   const RoutineNewFrequencyWeeklyFixed({super.key});
@@ -20,8 +20,7 @@ class RoutineNewFrequencyWeeklyFixed extends ConsumerWidget {
       children: [
         Text(
           LocaleKey.screensNewRoutineDurationWeeklyFixedTitle.tr(),
-          style:
-              context.texts.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          style: context.texts.titleSmall,
         ),
         const SizedBox(height: Spacing.md),
         SizedBox(
@@ -37,7 +36,10 @@ class RoutineNewFrequencyWeeklyFixed extends ConsumerWidget {
                 (day) {
                   return ButtonSegment(
                     value: day,
-                    label: Text(day.shortName.tr()),
+                    label: Text(
+                      day.shortName.tr(),
+                      style: context.texts.labelSmall,
+                    ),
                   );
                 },
               ).toList(),

@@ -6,7 +6,7 @@ import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/navigation/navigation.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:styled_widget/styled_widget.dart';
 
@@ -23,9 +23,10 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: Spacing.md),
           ListTile(
             dense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
             title: Text(
               LocaleKey.screensSettingsLanguageLink.tr(),
-              style: context.texts.bodyLarge,
+              style: context.texts.bodySmall,
             ),
             horizontalTitleGap: 0,
             onTap: () => context.pushNamed(RouteName.interfaceLocale.name),
@@ -33,9 +34,10 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(height: 1),
           ListTile(
             dense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
             title: Text(
               LocaleKey.screensSettingsAdvancedSettingsLink.tr(),
-              style: context.texts.bodyLarge,
+              style: context.texts.bodySmall,
             ),
             horizontalTitleGap: 0,
             onTap: () => context.pushNamed(RouteName.advancedSettings.name),
@@ -49,6 +51,9 @@ class SettingsScreen extends ConsumerWidget {
                   'version': snapshot.data?.version ?? '',
                   'build': snapshot.data?.buildNumber ?? '',
                 },
+              ),
+              style: context.texts.labelSmall!.copyWith(
+                color: context.colors.onBackground.withOpacity(0.8),
               ),
               textAlign: TextAlign.center,
             ).width(double.infinity),

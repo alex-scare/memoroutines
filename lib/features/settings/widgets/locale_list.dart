@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class LocalesList extends StatelessWidget {
   const LocalesList({
@@ -29,7 +29,7 @@ class LocalesList extends StatelessWidget {
             '${LocaleKey.modelsInterfaceLanguage}.${locale.languageCode}'.tr(),
           ),
           dense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xxs),
+          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
           trailing: locale == current
               ? Icon(LineIcons.check, color: context.colors.secondary)
               : null,

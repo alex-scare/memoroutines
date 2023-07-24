@@ -4,7 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/routine.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class ScheduleRepetition extends StatelessWidget {
   const ScheduleRepetition({
@@ -28,11 +28,10 @@ class ScheduleRepetition extends StatelessWidget {
       leading: Icon(routine.icon.icon),
       title: Text(
         routine.name,
-        style: context.texts.titleMedium!
-            .copyWith(fontFamily: context.alterFont.fontFamily),
+        style: context.texts.headlineSmall,
       ),
       onTap: onComplete,
-      subtitle: Text(subtitle),
+      subtitle: Text(subtitle, style: context.texts.labelSmall),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

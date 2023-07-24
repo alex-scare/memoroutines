@@ -4,7 +4,7 @@ import 'package:memoroutines/features/settings/widgets/advanced_settings_logs.da
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
-import 'package:memoroutines/shared/theme.dart';
+import 'package:memoroutines/shared/theme/theme.dart';
 
 class AdvancedSettignsScreen extends StatelessWidget {
   const AdvancedSettignsScreen({Key? key}) : super(key: key);
@@ -24,8 +24,7 @@ class AdvancedSettignsScreen extends StatelessWidget {
             const SizedBox(height: Spacing.md),
             Text(
               LocaleKey.screensAdvancedSettingsLogsTitle.tr(),
-              style: context.texts.titleMedium!
-                  .copyWith(fontWeight: FontWeight.bold),
+              style: context.texts.titleSmall,
             ),
             const AdvancedSettingsLogs(),
           ],
