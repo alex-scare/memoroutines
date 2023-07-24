@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
+import 'package:memoroutines/shared/helpers/spacing.dart';
 import 'package:memoroutines/shared/theme.dart';
 
 class LocalesList extends StatelessWidget {
@@ -18,8 +19,9 @@ class LocalesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       itemCount: list.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (_, index) {
         final locale = list[index];
         return ListTile(
@@ -27,6 +29,7 @@ class LocalesList extends StatelessWidget {
             '${LocaleKey.modelsInterfaceLanguage}.${locale.languageCode}'.tr(),
           ),
           dense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.xxs),
           trailing: locale == current
               ? Icon(LineIcons.check, color: context.colors.secondary)
               : null,

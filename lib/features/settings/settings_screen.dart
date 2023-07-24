@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:memoroutines/services/i18n/locale_key.g.dart';
 import 'package:memoroutines/shared/components/custom_app_bar.dart';
 import 'package:memoroutines/shared/helpers/spacing.dart';
@@ -28,17 +27,16 @@ class SettingsScreen extends ConsumerWidget {
               LocaleKey.screensSettingsLanguageLink.tr(),
               style: context.texts.bodyLarge,
             ),
-            leading: const Icon(LineIcons.circle, size: 14),
             horizontalTitleGap: 0,
             onTap: () => context.pushNamed(RouteName.interfaceLocale.name),
           ),
+          const Divider(height: 1),
           ListTile(
             dense: true,
             title: Text(
               LocaleKey.screensSettingsAdvancedSettingsLink.tr(),
               style: context.texts.bodyLarge,
             ),
-            leading: const Icon(LineIcons.circle, size: 14),
             horizontalTitleGap: 0,
             onTap: () => context.pushNamed(RouteName.advancedSettings.name),
           ),

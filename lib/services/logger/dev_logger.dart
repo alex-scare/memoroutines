@@ -11,10 +11,9 @@ class AppLogFilter extends LogFilter {
   }
 }
 
-// TODO Add persisting loggerEnabled value
 class DevLogger {
   static const int _loggerGroupMinLength = 20;
-  static var loggerEnabled = false;
+  static var loggerEnabled = true;
   static final Future<Logger> _loggerFuture = _initLogger();
   final String group;
 
@@ -39,8 +38,8 @@ class DevLogger {
     file.writeAsStringSync('');
   }
 
-  static bool toggleLogsWriting() {
-    loggerEnabled = !loggerEnabled;
+  static bool setLogEnabled(bool value) {
+    loggerEnabled = value;
     return loggerEnabled;
   }
 

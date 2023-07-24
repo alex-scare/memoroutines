@@ -14,7 +14,7 @@ void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  log.empty(lines: 2);
+  log.empty();
   log.infoWithDelimiters('app starting');
 
   SystemChrome.setSystemUIOverlayStyle(AppTheme.overlayStyleLight);
