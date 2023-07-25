@@ -1,64 +1,72 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:memoroutines/shared/extensions/date_time.dart';
 import 'package:memoroutines/shared/extensions/duration.dart';
 import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/routine.dart';
+import 'package:memoroutines/shared/models/weekday.dart';
 import 'package:memoroutines/shared/repositories/base_repository.dart';
 
 class RepetitionsRepository extends BaseRepository<Repetition> {
   RepetitionsRepository(ProviderRef ref) : super(ref, 'repetitions_repo');
 
   List<Repetition> generateRepetitions(Routine routine) {
-    final List<Repetition> repetitionsToCreate = [];
-    var now = DateTime.now();
-    var onlyDate = DateTime(now.year, now.month, now.day);
-    for (var i = 0; i < 30; i++) {
-      final shouldCreateRepetition = _shouldCreateRepetition(routine, onlyDate);
-      if (shouldCreateRepetition) {
-        var completion = Repetition(
-          scheduledCompletionDate: onlyDate,
-          status: RepetitionStatus.upcoming,
-        );
-        repetitionsToCreate.add(completion);
-      }
-      onlyDate = onlyDate.add(1.days);
+    final List<Repetition> result = [];
+    var count = routine.completionRepetitionCount;
+
+    if (!routine.metaData.isFlexible) {
+      result.addAll(_generateFixedRepetitions(routine, count, DateTime.now()));
     }
 
-    log.info(
-      'repetitionsToCreate: ${repetitionsToCreate.length}. from ${repetitionsToCreate.first.scheduledCompletionDate} to ${repetitionsToCreate.last.scheduledCompletionDate}',
-    );
-    return repetitionsToCreate;
+    log.info('repetitions to create: ${result.length}.');
+
+    return result;
   }
 
-  bool _shouldCreateRepetition(Routine routine, DateTime date) {
-    switch (routine.frequency) {
-      case RoutineFrequency.daily:
-        return true;
-      // case RoutineFrequency.dayAfterDay:
-      //   return date.difference(routine.metaData.lastDoneAt ?? date).inDays >= 1;
-      case RoutineFrequency.weekly:
-        // TODO fix this logic (see warning below)
-        return routine.metaData.daysOfWeek.contains(date.weekday);
-      case RoutineFrequency.monthly:
-        return routine.metaData.scheduledDaysOfMonth.contains(date.day);
-      // case RoutineFrequency.yearly:
-      //   return routine.metaData.yearlyRoutineDate?.day == date.day &&
-      //       routine.metaData.yearlyRoutineDate?.month == date.month;
-      default:
-        return false;
+  List<Repetition> _generateFixedRepetitions(
+    Routine routine,
+    int count,
+    DateTime fromDate,
+  ) {
+    final List<Repetition> result = [];
+    var date = fromDate.clearTime();
+
+    for (var i = 0; i < count; i++) {
+      final shouldCreate = _shouldCreateFixedRepetition(routine, date);
+
+      if (shouldCreate) {
+        var completion = Repetition(scheduledCompletionDate: date);
+        result.add(completion);
+      }
+
+      date = date.add(1.days);
     }
+
+    return result;
+  }
+
+  bool _shouldCreateFixedRepetition(Routine routine, DateTime date) {
+    final metaData = routine.metaData;
+    final daysOfMonth = metaData.scheduledDaysOfMonth;
+    final weekday = Weekday.fromDateTime(date);
+
+    return switch (routine.frequency) {
+      RoutineFrequency.daily => true,
+      RoutineFrequency.weekly => metaData.daysOfWeek.contains(weekday),
+      RoutineFrequency.monthly => daysOfMonth.contains(date.day),
+    };
   }
 
   Future<void> toggleCompletion(Repetition repetition) async {
     final db = await isar;
     await db.writeTxn(() async {
+      repetition.performedAt = DateTime.now();
       repetition.status = switch (repetition.status) {
-        RepetitionStatus.upcoming => RepetitionStatus.completed,
         RepetitionStatus.completed => RepetitionStatus.upcoming,
+        RepetitionStatus.upcoming => RepetitionStatus.completed,
         RepetitionStatus.missed => RepetitionStatus.completed,
         RepetitionStatus.skipped => RepetitionStatus.completed,
       };
-      repetition.performedAt = DateTime.now();
       await db.repetitions.put(repetition);
     });
   }

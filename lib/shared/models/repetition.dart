@@ -25,6 +25,10 @@ class Repetition {
   Repetition.now()
       : scheduledCompletionDate = DateTime.now(),
         status = RepetitionStatus.upcoming;
+
+  void addRoutine(Routine routine) {
+    this.routine.value = routine;
+  }
 }
 
 enum RepetitionStatus {

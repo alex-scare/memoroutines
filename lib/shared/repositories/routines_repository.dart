@@ -1,5 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:memoroutines/shared/extensions/date_time.dart';
+import 'package:memoroutines/shared/models/repetition.dart';
 import 'package:memoroutines/shared/models/routine.dart';
 import 'package:memoroutines/shared/repositories/base_repository.dart';
 import 'package:memoroutines/shared/repositories/repetitions_repository.dart';
@@ -7,7 +9,6 @@ import 'package:memoroutines/shared/repositories/repetitions_repository.dart';
 class RoutinesRepository extends BaseRepository<Routine> {
   RoutinesRepository(ProviderRef ref) : super(ref, 'routines_repo');
 
-  // TODO Refactor this logic
   Future<void> createRoutineAndGenerateCompletions(Routine routine) async {
     final db = await isar;
     try {
@@ -79,6 +80,36 @@ class RoutinesRepository extends BaseRepository<Routine> {
     } catch (e, stack) {
       log.error('Failed to delete routine with id: $routineId', e, stack);
     }
+  }
+
+  // TODO complete this logic
+  Future<List<Repetition>> getRepetitionsForFlexibleRoutinesForDate(
+    DateTime date,
+  ) async {
+    final db = await isar;
+    final day = date.clearTime();
+
+    final allFlexibleRoutines = await db.routines
+        .where()
+        .filter()
+        .metaData((q) => q.isFlexibleEqualTo(true))
+        .findAll();
+
+    // Filter the flexible routines with completed repetitions count less than completionCount
+    final incompleteFlexibleRoutines = <Routine>[];
+    for (final routine in allFlexibleRoutines) {
+      if (routine.stats.timesCompleted >= routine.completionRepetitionCount) {
+        continue;
+      }
+
+      incompleteFlexibleRoutines.add(routine);
+    }
+
+    return incompleteFlexibleRoutines.map(
+      (routine) {
+        return Repetition(scheduledCompletionDate: day)..addRoutine(routine);
+      },
+    ).toList();
   }
 }
 
